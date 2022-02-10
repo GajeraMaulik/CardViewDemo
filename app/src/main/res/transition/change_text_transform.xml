@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+        android:transitionOrdering="together"
+
+        android:duration="500"
+        android:startDelay="200">
+        <fade android:targetId="@+id/item_details_view" />
+    <autoTransition/>
+        <changeClipBounds/>
+    <fade android:fadingMode="fade_in_out"/>
+
+    </transitionSet>
+
+

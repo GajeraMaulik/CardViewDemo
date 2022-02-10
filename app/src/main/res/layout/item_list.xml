@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    android:id="@+id/Card_View"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    tools:ignore="MissingConstraints"
+    tools:layout_editor_absoluteX="15dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:clickable="true"
+                android:src="@drawable/fb" />
+
+
+
+    </androidx.cardview.widget.CardView>
+
+
+

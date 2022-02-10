@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar"
+        tools:ignore="UnknownId">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/categoriesView">
+
+
+
+    <FrameLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="203dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.viewpagerindicator.CirclePageIndicator
+            android:id="@+id/indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:padding="10dp"
+            app:centered="true"
+            app:fillColor="@color/colorPrimary"
+            app:pageColor="#fff"
+            app:snap="false" />
+
+    </FrameLayout>
+
+
+    <!--  <androidx.viewpager.widget.ViewPager
+          android:id="@+id/viewpager"
+          android:layout_width="match_parent"
+          android:layout_height="200dp"
+          android:layout_marginStart="8dp"
+          android:layout_marginTop="8dp"
+          android:layout_marginEnd="8dp"
+          android:layout_marginBottom="8dp"
+          app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:ignore="MissingConstraints" >-->
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/slider"
+        tools:ignore="MissingConstraints,NotSibling,UnknownId"
+        tools:layout_editor_absoluteY="210dp">
+
+
+        <Button
+            android:id="@+id/lv_btn"
+            android:layout_width="0dp"
+            android:layout_height="134dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:onClick="listview"
+            android:text="Listview"
+            android:textColor="@color/white"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <Button
+            android:id="@+id/cd_btn"
+            android:layout_width="0dp"
+            android:layout_height="134dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/teal_200"
+            android:onClick="crudview"
+            android:text="Crud Static"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+
+        <Button
+            android:id="@+id/bsd_btn"
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:onClick="bsdview"
+            android:text="Bottom Sheet Dialog"
+            android:textColor="@color/white"
+            tools:ignore="MissingConstraints,OnClick"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <Button
+            android:id="@+id/pd_btn"
+            android:layout_width="0dp"
+            android:layout_height="134dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:onClick="pdview"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/teal_700"
+            android:text="PROGRESS DIALOG "
+            tools:ignore="MissingConstraints,UsingOnClickInXml"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:textColor="@color/white"
+            android:text="Camera"
+            android:onClick="cameraView"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="134dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/custom_rectangle"
+            android:textColor="@color/white"
+            android:text="Demo6"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="3dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
