@@ -18,7 +18,18 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/item_image_slider.xml" value="0.271875" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/item_list.xml" value="0.2833333333333333" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/item_news.xml" value="0.271875" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/baseline_photo_camera_24.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/ic_person.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/ic_photo_camera_black_48dp.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_cloud_upload_24.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_info_24.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/profile_bg.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_camera.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_camera_only.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_gallery_only.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_main.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_profile.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/dialog_choose_app.xml" value="0.358695652173913" />
       </map>
     </option>
   </component>

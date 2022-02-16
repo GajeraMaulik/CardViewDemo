@@ -126,13 +126,11 @@ class MainActivity() : AppCompatActivity() {
     fun pdview(view: View){
         val intent = Intent(this, ProgressDialogActivity::class.java)
         startActivity(intent)
-        finish()
 
     }
     fun cameraView(view: View){
         val intent = Intent(this, CameraActivity::class.java)
         startActivity(intent)
-        finish()
 
     }
 

@@ -14,4 +14,12 @@
     <color name="brown">#989B9C</color>
     <color name="Button">#00BCD4</color>
 
+    <color name="dialog_choose_icon_color">#757575</color>
+    <color name="dialog_choose_text_color">#757575</color>
+    <color name="grey_700">#616161</color>
+    <color name="grey_50">#FAFAFA</color>
+    <color name="grey_800">#424242</color>
+    <color name="grey_900">#212121</color>
+    <color name="grey_250">#E7E7E7</color>
+
 </resources>
