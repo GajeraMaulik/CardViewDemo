@@ -15,6 +15,7 @@ import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.FileUriUtils
 import com.example.cardviewdemo.util.FileUtil.getCompressFormat
 import com.example.cardviewdemo.imagepicker.ImagePicker
+import com.example.cardviewdemo.imagepicker.ImagePickerActivity
 import com.yalantis.ucrop.UCrop
 import java.io.ByteArrayOutputStream
 import java.io.File

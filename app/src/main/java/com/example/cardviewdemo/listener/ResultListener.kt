@@ -1,5 +1,7 @@
 package com.example.cardviewdemo.listener
 
+import com.example.cardviewdemo.constant.ImageProvider
+
 /**
  *
  * Generic Class To Listen Async Result
@@ -8,7 +10,7 @@ package com.example.cardviewdemo.listener
  * @version 1.0
  * @since 04 January 2018
  */
-internal interface ResultListener<T> {
+interface ResultListener<T> {
 
     fun onResult(t: T?)
 }

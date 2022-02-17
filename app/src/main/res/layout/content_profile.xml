@@ -36,14 +36,46 @@
             android:layout_alignParentBottom="true"
             android:onClick="pickProfileImage" />
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/uProfile"
+            style="@style/ImageButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/imgProfile"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:onClick="uploadImage"
+            android:src="@drawable/outline_cloud_upload_24" />
+
+
     </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/pDeleteView"
+        style="@style/ImageButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imgProfileInfo"
+        android:background="@android:color/transparent"
+        android:onClick="deleteview"
+        android:src="@drawable/ic_baseline_delete_24" />
+
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imgProfileInfo"
         style="@style/ImageButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:background="@android:color/transparent"
         android:onClick="showImageInfo"
         app:srcCompat="@drawable/outline_info_24" />
 

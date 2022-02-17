@@ -5,10 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.FileUriUtils
 import com.example.cardviewdemo.imagepicker.ImagePicker
+import com.example.cardviewdemo.imagepicker.ImagePickerActivity
 import com.example.cardviewdemo.util.ExifDataCopier
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 

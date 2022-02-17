@@ -1,5 +1,6 @@
 package com.example.cardviewdemo.imagepicker
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
@@ -7,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 
-fun ImageView.setDrawableImage(@DrawableRes resource: Uri, applyCircle: Boolean = false) {
+fun ImageView.setDrawableImage(@SuppressLint("SupportAnnotationUsage") @DrawableRes resource: Int, applyCircle: Boolean = false) {
     val glide = Glide.with(this).load(resource).diskCacheStrategy(DiskCacheStrategy.NONE)
     if (applyCircle) {
         glide.apply(RequestOptions.circleCropTransform()).into(this)

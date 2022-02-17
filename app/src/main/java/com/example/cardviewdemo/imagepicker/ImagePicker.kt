@@ -208,13 +208,15 @@ open class ImagePicker {
                 DialogHelper.showChooseAppDialog(
                     context = activity,
                     listener = object : ResultListener<ImageProvider> {
-                        override fun onResult(t: ImageProvider?) {
+                          override fun onResult(t: ImageProvider?) {
                             t?.let {
                                 imageProvider = it
                                 imageProviderInterceptor?.invoke(imageProvider)
                                 onResult(createIntent())
                             }
-                        }
+
+                    }
+
                     }
                 )
             }

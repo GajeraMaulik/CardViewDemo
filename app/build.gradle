@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
   //  id  'kotlin-kapt'
     id 'kotlin-android-extensions'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -12,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.cardviewdemo"
-        minSdkVersion 22
+        minSdkVersion 24
         targetSdkVersion 32
         versionCode 1
         versionName "1.0"
@@ -92,6 +93,7 @@ dependencies {
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'org.chromium.net:cronet-embedded:95.4638.50'
     implementation 'androidx.databinding:databinding-compiler-common:7.1.1'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

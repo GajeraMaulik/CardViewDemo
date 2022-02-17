@@ -10,15 +10,12 @@ import androidx.activity.result.ActivityResult
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.imagepicker.ImagePicker
+import com.example.cardviewdemo.imagepicker.ImagePickerActivity
 import com.example.cardviewdemo.util.IntentUtils
 import com.example.cardviewdemo.util.PermissionUtil
 
 /**
  * Select image from Storage
- *
- * @author Dhaval Patel
- * @version 1.0
- * @since 04 January 2019
  */
 class GalleryProvider(
     activity: ImagePickerActivity,
