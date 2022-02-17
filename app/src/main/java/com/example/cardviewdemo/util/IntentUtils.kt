@@ -13,6 +13,7 @@ import com.example.cardviewdemo.R
 import java.io.File
 
 object IntentUtils {
+
     private const val CAMERA_FACING_EXTRA = "android.intent.extras.CAMERA_FACING"
 
     /**
@@ -67,7 +68,7 @@ object IntentUtils {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         if (tryFrontCamera) when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2 -> {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
                 intent.putExtra(
                     CAMERA_FACING_EXTRA,
                     CameraCharacteristics.LENS_FACING_FRONT
@@ -111,7 +112,7 @@ object IntentUtils {
             ) // Tested API 21 Android version 5.0.1(Samsung S4)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
         } else {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)

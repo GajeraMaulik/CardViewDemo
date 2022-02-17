@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.util
+package com.example.cardviewdemo
 
 import androidx.core.content.FileProvider
 

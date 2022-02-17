@@ -14,8 +14,8 @@ import androidx.activity.result.ActivityResult
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.FileUriUtils
 import com.example.cardviewdemo.util.FileUtil.getCompressFormat
-import com.example.cardviewdemo.util.ImagePicker
-import com.example.cardviewdemo.util.ImagePickerActivity
+import com.example.cardviewdemo.ImagePicker
+import com.example.cardviewdemo.ImagePickerActivity
 import com.yalantis.ucrop.UCrop
 import java.io.ByteArrayOutputStream
 import java.io.File

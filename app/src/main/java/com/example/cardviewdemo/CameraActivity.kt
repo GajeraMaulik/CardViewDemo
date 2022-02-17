@@ -1,6 +1,5 @@
 package com.example.cardviewdemo
 
-import android.content.DialogInterface
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,7 +11,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.example.cardviewdemo.databinding.ActivityCameraBinding
 import com.example.cardviewdemo.util.FileUtil
-import com.example.cardviewdemo.util.ImagePicker
 import com.example.cardviewdemo.util.IntentUtils
 import kotlinx.android.synthetic.main.content_camera_only.*
 import kotlinx.android.synthetic.main.content_gallery_only.*
@@ -84,14 +82,14 @@ class CameraActivity : AppCompatActivity() {
           imgProfile.setLocalImage(Uri.parse(mProfileUri.toString()), true)
           imgGallery.setLocalImage(Uri.parse(mGalleryUri.toString()))
           imgCamera.setLocalImage(Uri.parse(mCameraUri.toString()))
-        } else if(imgProfile == null){
+        } else {}
           val view = imgProfile.setImageResource(R.drawable.ic_person)
           SharePref.save(this, "profile", "$view")
 
          /* val profile: Uri? = Uri.parse(SharePref.getStringValue(this, "profile"))
             imgProfile.setDrawableImage(Uri.parse(profile.toString()), true)
             Log.d("TAG", "p:$profile")*/
-        }
+
 
 
 
@@ -179,8 +177,8 @@ class CameraActivity : AppCompatActivity() {
             .setTitle("Image Info")
             .setMessage(FileUtil.getFileInfo(this, uri ))
             .setPositiveButton("Ok", null)
-            .setNegativeButton("Delete", DialogInterface.OnClickListener { view,uri ->
-                when {
+/*            .setNegativeButton("Delete", DialogInterface.OnClickListener { view,uri ->
+                when{
                     imgProfile != null -> {
                       //  SharePref.removeSharePref(this)
                        val view = imgProfile.setImageResource(R.drawable.ic_person)
@@ -190,13 +188,14 @@ class CameraActivity : AppCompatActivity() {
                     imgCamera != null -> {
                         SharePref.removeSharePref(this)
                         SharePref.save(this,"camera","")
+
                     }
                     imgGallery != null -> {
                         SharePref.removeSharePref(this)
                         SharePref.save(this,"gallery","")
                     }
                 }
-            })
+            })*/
             .show()
     }
 

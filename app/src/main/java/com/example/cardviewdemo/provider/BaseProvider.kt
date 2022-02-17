@@ -3,7 +3,7 @@ package com.example.cardviewdemo.provider
 import android.content.ContextWrapper
 import android.os.Bundle
 import android.widget.Toast
-import com.example.cardviewdemo.util.ImagePickerActivity
+import com.example.cardviewdemo.ImagePickerActivity
 
 /**
  * Abstract Provider class

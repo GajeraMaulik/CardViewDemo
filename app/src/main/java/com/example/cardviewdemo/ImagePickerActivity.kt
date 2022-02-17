@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.util
+package com.example.cardviewdemo
 
 import android.app.Activity
 import android.content.Context
@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardviewdemo.R
 import com.example.cardviewdemo.constant.ImageProvider
 import com.example.cardviewdemo.provider.CameraProvider
 import com.example.cardviewdemo.provider.CompressionProvider
