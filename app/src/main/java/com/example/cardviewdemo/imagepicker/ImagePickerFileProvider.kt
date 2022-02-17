@@ -1,4 +1,4 @@
-package com.example.imagepicker
+package com.example.cardviewdemo.imagepicker
 
 import androidx.core.content.FileProvider
 

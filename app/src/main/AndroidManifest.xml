@@ -53,7 +53,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".listview.ImageActivity" />
-        <activity android:name="com.example.imagepicker.ImagePickerActivity"
+        <activity android:name="com.example.cardviewdemo.imagepicker.ImagePickerActivity"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.Transparent.ImagePicker"/>
         <activity
@@ -62,7 +62,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
-            android:name="com.example.imagepicker.ImagePickerFileProvider"
+            android:name="com.example.cardviewdemo.imagepicker.ImagePickerFileProvider"
             android:authorities="${applicationId}.imagepicker.provider"
             android:exported="false"
             android:grantUriPermissions="true">
