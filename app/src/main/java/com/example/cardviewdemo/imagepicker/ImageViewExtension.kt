@@ -1,4 +1,4 @@
-package com.example.cardviewdemo
+package com.example.cardviewdemo.imagepicker
 
 import android.net.Uri
 import android.widget.ImageView
