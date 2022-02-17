@@ -1,4 +1,4 @@
-package com.example.cardviewdemo
+package com.example.imagepicker
 
 import android.app.Activity
 import android.content.Intent

@@ -8,8 +8,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.FileUriUtils
-import com.example.cardviewdemo.ImagePicker
-import com.example.cardviewdemo.ImagePickerActivity
+import com.example.imagepicker.ImagePicker
 import com.example.cardviewdemo.util.ExifDataCopier
 import kotlinx.coroutines.launch
 import java.io.File

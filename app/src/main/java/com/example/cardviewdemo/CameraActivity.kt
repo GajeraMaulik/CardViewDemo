@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.cardviewdemo.databinding.ActivityCameraBinding
 import com.example.cardviewdemo.util.FileUtil
 import com.example.cardviewdemo.util.IntentUtils
+import com.example.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.content_camera_only.*
 import kotlinx.android.synthetic.main.content_gallery_only.*
 import kotlinx.android.synthetic.main.content_profile.*

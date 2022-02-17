@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResult
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.FileUtil
-import com.example.cardviewdemo.ImagePickerActivity
 import com.example.cardviewdemo.util.IntentUtils
 import com.example.cardviewdemo.util.PermissionUtil
 
