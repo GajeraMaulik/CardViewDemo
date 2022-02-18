@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".imagepicker.ImageShowActivity">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UnknownId">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/categoriesView">
+
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Firebase Storage"
+            android:layout_marginTop="16dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,MissingConstraints" />
+      <!--  <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/profile_bg"
+            android:onClick="showImage"
+            android:padding="3dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_person"
+            tools:ignore="UsingOnClickInXml" />-->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginVertical="30dp"
+            android:scaleType="centerCrop"
+            tools:ignore="MissingConstraints" />
+    <EditText
+        android:id="@+id/etImageId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type Image name"/>
+    <Button
+        android:id="@+id/getImage"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="23dp"
+        android:text="Get Image"
+        android:textColor="@color/white"/>
+
+
+</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

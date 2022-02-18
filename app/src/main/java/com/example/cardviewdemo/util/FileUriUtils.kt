@@ -135,7 +135,7 @@ object FileUriUtils {
         return null
     }
 
-    private fun getFilePath(context: Context, uri: Uri): String? {
+    fun getFilePath(context: Context, uri: Uri): String? {
 
         var cursor: Cursor? = null
         val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)

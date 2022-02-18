@@ -1,8 +1,10 @@
 package com.example.cardviewdemo
 
 import android.app.ProgressDialog
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.cardviewdemo.databinding.ActivityCameraBinding
 import com.example.cardviewdemo.imagepicker.ImagePicker
 import com.example.cardviewdemo.imagepicker.setLocalImage
+import com.example.cardviewdemo.util.FileUriUtils
 import com.example.cardviewdemo.util.FileUtil
 import com.example.cardviewdemo.util.IntentUtils
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.content_camera_only.*
 import kotlinx.android.synthetic.main.content_gallery_only.*
 import kotlinx.android.synthetic.main.content_profile.*
@@ -28,23 +30,23 @@ import java.util.*
 private lateinit var binding:ActivityCameraBinding
 private var mStorageRef: FirebaseStorage?= null
 
+
 class CameraActivity : AppCompatActivity() {
 
-
-    private var mCameraUri: Uri? = null
-    private var mGalleryUri: Uri? = null
-    private  var mProfileUri: Uri? = null
-
-
+         private var mCameraUri: Uri? = null
+        private var mGalleryUri: Uri? = null
+          private var mProfileUri:Uri? =null
+    private lateinit var cursor:Cursor
 
     private val profileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
             if (it.resultCode == RESULT_OK ) {
-                val uri = it.data?.data!!
+                val uri= it.data?.data!!
                 mProfileUri = uri
-                Log.d("TAG","Profile:$uri")
-                imgProfile.setLocalImage(uri, true)
-                SharePref.save(this,"profile","$uri")
+                    Log.d("TAG","Profile:$uri")
+                    imgProfile.setLocalImage(uri, true)
+                    SharePref.save(this,"profile","$uri")
+                    uploadImage(uri)
+
             } else parseError(it)
 
     }
@@ -52,11 +54,13 @@ class CameraActivity : AppCompatActivity() {
             if (it.resultCode == RESULT_OK  ) {
                 val uri = it.data?.data!!
                 mGalleryUri = uri
-                SharePref.save(this,"gallery","$uri")
 
-                Log.d("TAG","Gallery:$uri")
-                imgGallery.setLocalImage(uri)
-            }
+                    SharePref.save(this,"gallery","$uri")
+
+                    Log.d("TAG","Gallery:$uri")
+                    imgGallery.setLocalImage(uri)
+                    uploadImage(uri)
+               }
             else parseError(it)
         }
 
@@ -64,11 +68,16 @@ class CameraActivity : AppCompatActivity() {
             if (it.resultCode == RESULT_OK ) {
                 val uri = it.data?.data!!
                 mCameraUri = uri
-                Log.d("TAG","Camera: $uri")
-                imgCamera.setLocalImage(uri, false)
-                SharePref.save(this,"camera","$uri")
+
+                    Log.d("TAG","Camera: $uri")
+                    imgCamera.setLocalImage(uri, false)
+                    SharePref.save(this,"camera","$uri")
+                   uploadImage(uri)
+
+
             } else parseError(it)
         }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,58 +86,78 @@ class CameraActivity : AppCompatActivity() {
         val actionBar= supportActionBar
         actionBar!!.title="Camera"
         actionBar.setDisplayHomeAsUpEnabled(true)
+    /*    if (imgProfile != null && imgGallery != null && imgCamera != null) {
+           mProfileUri = Uri.parse(SharePref.saveValue(this,"profile",R.drawable.ic_person).toString())
+            mGalleryUri = Uri.parse(SharePref.getStringValue(this,"gallery"))
+            mCameraUri = Uri.parse(SharePref.getStringValue(this,"camera"))
+            imgProfile.setLocalImage(Uri.parse(mProfileUri.toString()), true)
+            imgGallery.setLocalImage(Uri.parse(mGalleryUri.toString()))
+            imgCamera.setLocalImage(Uri.parse(mCameraUri.toString()))
 
-
-  /*    if(imgProfile != null || imgCamera != null || imgGallery != null){
-        mProfileUri = Uri.parse(SharePref.getStringValue(this,"profile"))!!
-          mGalleryUri = Uri.parse(SharePref.getStringValue(this,"gallery"))!!
-          mCameraUri = Uri.parse(SharePref.getStringValue(this,"camera"))!!
-          imgProfile.setLocalImage(Uri.parse(mProfileUri.toString()), true)
-          imgGallery.setLocalImage(Uri.parse(mGalleryUri.toString()))
-          imgCamera.setLocalImage(Uri.parse(mCameraUri.toString()))
+        }else {
+            val p = Uri.parse(SharePref.getStringValue(this,"eprofile").toString())
+            val g = Uri.parse(SharePref.getStringValue(this,"egallery"))
+            val c = Uri.parse(SharePref.getStringValue(this,"ecamera"))
+            imgProfile.setLocalImage(Uri.parse(p.toString()),true)
+            imgGallery.setLocalImage(Uri.parse(g.toString()))
+            imgCamera.setLocalImage(Uri.parse(c.toString()))
         }*/
-    /*else if (imgProfile == null || imgCamera == null || imgGallery == null) {
-            val p = Uri.parse(SharePref.getStringValue(this,"profile"))
-          val g = Uri.parse(SharePref.getStringValue(this,"gallery"))
-          val c = Uri.parse(SharePref.getStringValue(this,"camera"))
-          imgProfile.setLocalImage(Uri.parse(p.toString()),true)
-          imgGallery.setLocalImage(Uri.parse(g.toString()))
-          imgCamera.setLocalImage(Uri.parse(c.toString()))
-        }*/
-       /*   val view = imgProfile.setImageResource(R.drawable.ic_person)
-          SharePref.save(this, "profile", "$view")
-*/
-         /* val profile: Uri? = Uri.parse(SharePref.getStringValue(this, "profile"))
-            imgProfile.setDrawableImage(Uri.parse(profile.toString()), true)
-            Log.d("TAG", "p:$profile")*/
-
-
-
 
     }
-    fun uploadImage(view: View){
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+    private fun uploadImage(fileuri:Uri?){
         val progress = ProgressDialog(this)
         progress.setMessage("Uploading File ...")
         progress.setCancelable(false)
         progress.show()
 
-        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
-        val now = Date()
-        val filename = formatter.format(now)
-        val storageReference = FirebaseStorage.getInstance().getReference("images/$filename")
+        val pfilePath: String = File("$mProfileUri").name
+        val gfilePath = File("$mGalleryUri").name
+        val cfilePath = File("$mGalleryUri").name
+        Log.d("TAG","p$pfilePath")
+        Log.d("TAG","g$gfilePath")
+        Log.d("TAG","c$cfilePath")
 
-        if (mProfileUri != null){
-        storageReference.putFile(mProfileUri!!).
-                addOnSuccessListener {
-                    imgProfile.setImageURI(null)
-                    Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
-                    if (progress.isShowing) progress.dismiss()
-                }.addOnFailureListener{
-                    if (progress.isShowing) progress.dismiss()
-                    Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
-                }
-        }else { progress.dismiss()
-            Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show()}
+        val formatter = SimpleDateFormat("dd-mm", Locale.getDefault())
+        val now = Date()
+        val filename = formatter.format(now).toString()
+        val storageReference = FirebaseStorage.getInstance().getReference("UserProfile/$filename")
+
+        mProfileUri?.let {
+            storageReference.putFile(it).addOnSuccessListener {
+                imgProfile.setImageURI(null)
+                Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
+                if (progress.isShowing) progress.dismiss()
+            }.addOnFailureListener{
+                if (progress.isShowing) progress.dismiss()
+                Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
+            }
+        }
+      /*  mGalleryUri?.let {
+            storageReference.putFile(it).addOnSuccessListener {
+                //imgGallery.setImageURI(null)
+                Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
+                if (progress.isShowing) progress.dismiss()
+            }.addOnFailureListener{
+                if (progress.isShowing) progress.dismiss()
+                Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
+            }
+        }
+        mCameraUri?.let {
+            storageReference.putFile(it).addOnSuccessListener {
+              //  imgCamera.setImageURI(null)
+                Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
+                if (progress.isShowing) progress.dismiss()
+            }.addOnFailureListener{
+                if (progress.isShowing) progress.dismiss()
+                Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
+            }
+        }*/
+
     }
 
 
@@ -195,8 +224,6 @@ class CameraActivity : AppCompatActivity() {
 
             else -> null
         }
-
-
         uri?.let {
             startActivity(IntentUtils.getUriViewIntent(this, uri))
         }
@@ -204,17 +231,23 @@ class CameraActivity : AppCompatActivity() {
     fun deleteview(view: View?) {
       when(view?.id) {
              R.id.pDeleteView -> {
-                 if (mProfileUri != null) mProfileUri = Uri.parse(SharePref.saveValue(this,"profile",R.drawable.ic_person).toString())
+                 if (mProfileUri != null)
+                      imgProfile.setImageResource(R.drawable.ic_person)
+
+                     //mProfileUri = Uri.parse(SharePref.saveValue(this,"eprofile",R.drawable.ic_person).toString())
                  else Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show()
            //  SharePref.save(this,"pnull","$p")
-            // mProfileUri?.path.orEmpty()
                  }
-              R.id.gDeleteView -> {if(mGalleryUri != null) mGalleryUri= Uri.parse(SharePref.saveValue(this,"gallery",null).toString())
+              R.id.gDeleteView -> {
+                  if(mGalleryUri != null) imgGallery.setImageResource(0)
+                      //mGalleryUri= Uri.parse(SharePref.saveValue(this,"egallery",null).toString())
                   else Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show()
 
                   // SharePref.save(this,"gnull","$g")
               }
-              R.id.cDeleteView ->{ if (mCameraUri != null) mCameraUri = Uri.parse(SharePref.saveValue(this,"camera",null).toString())
+              R.id.cDeleteView ->{
+                 if (mCameraUri != null) imgCamera.setImageResource(0)
+                     //mCameraUri = Uri.parse(SharePref.saveValue(this,"ecamera",null).toString())
                   else  Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show()
                   //    SharePref.save(this,"cnull","$c")
               }
@@ -222,13 +255,7 @@ class CameraActivity : AppCompatActivity() {
 
     }
 
-/*    private fun dialog(uri: Uri?){
-        AlertDialog.Builder(this)
-            .setTitle("Image Info")
-            .setMessage(FileUtil.getFileInfo(this, uri ))
-            .setPositiveButton("Ok",null)
-            .show()
-    }*/
+
 
 
     fun showImageInfo(view: View) {
@@ -249,6 +276,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
 }
+
 
 
 

@@ -36,7 +36,7 @@
             android:layout_alignParentBottom="true"
             android:onClick="pickProfileImage" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+    <!--    <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/uProfile"
             style="@style/ImageButtonStyle"
             android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
             android:background="@android:color/transparent"
             android:onClick="uploadImage"
             android:src="@drawable/outline_cloud_upload_24" />
-
+-->
 
     </RelativeLayout>
 

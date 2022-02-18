@@ -2,24 +2,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.cardviewdemo">
-<!--
+    <!--
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name= "android.permission.CAMERA"/>-->
+    <uses-permission android:name= "android.permission.CAMERA"/>
+    -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <queries>
+
         <!-- Gallery -->
         <intent>
             <action android:name="android.intent.action.GET_CONTENT" />
+
             <category android:name="android.intent.category.OPENABLE" />
+
             <data android:mimeType="image/*" />
         </intent>
         <intent>
             <action android:name="android.intent.action.PICK" />
+
             <data android:mimeType="image/*" />
         </intent>
         <intent>
@@ -39,12 +44,16 @@
         android:roundIcon="@mipmap/ic_icon"
         android:theme="@style/Theme.CardViewDemo">
         <activity
+            android:name=".imagepicker.ImageShowActivity"
+            android:exported="false" />
+        <activity
             android:name=".CameraActivity"
             android:exported="false" />
         <activity android:name=".progressbar.ProgressDialogActivity" />
         <activity android:name=".crudstatic.CRUDActivity" />
         <activity android:name=".listview.ListActivity" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,26 +62,24 @@
             </intent-filter>
         </activity>
         <activity android:name=".listview.ImageActivity" />
-        <activity android:name="com.example.cardviewdemo.imagepicker.ImagePickerActivity"
+        <activity
+            android:name=".imagepicker.ImagePickerActivity"
             android:screenOrientation="unspecified"
-            android:theme="@style/Theme.Transparent.ImagePicker"/>
+            android:theme="@style/Theme.Transparent.ImagePicker" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
-            android:name="com.example.cardviewdemo.imagepicker.ImagePickerFileProvider"
+            android:name=".imagepicker.ImagePickerFileProvider"
             android:authorities="${applicationId}.imagepicker.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
-
         </provider>
-
     </application>
 
 </manifest>
