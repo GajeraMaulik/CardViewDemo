@@ -25,14 +25,25 @@
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_cloud_upload_24.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_info_24.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/profile_bg.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_bottom_sheet_dialog.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_camera.xml" value="0.35260416666666666" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_image.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_image_show.xml" value="0.30364583333333334" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_main.xml" value="0.32447916666666665" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_progress_dialog.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_camera_only.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_gallery_only.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/content_profile.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/dialog_choose_app.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/dialog_wallpaper.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/images_tab.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/images_views.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/item_list.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/loading_item.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/post_images.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/post_videos.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/videos_tab.xml" value="0.358695652173913" />
       </map>
     </option>
   </component>

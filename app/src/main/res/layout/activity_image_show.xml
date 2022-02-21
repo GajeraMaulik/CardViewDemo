@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".imagepicker.ImageShowActivity">
-    <androidx.core.widget.NestedScrollView
+  <!--  <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,7 +36,7 @@
             android:textSize="26sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText,MissingConstraints" />
-      <!--  <androidx.appcompat.widget.AppCompatImageView
+      &lt;!&ndash;  <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,7 +52,7 @@
             android:padding="3dp"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_person"
-            tools:ignore="UsingOnClickInXml" />-->
+            tools:ignore="UsingOnClickInXml" />&ndash;&gt;
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
@@ -76,6 +76,44 @@
 
 </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLoadImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_15sdp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:spanCount="2"
+            tools:ignore="MissingConstraints"
+            tools:listitem="@layout/images_views" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:indeterminate="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/noData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:src="@drawable/nodata"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

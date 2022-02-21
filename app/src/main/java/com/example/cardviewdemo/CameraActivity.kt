@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cardviewdemo.databinding.ActivityCameraBinding
+import com.example.cardviewdemo.databinding.ActivityImageShowBinding
 import com.example.cardviewdemo.imagepicker.ImagePicker
 import com.example.cardviewdemo.imagepicker.setLocalImage
 import com.example.cardviewdemo.util.FileUriUtils
@@ -27,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-private lateinit var binding:ActivityCameraBinding
+private lateinit var binding: ActivityCameraBinding
 private var mStorageRef: FirebaseStorage?= null
 
 
@@ -48,7 +49,6 @@ class CameraActivity : AppCompatActivity() {
                     uploadImage(uri)
 
             } else parseError(it)
-
     }
     private val galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK  ) {
@@ -60,8 +60,7 @@ class CameraActivity : AppCompatActivity() {
                     Log.d("TAG","Gallery:$uri")
                     imgGallery.setLocalImage(uri)
                     uploadImage(uri)
-               }
-            else parseError(it)
+               } else parseError(it)
         }
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -124,7 +123,7 @@ class CameraActivity : AppCompatActivity() {
 
         val formatter = SimpleDateFormat("dd-mm", Locale.getDefault())
         val now = Date()
-        val filename = formatter.format(now).toString()
+        val filename = formatter.format(now).toString() + ".jpeg"
         val storageReference = FirebaseStorage.getInstance().getReference("UserProfile/$filename")
 
         mProfileUri?.let {
@@ -137,9 +136,9 @@ class CameraActivity : AppCompatActivity() {
                 Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
             }
         }
-      /*  mGalleryUri?.let {
+        mGalleryUri?.let {
             storageReference.putFile(it).addOnSuccessListener {
-                //imgGallery.setImageURI(null)
+                imgGallery.setImageURI(null)
                 Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
                 if (progress.isShowing) progress.dismiss()
             }.addOnFailureListener{
@@ -149,14 +148,14 @@ class CameraActivity : AppCompatActivity() {
         }
         mCameraUri?.let {
             storageReference.putFile(it).addOnSuccessListener {
-              //  imgCamera.setImageURI(null)
+                imgCamera.setImageURI(null)
                 Toast.makeText(this,"Successfully uploaded",Toast.LENGTH_LONG).show()
                 if (progress.isShowing) progress.dismiss()
             }.addOnFailureListener{
                 if (progress.isShowing) progress.dismiss()
                 Toast.makeText(this,"Failed",Toast.LENGTH_LONG).show()
             }
-        }*/
+        }
 
     }
 

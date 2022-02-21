@@ -42,7 +42,7 @@ class ImageAdapter(
 
         //set Image dynamic
         Glide.with(context).load(currentItem).apply(RequestOptions()
-            //  .placeholder(R.drawable.ic_back)
+             .placeholder(R.drawable.loading)
             .signature(ObjectKey(currentItem))) // here you add some value , if the next time you add the same value then it will load from cache otherwise if you put new value you will download , then save in cache
             .into(holder.image)
 
