@@ -2,7 +2,9 @@ package com.example.cardviewdemo.adapter
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.WallpaperManager
 import android.content.Context
+import android.graphics.Bitmap
 import android.icu.number.NumberRangeFormatter.with
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.GenericTransitionOptions.with
 import com.bumptech.glide.Glide
@@ -21,8 +25,15 @@ import com.example.cardviewdemo.R
 import com.example.cardviewdemo.data.Image
 import com.example.cardviewdemo.imagepicker.ImagePicker.Companion.with
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_image.view.*
+import kotlinx.android.synthetic.main.images_views.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
-class ImageAdapter(private  var items:ArrayList<Image>,private val context: Context): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class ImageAdapter(  var items:ArrayList<Image>,private val context: Context): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapter.ViewHolder {
 
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.images_views, parent, false))
@@ -33,20 +44,22 @@ class ImageAdapter(private  var items:ArrayList<Image>,private val context: Cont
     override fun onBindViewHolder(holder: ImageAdapter.ViewHolder, position: Int) {
         val item = items[position]
 
- /*   Glide.with(context).load(item)
+/*    Glide.with(holder.itemView)
+        .load(item.imageUrl)
+        .signature(ObjectKey(item))
         .placeholder(R.drawable.loading)
-        .into(holder.imageView)
-
-*/
-            Picasso.get()
+        .into(holder.imageView.item_Image)*/
+        Picasso.get()
                 .load(item.imageUrl)
+                // .resize(512,512)
                 .placeholder(R.drawable.loading)
-                .into(holder.imageView)
+                .into(holder.itemView.item_Image)
 
 
-        holder.imageView.setOnClickListener {
+
+      /*  holder.imageView.setOnClickListener {
             setupDialog(item)
-        }
+        }*/
     }
 
     override fun getItemCount(): Int = items.size
@@ -80,7 +93,7 @@ class ImageAdapter(private  var items:ArrayList<Image>,private val context: Cont
 
         })
 
-       /* setWallpaperBtn.setOnClickListener {
+        setWallpaperBtn.setOnClickListener {
             val wallpaperManager = WallpaperManager.getInstance(context) as WallpaperManager
             CoroutineScope(Dispatchers.Main).launch {
                 try {
@@ -98,7 +111,7 @@ class ImageAdapter(private  var items:ArrayList<Image>,private val context: Cont
             }
 
         }
-        dialog.show()*/
+        dialog.show()
 
     }
 

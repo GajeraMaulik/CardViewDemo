@@ -91,9 +91,12 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'org.chromium.net:cronet-embedded:95.4638.50'
+    implementation 'org.chromium.net:cronet-embedded:98.4758.101'
     implementation 'androidx.databinding:databinding-compiler-common:7.1.1'
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
+
+    implementation 'com.google.firebase:firebase-storage:20.0.0'
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.3'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.1'
 
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -123,15 +126,19 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    //noinspection GradleCompatible
+
+    implementation 'com.android.support:design:24.0.0'
 
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
     //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
+
 
 }

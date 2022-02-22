@@ -13,6 +13,8 @@
     <color name="white">#FBFBFB</color>
     <color name="brown">#989B9C</color>
     <color name="Button">#00BCD4</color>
+    <color name="main">#027335</color>
+
 
     <color name="dialog_choose_icon_color">#757575</color>
     <color name="dialog_choose_text_color">#757575</color>
@@ -21,5 +23,26 @@
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
     <color name="grey_250">#E7E7E7</color>
+    <color name="shedow">#59087355</color>
+    <color name="grey">#59D8EAE5</color>
+    <color name="carview">#86C3D7</color>
+    <color name="Black">#293041</color>
+    <color name="soft">#7D8FAB</color>
+    <color name="grey02">#BFC9DA</color>
+    <color name="txtquanutiy">#000000</color>
+    <color name="dark">#303733</color>
+    <color name="PrimaryLight">#C8EDD9</color>
+    <color name="accent">#C29C1D</color>
+    <color name="yellow">#FFA902</color>
+    <color name="fav">#FF6464</color>
+    <color name="grey01">#E8EFF3</color>
+    <color name="tcstepper">#0A3C48</color>
+
+    <color name="stepview_line_done">@color/main</color>
+    <color name="stepview_line_next">@color/soft</color>
+    <color name="stepview_text_done">@color/tcstepper</color>
+    <color name="stepview_text_next">@color/soft</color>
+    <color name="stepview_text_selected">@color/tcstepper</color>
+
 
 </resources>

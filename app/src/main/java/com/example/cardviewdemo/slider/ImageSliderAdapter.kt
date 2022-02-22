@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.data.ImageSlider
 
 class ImageSliderAdapter(private val mContext: Context, private val imageList: List<ImageSlider>) :
     PagerAdapter() {

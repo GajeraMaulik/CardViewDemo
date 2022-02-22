@@ -12,11 +12,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.example.cardviewdemo.chat.ChatActivity
 import com.example.cardviewdemo.crudstatic.CRUDActivity
 import com.example.cardviewdemo.imagepicker.ImageShowActivity
 import com.example.cardviewdemo.listview.ListActivity
 import com.example.cardviewdemo.progressbar.ProgressDialogActivity
-import com.example.cardviewdemo.slider.ImageSlider
+import com.example.cardviewdemo.data.ImageSlider
+import com.example.cardviewdemo.login.SignInActivity
 import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.viewpagerindicator.CirclePageIndicator
@@ -136,6 +138,11 @@ class MainActivity() : AppCompatActivity() {
     }
     fun GetImageView(view: View){
         val intent = Intent(this, ImageShowActivity::class.java)
+        startActivity(intent)
+
+    }
+    fun ChatView(view:View){
+        val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
 
     }

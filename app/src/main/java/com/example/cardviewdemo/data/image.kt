@@ -1,4 +1,4 @@
 package com.example.cardviewdemo.data
 
-data class Image(
-    var imageUrl: String)
+data class Image(var imageUrl: String){
+}

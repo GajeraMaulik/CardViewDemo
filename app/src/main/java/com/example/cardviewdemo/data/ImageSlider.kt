@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.slider
+package com.example.cardviewdemo.data
 
 import androidx.annotation.DrawableRes
 

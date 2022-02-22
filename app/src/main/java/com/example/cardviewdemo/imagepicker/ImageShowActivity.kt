@@ -2,6 +2,7 @@ package com.example.cardviewdemo.imagepicker
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,8 +20,13 @@ import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_image_show.*
 import kotlinx.android.synthetic.main.images_views.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.net.URL
 
 private lateinit var binding : ActivityImageShowBinding
+
 
 
 class ImageShowActivity : AppCompatActivity() {
@@ -37,10 +43,8 @@ class ImageShowActivity : AppCompatActivity() {
 
         makeRequest()
         setupPermissions()
-
-
         val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child("UserProfile")
+        val storageRef = storage.reference.child("Images")
         val imageList: ArrayList<Image> = ArrayList()
         progressBar.visibility = View.VISIBLE
 
@@ -50,8 +54,7 @@ class ImageShowActivity : AppCompatActivity() {
 
             if (items.isNotEmpty()){
                 //add cycle for add image url to list
-
-               items.forEachIndexed  { index, item ->
+                items.forEachIndexed  { index, item ->
                     item.downloadUrl.addOnSuccessListener {
                         Log.d("item", "$it")
                         imageList.add(Image(it.toString()))
@@ -61,10 +64,10 @@ class ImageShowActivity : AppCompatActivity() {
                         progressBar.visibility = View.INVISIBLE
                         noData.visibility = View.INVISIBLE
                         rvLoadImage.adapter = ImageAdapter(imageList, this)
+
                         //   rvLoadImage.layoutManager = LinearLayoutManager(this)
                     }
-
-             }
+                }
 
             }else{
                 Log.d("item","Fail")
@@ -72,33 +75,34 @@ class ImageShowActivity : AppCompatActivity() {
                 noData.visibility = View.VISIBLE
             }
 
-
         }
 
-    /*    binding.getImage.setOnClickListener {
-            val process = ProgressDialog(this)
-            process.setMessage("Fetching image...")
-            process.setCancelable(false)
-            process.show()
-            val imagename = binding.etImageId.text
-            val storageRef = FirebaseStorage.getInstance().getReference("UserProfile/$imagename.jpeg")
-
-            val localfile = File.createTempFile("tempImage","jpeg")
-            storageRef.getFile(localfile).addOnSuccessListener {
-
-                if (process.isShowing)
-                    process.dismiss()
-                val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
-                binding.imageView.setImageBitmap(bitmap)
-            }.addOnFailureListener{
-                if (process.isShowing)
-                    process.dismiss()
-                Toast.makeText(this,"No data found", Toast.LENGTH_LONG).show()
-            }
-        }*/
 
 
+
+        /*    binding.getImage.setOnClickListener {
+                val process = ProgressDialog(this)
+                process.setMessage("Fetching image...")
+                process.setCancelable(false)
+                process.show()
+                val imagename = binding.etImageId.text
+                val storageRef = FirebaseStorage.getInstance().getReference("UserProfile/$imagename.jpeg")
+
+                val localfile = File.createTempFile("tempImage","jpeg")
+                storageRef.getFile(localfile).addOnSuccessListener {
+
+                    if (process.isShowing)
+                        process.dismiss()
+                    val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
+                    binding.imageView.setImageBitmap(bitmap)
+                }.addOnFailureListener{
+                    if (process.isShowing)
+                        process.dismiss()
+                    Toast.makeText(this,"No data found", Toast.LENGTH_LONG).show()
+                }
+            }*/
     }
+
     private fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.SET_WALLPAPER)
 
