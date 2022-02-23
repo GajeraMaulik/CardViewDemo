@@ -23,7 +23,7 @@
         android:textAlignment="center"
         android:padding="0dp"
         android:text="demo"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:textFontWeight="900"
         android:textSize="@dimen/_26sdp"
         android:textStyle="bold"

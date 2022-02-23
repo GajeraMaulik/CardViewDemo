@@ -1,38 +1,97 @@
 package com.example.cardviewdemo.chat
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.MessageAdapter
+import com.example.cardviewdemo.adapter.UserAdapter
 import com.example.cardviewdemo.data.Message
+import com.example.cardviewdemo.data.UserProfile
+import com.example.cardviewdemo.databinding.ActivityChatBinding
+import com.example.cardviewdemo.login.SignInActivity
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_chat.*
 
+ private lateinit var binding : ActivityChatBinding
+ private  lateinit var userList : ArrayList<UserProfile>
+ private  lateinit var mAuth : FirebaseAuth
+ @SuppressLint("StaticFieldLeak")
+ private  lateinit var adapter: UserAdapter
+ private  lateinit var mDbRef:DatabaseReference
 class ChatActivity : AppCompatActivity() {
-    var databaseReference: DatabaseReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+
+        binding = ActivityChatBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         val actionBar= supportActionBar
-        actionBar!!.title="Chat"
+        val name = intent.getStringExtra("username")
+
+        actionBar!!.title= name
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        initFirebase()
+        mAuth = FirebaseAuth.getInstance()
+        mDbRef = FirebaseDatabase.getInstance().reference
 
-        setupSendButton()
+        userList = ArrayList()
+        adapter = UserAdapter(this, userList)
+        rvUserView.layoutManager = LinearLayoutManager(this)
+        rvUserView.adapter = adapter
 
-        createFirebaseListener()
+        mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                userList.clear()
+                for (postsnapshot in snapshot.children){
+                    Log.d("data","$postsnapshot")
+                    val currentUser = postsnapshot.getValue(UserProfile::class.java)
 
+                    if (mAuth.currentUser?.uid != currentUser?.Uid){
+                        userList.add(currentUser!!)
+
+                    }
+                }
+                adapter.notifyDataSetChanged()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.chat_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.logout){
+            mAuth.signOut()
+            val intent = Intent(this,SignInActivity::class.java)
+            finish()
+            startActivity(intent)
+            return true
+        }
+        return true
     }
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
-    private fun initFirebase() {
+  /*  private fun initFirebase() {
         //init firebase
         FirebaseApp.initializeApp(applicationContext)
 
@@ -98,6 +157,6 @@ class ChatActivity : AppCompatActivity() {
         //clear the text
         mainActivityEditText.setText("")
     }
-
+*/
 
 }

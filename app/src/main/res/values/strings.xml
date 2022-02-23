@@ -136,5 +136,7 @@
     <string name="password_error">Please enter a password</string>
     <string name="error_invalid_password">"The password is invalid it must 8 characters at least"</string>
     <string name="passwor_pattern">Password is too weak</string>
+    <string name="demo">Demo</string>
+    <string name="user">Maulik</string>
 
 </resources>

@@ -36,14 +36,17 @@
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/ic_photo_camera_black_48dp.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/ic_visibility_off_eye.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/ic_visibility_on_eye.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/message_box_backgroud.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_cloud_upload_24.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/outline_info_24.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/password.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/profile_bg.xml" value="0.2985" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/sent_box_backgroud.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/drawable/user.xml" value="0.2985" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_bottom_sheet_dialog.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_camera.xml" value="0.35260416666666666" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_chat.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_chat_view.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_image.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_image_show.xml" value="0.30364583333333334" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/activity_main.xml" value="0.32447916666666665" />
@@ -64,7 +67,11 @@
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/message_item.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/post_images.xml" value="0.2677083333333333" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/post_videos.xml" value="0.2677083333333333" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/receive.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/sent.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/user_layout.xml" value="0.358695652173913" />
         <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/layout/videos_tab.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/hr/AndroidStudioProjects/CardViewDemo/app/src/main/res/menu/chat_menu.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

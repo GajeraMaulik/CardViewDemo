@@ -1,11 +1,16 @@
 package com.example.cardviewdemo.data
 
  class Message {
-    constructor() //empty for firebase
+    var message:String? = null
+     var senderId : String? = null
+     var time: Long? = null
 
-    constructor(messageText: String){
-        message = messageText
-    }
-    var message: String? = null
-    var timestamp: Long = System.currentTimeMillis()
-}
+     constructor() //empty for firebase
+
+     constructor(message: String?,senderId:String?,time:Long?){
+         this.message = message
+         this.senderId = senderId
+         this.time = time
+     }
+
+ }

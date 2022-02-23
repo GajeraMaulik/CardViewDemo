@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import  com.example.cardviewdemo.R
+import com.example.cardviewdemo.chat.ChatActivity
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.activity_sign_up.etPassword
@@ -49,12 +50,10 @@ open class SignUpActivity : AppCompatActivity() {
         actionBar!!.hide()
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-/*
 
         etEmailUp.setBackgroundResource(R.drawable.edittext_selector)
         etUserName.setBackgroundResource(R.drawable.edittext_selector)
         etPassword.setBackgroundResource(R.drawable.edittext_selector)
-*/
 
         firebaseAuth = FirebaseAuth.getInstance()
         prg = ProgressDialog(this)
@@ -68,6 +67,7 @@ open class SignUpActivity : AppCompatActivity() {
 
         registerBtn.setOnClickListener {
          isValid()
+
         }
 
         var isVisiblePassword = false
@@ -101,13 +101,13 @@ open class SignUpActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Enter your Username", Toast.LENGTH_SHORT).show()
             etUserName.requestFocus()
             prg?.dismiss()
-        } else if (username.length <= 8) {
+        } /*else if (username.length <= 8) {
             invalid = false
             prg?.dismiss()
             etUserName.error ="Please enter a minimum 8 characters"
             etUserName.requestFocus()
 
-        }
+        }*/
         else if (email.isEmpty()){
             invalid=false
             Toast.makeText(applicationContext, "Enter your Email", Toast.LENGTH_SHORT).show()
@@ -148,51 +148,31 @@ open class SignUpActivity : AppCompatActivity() {
             etUserName.error = null
             etEmailUp.error =null
             etPassword.error= null
+            signUp(username,email,password)
 
-            firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener  { task ->
-
-                if (task.isSuccessful ) {
-                    prg?.dismiss()
-                    user= firebaseAuth.currentUser
-
-                    user?.sendEmailVerification()?.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-
-                            firebaseAuth.fetchSignInMethodsForEmail(etEmailUp.text.toString()).addOnCompleteListener { task ->
-                                if (task.isSuccessful){
-                                    VerifyEmail()
-                                    Senddata()
-                                    startActivity(Intent(this, SignInActivity::class.java))
-
-                                    Toast.makeText(this, "Successfully Registration$username", Toast.LENGTH_LONG).show()
-                                    d("TAG", "Successfully Registration\nemail: $email\n username: $username\n password: $password")
-                                    finish()
-
-                                    //  Log.d("TAG","Email not valid")
-                                    //Toast.makeText(this, "${task.exception?.message}" + username, Toast.LENGTH_LONG).show()
-
-                                }else{
-                                    Log.d("TAG","Email Exits")
-                                    Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
-                                }
-                            }
-
-                        }else{
-                            try {
-                                throw task.exception!!
-                            } catch (e: Exception) {
-                                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    }
-                } else {
-                        prg?.dismiss()
-                    Log.d("TAG","Email Exits")
-                    Toast.makeText(this,task.exception?.message, Toast.LENGTH_LONG).show()
-                }
-            }
         }
         return invalid
+    }
+    private fun signUp(username:String,email: String,password:String){
+        firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener  { task ->
+
+            if (task.isSuccessful ) {
+               prg?.dismiss()
+
+            //    addUsertoDatabase(username,email,firebaseAuth.currentUser?.uid!!)
+                Senddata(username,email,firebaseAuth.uid!!)
+                val intent =Intent(this, ChatActivity::class.java)
+                finish()
+                startActivity(intent)
+
+                Toast.makeText(this, "Successfully Registration$username", Toast.LENGTH_LONG).show()
+                d("TAG", "Successfully Registration\nemail: $email\n username: $username\n password: $password")
+
+            }else{
+                Log.d("TAG","Email Exits")
+               // Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun checkString(str: String): Boolean {
@@ -213,8 +193,12 @@ open class SignUpActivity : AppCompatActivity() {
         }
         return false
     }
+    private fun addUsertoDatabase(username:String,email:String,uid:String){
+        databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
+        databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
+    }
 
-     private fun  VerifyEmail(): Boolean{
+     /*private fun  VerifyEmail(): Boolean{
         val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
          firebaseUser?.sendEmailVerification()?.addOnCompleteListener { task ->
              if (task.isSuccessful){
@@ -234,11 +218,11 @@ open class SignUpActivity : AppCompatActivity() {
          }
         return true
      }
+*/
 
-
-      private fun Senddata(): Boolean {
+      private fun Senddata(username: String,email: String,uid: String): Boolean {
            userprofile = UserProfile(username,email,password)
-            databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://tanamgroceryapp-default-rtdb.firebaseio.com/")
+            databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
           databaseReference.child("Users").addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                   when {
@@ -254,10 +238,10 @@ open class SignUpActivity : AppCompatActivity() {
                           prg?.dismiss()
                       }
                       else -> {
-
-                          databaseReference.child("Users").child(username).child("Username").setValue(username)
-                          databaseReference.child("Users").child(username).child("Email").setValue(email)
-                          databaseReference.child("Users").child(username).child("Password").setValue(user?.uid)
+                      //    databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
+                         databaseReference.child("Users").child(uid).child("Username").setValue(username)
+                          databaseReference.child("Users").child(uid).child("Email").setValue(email)
+                          databaseReference.child("Users").child(uid).child("Uid").setValue(uid)
                           Toast.makeText(this@SignUpActivity,"User Successfully Registration", Toast.LENGTH_LONG).show()
                           prg?.dismiss()
 

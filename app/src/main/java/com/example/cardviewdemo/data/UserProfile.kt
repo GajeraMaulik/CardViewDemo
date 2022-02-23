@@ -3,41 +3,48 @@ package com.example.cardviewdemo.data
 import android.widget.EditText
 
 class UserProfile {
-     var  username : String? =null
-     var email : String?=null
-    var password: String?=null
+     var  Username : String? = null
+      var Email : String? = null
+     var Uid:String? =null
 
     constructor()
 
-    constructor(username: String?, email: String?, password: String?) {
-        this.username = username
-        this.email = email
-        this.password = password
+    constructor(username: String?, email: String?, uid: String?) {
+        this.Username = username
+        this.Email = email
+        this.Uid = uid
     }
 
-     fun getusername(): String?{
-        return username
+    /* fun getusername(): String?{
+        return Username
      }
 
      fun setusername(username: String?){
-         this.username = username
+         this.Username = username
      }
 
 
      fun getemail(): String?{
-         return email
+         return Email
      }
 
      fun setemail(email: String?){
-         this.email = email
+         this.Email = email
      }
 
-     fun getpassword(): String?{
+    fun  getuid(): String? {
+        return Uid
+    }
+    fun setuid(uid: String?) {
+        this.Uid = uid
+    }
+
+    *//* fun getpassword(): String?{
          return password
      }
 
      fun setpassword(password: String?){
          this.password = password
      }
-
+*/
 }

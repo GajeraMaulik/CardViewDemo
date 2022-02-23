@@ -45,6 +45,9 @@
         android:roundIcon="@mipmap/ic_icon"
         android:theme="@style/Theme.CardViewDemo">
         <activity
+            android:name=".chat.ChatViewActivity"
+            android:exported="false" />
+        <activity
             android:name=".chat.ChatActivity"
             android:exported="false" />
         <activity
@@ -53,8 +56,8 @@
         <activity
             android:name=".CameraActivity"
             android:exported="false" />
-        <activity android:name=".login.SignInActivity"/>
-        <activity android:name=".login.SignUpActivity"/>
+        <activity android:name=".login.SignInActivity" />
+        <activity android:name=".login.SignUpActivity" />
         <activity android:name=".progressbar.ProgressDialogActivity" />
         <activity android:name=".crudstatic.CRUDActivity" />
         <activity android:name=".listview.ListActivity" />
