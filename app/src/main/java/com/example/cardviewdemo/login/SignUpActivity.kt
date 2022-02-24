@@ -158,21 +158,67 @@ open class SignUpActivity : AppCompatActivity() {
 
             if (task.isSuccessful ) {
                prg?.dismiss()
-
-            //    addUsertoDatabase(username,email,firebaseAuth.currentUser?.uid!!)
-                Senddata(username,email,firebaseAuth.uid!!)
-                val intent =Intent(this, ChatActivity::class.java)
-                finish()
-                startActivity(intent)
+                Senddata(username,email,firebaseAuth.currentUser?.uid!!,password)
+                //   d("TAG","add$add")
+                startActivity(Intent(this, SignInActivity::class.java))
 
                 Toast.makeText(this, "Successfully Registration$username", Toast.LENGTH_LONG).show()
                 d("TAG", "Successfully Registration\nemail: $email\n username: $username\n password: $password")
 
+                finish()
+               /* user?.sendEmailVerification()?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+
+                        firebaseAuth.fetchSignInMethodsForEmail(etEmailUp.text.toString()).addOnCompleteListener { task ->
+                            if (task.isSuccessful){
+                                VerifyEmail()
+
+                                //  Log.d("TAG","Email not valid")
+                                //Toast.makeText(this, "${task.exception?.message}" + username, Toast.LENGTH_LONG).show()
+
+                            }else{
+                                Log.d("TAG","Email Exits")
+
+                                Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+
+                    }else{
+
+                        try {
+                            throw task.exception!!
+                        } catch (e: Exception) {
+                            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }*/
+
             }else{
+                prg?.dismiss()
                 Log.d("TAG","Email Exits")
-               // Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, task.exception?.message, Toast.LENGTH_LONG).show()
             }
         }
+    }
+    private fun  VerifyEmail(): Boolean{
+        val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener { task ->
+            if (task.isSuccessful){
+                Toast.makeText(this,task.exception?.message,Toast.LENGTH_LONG).show()
+                task.exception?.message?.let { d("TAG", it) }
+                //     startActivity(Intent(this,SignInActivity::class.java ))
+                // finish()
+
+            }else{
+                try {
+                    throw task.exception!!
+                } catch (e: Exception) {
+                    Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+                }
+
+            }
+        }
+        return true
     }
 
     private fun checkString(str: String): Boolean {
@@ -220,7 +266,7 @@ open class SignUpActivity : AppCompatActivity() {
      }
 */
 
-      private fun Senddata(username: String,email: String,uid: String): Boolean {
+      private fun Senddata(username: String,email: String,uid: String,password: String): Boolean {
            userprofile = UserProfile(username,email,password)
             databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
           databaseReference.child("Users").addListenerForSingleValueEvent(object : ValueEventListener{
@@ -239,9 +285,10 @@ open class SignUpActivity : AppCompatActivity() {
                       }
                       else -> {
                       //    databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
-                         databaseReference.child("Users").child(uid).child("Username").setValue(username)
-                          databaseReference.child("Users").child(uid).child("Email").setValue(email)
-                          databaseReference.child("Users").child(uid).child("Uid").setValue(uid)
+                         databaseReference.child("Users").child(username).child("Username").setValue(username)
+                          databaseReference.child("Users").child(username).child("Email").setValue(email)
+                          databaseReference.child("Users").child(username).child("Uid").setValue(uid)
+                          databaseReference.child("Users").child(username).child("Pass").setValue(password)
                           Toast.makeText(this@SignUpActivity,"User Successfully Registration", Toast.LENGTH_LONG).show()
                           prg?.dismiss()
 

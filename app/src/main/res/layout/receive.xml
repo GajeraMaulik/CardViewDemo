@@ -29,24 +29,24 @@
         android:elevation="5dp"
         android:maxWidth="240dp"
         android:padding="15dp"
-        android:text="Hi, John's message"
+        android:text="Hi, maulik message"
         android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"/>
 
     <TextView
         android:id="@+id/txtOtherMessageTime"
-        android:text="12:00 PM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:textSize="10sp"
+        android:layout_marginBottom="@dimen/_3sdp"
+        android:text="12:00 PM"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:textSize="@dimen/_5sdp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@+id/txt_receive_message"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_receive_message" />
-
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_receive_message"
+        app:layout_constraintStart_toEndOf="@+id/txt_receive_message" />
     <!--<RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

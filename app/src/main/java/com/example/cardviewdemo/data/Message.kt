@@ -7,7 +7,7 @@ package com.example.cardviewdemo.data
 
      constructor() //empty for firebase
 
-     constructor(message: String?,senderId:String?,time:Long?){
+     constructor(message: String?, senderId:String?, time: Long?){
          this.message = message
          this.senderId = senderId
          this.time = time

@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.data
+package com.example.cardviewdemo.util
 
 import java.text.SimpleDateFormat
 import java.util.*

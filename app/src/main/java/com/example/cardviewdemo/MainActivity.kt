@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -41,6 +42,8 @@ class MainActivity() : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewpager = findViewById(R.id.viewPager)
+
+
 
         initImageSlider()
     }
@@ -142,9 +145,21 @@ class MainActivity() : AppCompatActivity() {
 
     }
     fun ChatView(view:View){
-        val intent = Intent(this, SignInActivity::class.java)
-        startActivity(intent)
-
+        if (SharePref.getBooleanValue(this, "isLogin")) {
+            Log.d("TAG","isLogin")
+            val i = Intent(this, ChatActivity::class.java)
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+            startActivity(i);
+            finish()
+        } else {
+            Log.d("TAG","isFirstTimeRun")
+            if (!SharePref.getBooleanValue(this, "isFirstTimeRun")) {
+                val i = Intent(applicationContext, SignInActivity::class.java)
+                startActivity(i)
+                finish()
+            }
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.cardviewdemo.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.data.DateUtils
+import com.example.cardviewdemo.util.DateUtils
 import com.example.cardviewdemo.data.Message
 import com.google.firebase.auth.FirebaseAuth
 
@@ -30,6 +31,7 @@ class MessageAdapter(val context: Context,val messageList:ArrayList<Message>): R
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         val currentMessage = messageList[position]

@@ -138,5 +138,6 @@
     <string name="passwor_pattern">Password is too weak</string>
     <string name="demo">Demo</string>
     <string name="user">Maulik</string>
+    <string name="sent_time">12:00 PM</string>
 
 </resources>

@@ -14,7 +14,7 @@
     tools:context=".Activity.SignInActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/app_name"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_28sdp"
         android:layout_alignParentStart="true"
@@ -27,16 +27,16 @@
         android:height="40dp"
         android:fontFamily="@font/poppins"
         android:textAlignment="center"
-        android:text="@string/demo"
+        android:text="Chating App"
         android:textColor=" #FFFFFF"
-        android:textSize="@dimen/_26sdp"
+        android:textSize="@dimen/_19sdp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints,RtlHardcoded,UnusedAttribute" />
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/subTitel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,19 +55,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:lineHeight="20dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints" />-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/_79sdp"
+        android:layout_marginTop="@dimen/_50sdp"
         android:background="@drawable/custom_backgroud"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_name"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="MissingConstraints">
 
@@ -75,10 +75,9 @@
             android:id="@+id/tvTitel"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_28sdp"
-            android:layout_marginTop="@dimen/_21sdp"
             android:layout_marginStart="@dimen/_22sdp"
             android:layout_marginEnd="@dimen/_26sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:width="@dimen/_400sdp"
             android:fontFamily="@font/poppins"
             android:text="@string/signUp_create_your_account"
@@ -87,9 +86,11 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tvSubtitel"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintHorizontal_weight="700"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.514"
             app:lineHeight="@dimen/_30sdp" />
 
         <TextView
@@ -98,7 +99,7 @@
             android:layout_height="@dimen/_17sdp"
             android:layout_marginStart="@dimen/_22sdp"
             android:layout_marginEnd="@dimen/_21sdp"
-            android:layout_marginBottom="@dimen/_13sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:fontFamily="@font/lato"
             android:text="@string/signup_lorem_ipsum_dolor_sit_amet"
             android:textColor="#7D8FAB"

@@ -1,49 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".chat.ChatViewActivity">
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvChatView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/_30sdp"
-        app:layout_constraintBottom_toTopOf="@+id/linearlayout"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
 
     <LinearLayout
-        android:id="@+id/linearlayout"
+        android:id="@+id/lyt_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        tools:context=".twillo.chat.ChatActivity">
 
-        <EditText
-            android:id="@+id/messageBox"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_30sdp"
-            android:background="@drawable/message_box_backgroud"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:paddingStart="@dimen/_10sdp"
-            android:layout_weight="100"
-            android:hint="Type a message" />
 
-        <ImageView
-            android:id="@+id/sentBtn"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_30sdp"
-            android:src="@drawable/ic_menu_send"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvChatView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/llChat"
+                android:layout_alignParentTop="true"
+                android:transcriptMode="alwaysScroll"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:stackFromEnd="true" />
+
+            <LinearLayout
+                android:id="@+id/llChat"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:translationZ="4dp">
+
+
+                <LinearLayout
+                    android:id="@+id/layoutMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+
+                    <com.example.cardviewdemo.util.BackKeyEditText
+                        android:id="@+id/messageBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/message_box_backgroud"
+                        android:hint="Type a message"
+                        android:inputType="textMultiLine"
+                        android:maxLength="1024"
+                        android:maxLines="5"
+                        android:padding="10dp"
+                        android:scrollbars="vertical"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/ivSend"
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="5dp"
+                    android:contentDescription="@string/app_name"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_menu_send"
+                    android:visibility="visible" />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
     </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

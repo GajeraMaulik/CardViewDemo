@@ -1,24 +1,20 @@
 package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
-import android.content.AbstractThreadedSyncAdapter
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.util.Log.d
+import android.widget.Toast
+import androidx.core.view.size
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.adapter.MessageAdapter
-import com.example.cardviewdemo.data.App
 import com.example.cardviewdemo.data.Message
-import com.example.cardviewdemo.data.UserProfile
-import com.example.cardviewdemo.databinding.ActivityChatBinding
 import com.example.cardviewdemo.databinding.ActivityChatViewBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_chat_view.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 private lateinit var binding: ActivityChatViewBinding
@@ -31,25 +27,29 @@ var senderRoom:String? = null
 class ChatViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_view)
+       // setContentView(R.layout.activity_chat_view)
         binding = ActivityChatViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val actionBar= supportActionBar
         val name = intent.getStringExtra("Username")
+        actionBar!!.title = name
+        actionBar.setDisplayHomeAsUpEnabled(true)
+
+
         val receiverUid = intent.getStringExtra("Uid")
 
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
-        mRef = FirebaseDatabase.getInstance().getReference()
+        mRef = FirebaseDatabase.getInstance().reference
 
         senderRoom = receiverUid + senderUid
         receiverRoom  = senderUid + receiverUid
 
-        supportActionBar?.title = name
 
         messageList = ArrayList()
         adapter = MessageAdapter(this, messageList)
 
         rvChatView.layoutManager = LinearLayoutManager(this)
+      //  adapter.setHasStableIds(true)
         rvChatView.adapter = adapter
 
         // logic for adding data to recyclerView
@@ -73,17 +73,47 @@ class ChatViewActivity : AppCompatActivity() {
                 }
 
             })
+        messageBox.setOnClickListener {
+            rvChatView.postDelayed({
+                rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
+
+            },500 )
+        }
 
         // adding the message to database
-        sentBtn.setOnClickListener {
-            val message = messageBox.text.toString()
-            val messageObject =Message(message,senderUid,Calendar.getInstance().timeInMillis)
-            mRef.child("chats").child(senderRoom!!).child("messages").push()
-                .setValue(messageObject).addOnSuccessListener {
-                    mRef.child("chats").child(receiverRoom!!).child("messages").push()
-                        .setValue(messageObject)
-                }
-            messageBox.setText("")
+        ivSend.setOnClickListener {
+            val message  = messageBox.text.toString()
+            if (message.isNotEmpty()){
+                val messageObject = Message(message,senderUid,System.currentTimeMillis())
+                mRef.child("chats").child(senderRoom!!).child("messages").push()
+                    .setValue(messageObject).addOnSuccessListener {
+                        mRef.child("chats").child(receiverRoom!!).child("messages").push()
+                            .setValue(messageObject)
+
+                    }
+                messageBox.setText("")
+                rvChatView.postDelayed({
+                    rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
+
+                },500 )
+
+                d("TAG","$message")
+
+            }else{
+                d("TAG","$message")
+                Toast.makeText(this,"Message Box Empty",Toast.LENGTH_LONG).show()
+            }
+
+
         }
+
+
+    }
+      override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+    fun onBackKeyPressedOnKeyboard() {
+        binding.messageBox.clearFocus()
     }
 }

@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserAdapter
 import com.example.cardviewdemo.data.Message
@@ -31,22 +32,20 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val actionBar= supportActionBar
-        val name = intent.getStringExtra("username")
+        val user = SharePref.getStringValue(this,"User")
 
-        actionBar!!.title= name
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar!!.title= user
+        actionBar.setDisplayHomeAsUpEnabled(false)
 
         mAuth = FirebaseAuth.getInstance()
         mDbRef = FirebaseDatabase.getInstance().reference
 
         userList = ArrayList()
         adapter = UserAdapter(this, userList)
-        rvUserView.layoutManager = LinearLayoutManager(this)
         rvUserView.adapter = adapter
 
         mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
@@ -80,17 +79,20 @@ class ChatActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.logout){
             mAuth.signOut()
+            SharePref.removeSharePref(this)
             val intent = Intent(this,SignInActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             finish()
             startActivity(intent)
             return true
         }
         return true
     }
-    override fun onSupportNavigateUp(): Boolean {
+  /*  override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
+    }*/
   /*  private fun initFirebase() {
         //init firebase
         FirebaseApp.initializeApp(applicationContext)
