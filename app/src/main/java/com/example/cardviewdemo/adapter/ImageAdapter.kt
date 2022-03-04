@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.icu.number.NumberRangeFormatter.with
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +15,9 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.GenericTransitionOptions.with
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.with
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.data.Image
-import com.example.cardviewdemo.imagepicker.ImagePicker.Companion.with
+import com.example.cardviewdemo.services.model.Image
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_image.view.*
 import kotlinx.android.synthetic.main.images_views.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

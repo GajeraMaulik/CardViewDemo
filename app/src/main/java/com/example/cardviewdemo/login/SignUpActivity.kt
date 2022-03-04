@@ -11,18 +11,15 @@ import android.util.Log.d
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardviewdemo.data.UserProfile
+import com.example.cardviewdemo.services.model.UserProfile
 import com.example.cardviewdemo.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import  com.example.cardviewdemo.R
-import com.example.cardviewdemo.chat.ChatActivity
-import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.activity_sign_up.etPassword
 import kotlinx.android.synthetic.main.activity_sign_up.ivEye
-import java.security.AccessController.getContext
 
 
 open class SignUpActivity : AppCompatActivity() {
@@ -268,7 +265,7 @@ open class SignUpActivity : AppCompatActivity() {
 
       private fun Senddata(username: String,email: String,uid: String,password: String): Boolean {
            userprofile = UserProfile(username,email,password)
-            databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
+            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(username)
           databaseReference.child("Users").addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                   when {
@@ -285,10 +282,23 @@ open class SignUpActivity : AppCompatActivity() {
                       }
                       else -> {
                       //    databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
-                         databaseReference.child("Users").child(username).child("Username").setValue(username)
+                          val hashMap:HashMap<String,String> = HashMap()
+                          hashMap["Username"] = username
+                          hashMap["Email"] = email
+                          hashMap["Uid"] = uid
+                          hashMap["Pass"] = password
+
+                          databaseReference.setValue(hashMap).addOnCompleteListener {
+                              if (it.isSuccessful){
+                                  etUserName.text = null
+                                  etEmailUp.text = null
+                                  etPassword.text = null
+                              }
+                          }
+                       /*  databaseReference.child("Users").child(username).child("Username").setValue(username)
                           databaseReference.child("Users").child(username).child("Email").setValue(email)
                           databaseReference.child("Users").child(username).child("Uid").setValue(uid)
-                          databaseReference.child("Users").child(username).child("Pass").setValue(password)
+                          databaseReference.child("Users").child(username).child("Pass").setValue(password)*/
                           Toast.makeText(this@SignUpActivity,"User Successfully Registration", Toast.LENGTH_LONG).show()
                           prg?.dismiss()
 

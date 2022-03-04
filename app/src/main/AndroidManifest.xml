@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.cardviewdemo">
-    <!--
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name= "android.permission.CAMERA"/>
     -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -45,10 +45,10 @@
         android:roundIcon="@mipmap/ic_icon"
         android:theme="@style/Theme.CardViewDemo">
         <activity
-            android:name=".chat.ChatViewActivity"
+            android:name=".chat.MessagingActivity"
             android:exported="false" />
         <activity
-            android:name=".chat.ChatActivity"
+            android:name=".chat.UsersActivity"
             android:exported="false" />
         <activity
             android:name=".imagepicker.ImageShowActivity"
@@ -89,6 +89,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
+        <service
+            android:name=".services.MessagingServices"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

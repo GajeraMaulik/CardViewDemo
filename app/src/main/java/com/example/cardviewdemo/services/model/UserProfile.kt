@@ -1,6 +1,4 @@
-package com.example.cardviewdemo.data
-
-import android.widget.EditText
+package com.example.cardviewdemo.services.model
 
 class UserProfile {
      var  Username : String? = null
@@ -15,11 +13,11 @@ class UserProfile {
         this.Uid = uid
     }
 
-    /* fun getusername(): String?{
+  /*   fun getusername(): String?{
         return Username
      }
 
-     fun setusername(username: String?){
+    fun setusername(username: String?){
          this.Username = username
      }
 
@@ -38,13 +36,13 @@ class UserProfile {
     fun setuid(uid: String?) {
         this.Uid = uid
     }
-
-    *//* fun getpassword(): String?{
+*/
+    /* fun getpassword(): String?{
          return password
      }
 
      fun setpassword(password: String?){
          this.password = password
-     }
-*/
+     }*/
+
 }

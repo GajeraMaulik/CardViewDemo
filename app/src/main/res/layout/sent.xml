@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_5sdp">
+    android:paddingBottom="@dimen/_2sdp">
 
     <TextView
         android:id="@+id/txt_sent_message"
@@ -15,8 +15,7 @@
         android:background="@drawable/sent_box_backgroud"
         android:elevation="5dp"
         android:maxWidth="240dp"
-     android:padding="@dimen/_5sdp"
-        android:paddingBottom="@dimen/_2sdp"
+        android:padding="@dimen/_10sdp"
         android:text="Hi, my message"
         android:textColor="@color/white"
         app:layout_constraintRight_toRightOf="parent"

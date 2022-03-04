@@ -1,7 +1,5 @@
 package com.example.cardviewdemo.listener
 
-import com.example.cardviewdemo.constant.ImageProvider
-
 /**
  *
  * Generic Class To Listen Async Result

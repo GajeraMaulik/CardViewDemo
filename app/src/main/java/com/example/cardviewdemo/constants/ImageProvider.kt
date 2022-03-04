@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.constant
+package com.example.cardviewdemo.constants
 
 /**
  * Define Image Provider

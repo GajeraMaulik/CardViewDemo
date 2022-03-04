@@ -9,7 +9,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.constant.ImageProvider
+import com.example.cardviewdemo.constants.ImageProvider
 import com.example.cardviewdemo.provider.CameraProvider
 import com.example.cardviewdemo.provider.CompressionProvider
 import com.example.cardviewdemo.provider.CropProvider

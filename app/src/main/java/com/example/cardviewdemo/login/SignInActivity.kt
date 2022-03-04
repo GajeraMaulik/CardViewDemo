@@ -14,13 +14,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.SharePref
-import com.example.cardviewdemo.chat.ChatActivity
-import com.example.cardviewdemo.data.App
-import com.example.cardviewdemo.data.UserProfile
+import com.example.cardviewdemo.chat.UsersActivity
+import com.example.cardviewdemo.services.model.UserProfile
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.activity_sign_in.etPassword
 import kotlinx.android.synthetic.main.activity_sign_in.ivEye
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
 class SignInActivity() : AppCompatActivity() {
@@ -209,7 +207,7 @@ class SignInActivity() : AppCompatActivity() {
                             prg?.dismiss()
                             SharePref.save(this, "isLogin", true)
                             SharePref.save(this, "User", email)
-                            val intent = Intent(this@SignInActivity, ChatActivity::class.java)
+                            val intent = Intent(this@SignInActivity, UsersActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             intent.putExtra("username", email)
                             finish()

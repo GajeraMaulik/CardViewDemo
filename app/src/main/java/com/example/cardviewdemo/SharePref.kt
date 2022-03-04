@@ -10,6 +10,7 @@ class SharePref {
 
     companion object {
         private const val MySharedPref = "MySharedPref"
+
         fun save(context: Context, key: String, value: String) {
             val sharedPref = context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
             val editor = sharedPref.edit()

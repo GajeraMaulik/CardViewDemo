@@ -1,52 +1,66 @@
 package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.SharePref
-import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserAdapter
-import com.example.cardviewdemo.data.Message
-import com.example.cardviewdemo.data.UserProfile
-import com.example.cardviewdemo.databinding.ActivityChatBinding
+import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.databinding.ActivityUsersBinding
 import com.example.cardviewdemo.login.SignInActivity
-import com.google.firebase.FirebaseApp
+import com.example.cardviewdemo.services.MessagingServices
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_chat.*
+import com.google.firebase.iid.FirebaseInstanceIdReceiver
+import com.google.firebase.messaging.FirebaseMessaging.getInstance
+import kotlinx.android.synthetic.main.activity_users.*
 
- private lateinit var binding : ActivityChatBinding
+private lateinit var binding : ActivityUsersBinding
  private  lateinit var userList : ArrayList<UserProfile>
  private  lateinit var mAuth : FirebaseAuth
+ private  lateinit var firebaseUser: FirebaseUser
  @SuppressLint("StaticFieldLeak")
  private  lateinit var adapter: UserAdapter
  private  lateinit var mDbRef:DatabaseReference
-class ChatActivity : AppCompatActivity() {
+class UsersActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityChatBinding.inflate(layoutInflater)
+        binding = ActivityUsersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val actionBar= supportActionBar
         val user = SharePref.getStringValue(this,"User")
 
+        val uid = intent.getStringExtra("Uid")
+
         actionBar!!.title= user
         actionBar.setDisplayHomeAsUpEnabled(false)
 
-        mAuth = FirebaseAuth.getInstance()
-        mDbRef = FirebaseDatabase.getInstance().reference
+
+     /*   MessagingServices.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+            FirebaseInstanceIdR.getInstance().instanceId.addOnSuccessListener {
+            MessagingServices.token = it.token
+        }*/
+     //   MessagingServices.token = MessagingServices.sharePref.save(this,"token",)
+        //= SharePref.getStringValue(this,"token")
+
+
 
         userList = ArrayList()
         adapter = UserAdapter(this, userList)
         rvUserView.adapter = adapter
+
+
+       /* getInstance().subscribeToTopic("/topics/$uid")
+
 
         mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged")
@@ -57,6 +71,41 @@ class ChatActivity : AppCompatActivity() {
                     val currentUser = postsnapshot.getValue(UserProfile::class.java)
 
                     if (mAuth.currentUser?.uid != currentUser?.Uid){
+
+                        userList.add(currentUser!!)
+
+                    }
+                }
+                adapter.notifyDataSetChanged()
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })*/
+
+       getUserList()
+
+    }
+    private fun getUserList(){
+        val firebase: FirebaseUser = FirebaseAuth.getInstance().currentUser!!
+
+        val userId = firebase.uid
+            getInstance().subscribeToTopic("/topics/$userId")
+        mAuth = FirebaseAuth.getInstance()
+        mDbRef = FirebaseDatabase.getInstance().reference
+        mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                userList.clear()
+                for (postsnapshot in snapshot.children){
+                    Log.d("data","$postsnapshot")
+                    val currentUser = postsnapshot.getValue(UserProfile::class.java)
+
+                    if (mAuth.currentUser?.uid != currentUser?.Uid){
+                        //  actionBar.title = getUserName()
+
                         userList.add(currentUser!!)
 
                     }
@@ -69,7 +118,10 @@ class ChatActivity : AppCompatActivity() {
             }
 
         })
+
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chat_menu,menu)

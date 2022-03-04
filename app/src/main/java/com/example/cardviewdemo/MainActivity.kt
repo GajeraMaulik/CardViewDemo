@@ -13,12 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.example.cardviewdemo.chat.ChatActivity
+import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.crudstatic.CRUDActivity
 import com.example.cardviewdemo.imagepicker.ImageShowActivity
 import com.example.cardviewdemo.listview.ListActivity
 import com.example.cardviewdemo.progressbar.ProgressDialogActivity
-import com.example.cardviewdemo.data.ImageSlider
+import com.example.cardviewdemo.services.model.ImageSlider
 import com.example.cardviewdemo.login.SignInActivity
 import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -147,7 +147,7 @@ class MainActivity() : AppCompatActivity() {
     fun ChatView(view:View){
         if (SharePref.getBooleanValue(this, "isLogin")) {
             Log.d("TAG","isLogin")
-            val i = Intent(this, ChatActivity::class.java)
+            val i = Intent(this, UsersActivity::class.java)
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             i.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
             startActivity(i);

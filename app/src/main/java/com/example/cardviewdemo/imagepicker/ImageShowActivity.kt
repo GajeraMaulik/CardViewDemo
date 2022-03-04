@@ -2,28 +2,20 @@ package com.example.cardviewdemo.imagepicker
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.cardviewdemo.adapter.ImageAdapter
-import com.example.cardviewdemo.data.Image
+import com.example.cardviewdemo.services.model.Image
 import com.example.cardviewdemo.databinding.ActivityImageShowBinding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_image_show.*
-import kotlinx.android.synthetic.main.images_views.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.URL
 
 private lateinit var binding : ActivityImageShowBinding
 

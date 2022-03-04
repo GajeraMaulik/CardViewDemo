@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/_2sdp">
 <!--
     <TextView
         android:id="@+id/txtOtherUser"
@@ -28,7 +29,7 @@
         android:background="@drawable/message_box_backgroud"
         android:elevation="5dp"
         android:maxWidth="240dp"
-        android:padding="15dp"
+        android:padding="@dimen/_10sdp"
         android:text="Hi, maulik message"
         android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"

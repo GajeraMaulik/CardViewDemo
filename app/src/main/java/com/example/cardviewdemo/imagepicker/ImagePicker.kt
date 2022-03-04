@@ -3,7 +3,7 @@ package com.example.cardviewdemo.imagepicker
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.example.cardviewdemo.constant.ImageProvider
+import com.example.cardviewdemo.constants.ImageProvider
 import com.example.cardviewdemo.listener.ResultListener
 import com.example.cardviewdemo.util.DialogHelper
 import java.io.File

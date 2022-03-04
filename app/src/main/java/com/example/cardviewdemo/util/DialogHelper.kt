@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.constant.ImageProvider
+import com.example.cardviewdemo.constants.ImageProvider
 import com.example.cardviewdemo.listener.ResultListener
 
 

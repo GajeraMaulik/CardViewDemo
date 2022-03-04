@@ -9,14 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.util.DateUtils
-import com.example.cardviewdemo.data.Message
+import com.example.cardviewdemo.services.model.Message
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.sent.view.*
 
-class MessageAdapter(val context: Context,val messageList:ArrayList<Message>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class MessageAdapter(val context: Context, private val messageList:ArrayList<Message>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     val ITEM_RECEIVE = 1
     val ITEM_SENT = 2
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+
 
         if (viewType == 1){
 
@@ -39,14 +42,23 @@ class MessageAdapter(val context: Context,val messageList:ArrayList<Message>): R
             val viewHolder = holder as SentViewHolder
 
             holder.sentMessage.text = currentMessage.message
-            holder.txtMyMessageTime.text = DateUtils.fromMillisToTimeString(currentMessage.time)
-
+        //    holder.txtMyMessageTime.text = DateUtils.formatTime(currentMessage.time)
+            try {
+                holder.txtMyMessageTime.text = DateUtils.formatTime(currentMessage.time)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
         }else{
             val viewHolder = holder as ReceiveViewHolder
 
             holder.receiveMessage.text = currentMessage.message
-            holder.txtOtherMessageTime.text = DateUtils.fromMillisToTimeString(currentMessage.time)
+//            holder.txtOtherMessageTime.text = DateUtils.formatTime(currentMessage.time)
+            try {
+                holder.txtOtherMessageTime.text = DateUtils.formatTime(currentMessage.time)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -66,8 +78,10 @@ class MessageAdapter(val context: Context,val messageList:ArrayList<Message>): R
 
     class  SentViewHolder(itemView:View): RecyclerView.ViewHolder(itemView){
 
-        val sentMessage:TextView =itemView.findViewById(R.id.txt_sent_message)
-        val txtMyMessageTime:TextView = itemView.findViewById(R.id.txtMyMessageTime)
+        val sentMessage:TextView =itemView.txt_sent_message
+        val txtMyMessageTime:TextView = itemView.txtMyMessageTime
+
+
 
     }
     class  ReceiveViewHolder(itemView:View): RecyclerView.ViewHolder(itemView){

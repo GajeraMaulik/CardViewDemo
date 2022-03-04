@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.chat.ChatViewActivity
-import com.example.cardviewdemo.data.UserProfile
-import com.google.firebase.auth.FirebaseAuth
+import com.example.cardviewdemo.chat.MessagingActivity
+import com.example.cardviewdemo.services.model.UserProfile
 
 class UserAdapter(val context:Context, private val userList: ArrayList<UserProfile>): RecyclerView.Adapter<UserAdapter.UserviewHolder>(){
 
@@ -24,7 +23,7 @@ class UserAdapter(val context:Context, private val userList: ArrayList<UserProfi
         holder.textName.text = currentUser.Username
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context,ChatViewActivity::class.java)
+            val intent = Intent(context,MessagingActivity::class.java)
 
             intent.putExtra("Username",currentUser.Username)
             intent.putExtra("Uid",currentUser.Uid)

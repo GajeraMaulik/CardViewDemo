@@ -6,7 +6,7 @@ import android.view.KeyEvent;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
-import com.example.cardviewdemo.chat.ChatViewActivity;
+import com.example.cardviewdemo.chat.MessagingActivity;
 
 
 public class BackKeyEditText extends AppCompatEditText {
@@ -33,8 +33,8 @@ public class BackKeyEditText extends AppCompatEditText {
                 ((UserChatActivity) mContext).onBackKeyPressedOnKeyboard();
             }*/
 
-            if (mContext instanceof ChatViewActivity) {
-                ((ChatViewActivity) mContext).onBackKeyPressedOnKeyboard();
+            if (mContext instanceof MessagingActivity) {
+                ((MessagingActivity) mContext).onBackKeyPressedOnKeyboard();
             }
 
             return false;
