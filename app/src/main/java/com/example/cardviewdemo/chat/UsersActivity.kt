@@ -14,21 +14,30 @@ import com.example.cardviewdemo.adapter.UserAdapter
 import com.example.cardviewdemo.services.model.UserProfile
 import com.example.cardviewdemo.databinding.ActivityUsersBinding
 import com.example.cardviewdemo.login.SignInActivity
+import com.example.cardviewdemo.login.username
 import com.example.cardviewdemo.services.MessagingServices
+import com.example.cardviewdemo.services.model.App
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceIdReceiver
+import com.google.firebase.iid.internal.FirebaseInstanceIdInternal
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessaging.getInstance
 import kotlinx.android.synthetic.main.activity_users.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 private lateinit var binding : ActivityUsersBinding
  private  lateinit var userList : ArrayList<UserProfile>
- private  lateinit var mAuth : FirebaseAuth
+ private   var mAuth : FirebaseAuth? = null
+private   var mDbRef:DatabaseReference? = null
+private   var mDatabase:FirebaseDatabase? = null
+private  lateinit var userAdapter: UserAdapter
  private  lateinit var firebaseUser: FirebaseUser
  @SuppressLint("StaticFieldLeak")
- private  lateinit var adapter: UserAdapter
- private  lateinit var mDbRef:DatabaseReference
 class UsersActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,38 +54,32 @@ class UsersActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(false)
 
 
-     /*   MessagingServices.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-            FirebaseInstanceIdR.getInstance().instanceId.addOnSuccessListener {
-            MessagingServices.token = it.token
-        }*/
-     //   MessagingServices.token = MessagingServices.sharePref.save(this,"token",)
-        //= SharePref.getStringValue(this,"token")
+        MessagingServices.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+           FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("MAulik", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
 
-
-
+            // Get new FCM registration token
+            val token = task.result
+               Log.d("TAG","FCM$token")
+            MessagingServices.token = token
+        })
         userList = ArrayList()
-        adapter = UserAdapter(this, userList)
-        rvUserView.adapter = adapter
+        userAdapter = UserAdapter(this, userList)
+        binding.rvUserView.adapter = userAdapter
 
 
-       /* getInstance().subscribeToTopic("/topics/$uid")
 
+       /*     firebaseUser = mAuth?.currentUser!!
+            mDbRef = mDatabase?.getReference("Users")?.child(firebaseUser.uid)
 
-        mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
+        mDbRef?.addValueEventListener(object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
-                userList.clear()
-                for (postsnapshot in snapshot.children){
-                    Log.d("data","$postsnapshot")
-                    val currentUser = postsnapshot.getValue(UserProfile::class.java)
-
-                    if (mAuth.currentUser?.uid != currentUser?.Uid){
-
-                        userList.add(currentUser!!)
-
-                    }
-                }
-                adapter.notifyDataSetChanged()
+                val user  = snapshot.getValue(UserProfile::class.java)
+                actionBar.title = user?.getusername()
 
             }
 
@@ -95,22 +98,20 @@ class UsersActivity : AppCompatActivity() {
             getInstance().subscribeToTopic("/topics/$userId")
         mAuth = FirebaseAuth.getInstance()
         mDbRef = FirebaseDatabase.getInstance().reference
-        mDbRef.child("Users").addValueEventListener(object : ValueEventListener{
+        mDbRef!!.child("Users").addValueEventListener(object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
                 for (postsnapshot in snapshot.children){
-                    Log.d("data","$postsnapshot")
+                    Log.d("data","DATA$postsnapshot")
                     val currentUser = postsnapshot.getValue(UserProfile::class.java)
 
-                    if (mAuth.currentUser?.uid != currentUser?.Uid){
-                        //  actionBar.title = getUserName()
-
+                    if (mAuth!!.currentUser?.uid != currentUser?.Uid ){
                         userList.add(currentUser!!)
 
                     }
                 }
-                adapter.notifyDataSetChanged()
+                binding.rvUserView.adapter!!.notifyDataSetChanged()
 
             }
 
@@ -123,6 +124,8 @@ class UsersActivity : AppCompatActivity() {
 
 
 
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chat_menu,menu)
         return super.onCreateOptionsMenu(menu)
@@ -130,7 +133,7 @@ class UsersActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.logout){
-            mAuth.signOut()
+            mAuth?.signOut()
             SharePref.removeSharePref(this)
             val intent = Intent(this,SignInActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -141,76 +144,5 @@ class UsersActivity : AppCompatActivity() {
         }
         return true
     }
-  /*  override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }*/
-  /*  private fun initFirebase() {
-        //init firebase
-        FirebaseApp.initializeApp(applicationContext)
-
-//        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG)
-
-        //get reference to our db
-        databaseReference = FirebaseDatabase.getInstance().reference
-    }
-    private fun createFirebaseListener(){
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                val toReturn: ArrayList<Message> = ArrayList();
-
-                for(data in dataSnapshot.children){
-                    val messageData = data.getValue<Message>(Message::class.java)
-
-                    //unwrap
-                    val message = messageData?.let { it } ?: continue
-
-                    toReturn.add(message)
-                }
-
-                //sort so newest at bottom
-                toReturn.sortBy { message ->
-                    message.timestamp
-                }
-
-                setupAdapter(toReturn)
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                //log error
-            }
-        }
-        databaseReference?.child("messages")?.addValueEventListener(postListener)
-    }
-    private fun setupAdapter(data: ArrayList<Message>){
-        val linearLayoutManager = LinearLayoutManager(this)
-        rvChatView.layoutManager = linearLayoutManager
-        rvChatView.adapter = MessageAdapter(data) {
-            Toast.makeText(this, "${it.message} clicked", Toast.LENGTH_SHORT).show()
-        }
-
-        //scroll to bottom
-        rvChatView.scrollToPosition(data.size - 1)
-    }
-    private fun setupSendButton() {
-        sendButton.setOnClickListener {
-            if (!mainActivityEditText.text.toString().isEmpty()){
-                sendData()
-            }else{
-                Toast.makeText(this, "Please enter a message", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    private fun sendData(){
-        databaseReference?.
-        child("messages")?.
-        child(java.lang.String.valueOf(System.currentTimeMillis()))?.
-        setValue(Message(mainActivityEditText.text.toString()))
-
-        //clear the text
-        mainActivityEditText.setText("")
-    }
-*/
 
 }

@@ -48,7 +48,7 @@ class SharePref {
         }
 
 
-        fun saveValue(context: Context, key: String?, value: Int?) {
+        fun saveValue(context: Context, key: String?, value: Int) {
             val sharedPreferences = context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putInt(key, value!!)

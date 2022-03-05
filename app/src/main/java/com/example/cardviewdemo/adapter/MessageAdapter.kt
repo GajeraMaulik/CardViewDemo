@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.util.DateUtils
+import com.example.cardviewdemo.chat.userName
 import com.example.cardviewdemo.services.model.Message
+import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.util.DateUtils
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.sent.view.*
-
 class MessageAdapter(val context: Context, private val messageList:ArrayList<Message>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     val ITEM_RECEIVE = 1
@@ -53,6 +53,7 @@ class MessageAdapter(val context: Context, private val messageList:ArrayList<Mes
             val viewHolder = holder as ReceiveViewHolder
 
             holder.receiveMessage.text = currentMessage.message
+        //    holder.txtOtherUser.text = user.Username
 //            holder.txtOtherMessageTime.text = DateUtils.formatTime(currentMessage.time)
             try {
                 holder.txtOtherMessageTime.text = DateUtils.formatTime(currentMessage.time)
@@ -86,6 +87,7 @@ class MessageAdapter(val context: Context, private val messageList:ArrayList<Mes
     }
     class  ReceiveViewHolder(itemView:View): RecyclerView.ViewHolder(itemView){
         val receiveMessage:TextView =itemView.findViewById(R.id.txt_receive_message)
+//        val txtOtherUser:TextView = itemView.findViewById(R.id.txtOtherUser)
         val txtOtherMessageTime:TextView = itemView.findViewById(R.id.txtOtherMessageTime)
 
     }

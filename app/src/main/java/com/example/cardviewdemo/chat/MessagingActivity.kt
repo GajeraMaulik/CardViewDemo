@@ -1,9 +1,11 @@
 package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.util.Log.d
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -11,24 +13,18 @@ import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
 import com.example.cardviewdemo.services.APIServices
-import com.example.cardviewdemo.services.model.Message
-import com.example.cardviewdemo.services.model.NotificationData
-import com.example.cardviewdemo.services.model.PushNotification
-import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.services.MessagingServices
+import com.example.cardviewdemo.services.model.*
 import com.example.cardviewdemo.services.notifications.*
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_bottom_sheet_dialog.*
 import kotlinx.android.synthetic.main.activity_messaging_view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 private lateinit var binding: ActivityMessagingViewBinding
@@ -46,7 +42,7 @@ class MessagingActivity : AppCompatActivity() {
     private  lateinit var messageAdapter : MessageAdapter
     private lateinit var databaseViewModel:DatabaseViewModel
     var topic = ""
-    var apiService : APIServices? = null
+ //   var apiService : APIServices? = null
     var notify = false
     lateinit var name :String
 
@@ -55,7 +51,7 @@ class MessagingActivity : AppCompatActivity() {
         binding = ActivityMessagingViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val actionBar = supportActionBar
-         name = intent.getStringExtra("Username").toString()
+         val name = intent.getStringExtra("Username").toString()
          userName = SharePref.getStringValue(this,"User").toString()
 
         actionBar!!.title = name
@@ -67,8 +63,8 @@ class MessagingActivity : AppCompatActivity() {
        // firebaseUser = FirebaseAuth.getInstance().currentUser
         mRef = FirebaseDatabase.getInstance().reference
 
-       // senderRoom = receiverUid + firebaseUser
-     //   receiverRoom = firebaseUser + receiverUid
+        //senderRoom = receiverUid + firebaseUser
+       // receiverRoom = firebaseUser + receiverUid
 
 
         messageList = ArrayList()
@@ -98,21 +94,31 @@ class MessagingActivity : AppCompatActivity() {
             val message  = messageBox.text.toString()
             if (message.isNotEmpty()){
                 Sendmessage(firebaseUser!!.uid,receiverUid!!, message,System.currentTimeMillis())
-                messageBox.setText("")
-                topic = "/topics/$receiverUid"
-                PushNotification(NotificationData( userName!!,message),
-                    topic).also {
-                    sendNotification(it)
-                }
 
+                topic = "/topics/$receiverUid"
+                resetInput()
+                MessagingServices.token?.let { it1 ->
+                    PushNotification(NotificationData( userName!!,message),
+                        it1).also {
+                        sendNotification(it)
+                    }
+                }
             }else{
-                d("TAG","$message")
+                d("TAG","Message$message")
                 Toast.makeText(this,"Message Box Empty",Toast.LENGTH_LONG).show()
             }
 
         }
 
 
+    }
+    private fun resetInput() {
+        // Clean text box
+        messageBox.text?.clear()
+
+        // Hide keyboard
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
     }
 
 
@@ -125,25 +131,43 @@ class MessagingActivity : AppCompatActivity() {
                    .setValue(messageObject)
            }
        binding.rvChatView.adapter!!.notifyDataSetChanged()
-       messageBox.setText("")
+       resetInput()
        rvChatView.postDelayed({
            rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
 
        }, 500)
-       d("TAG", "$message")
+       d("TAG", "Message$message")
+      /* val call = APIServices.create().postMessage(messageObject)
 
-/*       val msg = Message()
+       call.enqueue(object : Callback<Void> {
+           override fun onResponse(call: Call<Void>, response: Response<Void>) {
+               resetInput()
+               if (!response.isSuccessful) {
+                   Log.e(TAG, response.code().toString());
+                   Toast.makeText(applicationContext,"Response was not successful", Toast.LENGTH_SHORT).show()
+               }
+           }
+
+           override fun onFailure(call: Call<Void>, t: Throwable) {
+               resetInput()
+               Log.e(TAG, t.toString());
+               Toast.makeText(applicationContext,"Error when calling the service", Toast.LENGTH_SHORT).show()
+           }
+       })*/
+
+      /* val msg = Message()
        databaseViewModel.fetchingUserDataCurrent()
        databaseViewModel.fetchUserCurrentData!!.observe(this,
            Observer { dataSnapshot ->
-            //   val users = dataSnapshot?.getValue(UserProfile::class.java)
+             //  val users = dataSnapshot?.getValue(UserProfile::class.java)
                if (notify) {
-                   sendNotification(receiverId, name, msg)
+                   sendNotification(it)
                }
                notify = false
            })*/
 
    }
+
 
     fun readMessage(senderID : String,receiverId: String) {
         mRef.child("Chats").child(senderID).child("messages")
@@ -203,8 +227,8 @@ class MessagingActivity : AppCompatActivity() {
 
             })*/
     }
-    private fun sendNotification(notification:PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-      /*  databaseViewModel.getTokenDatabaseRef()
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+     /*   databaseViewModel.getTokenDatabaseRef()
         databaseViewModel.getTokenRefDb!!.observe(this,
             Observer { databaseReference ->
                 val query: Query = databaseReference!!.orderByKey().equalTo(userId_receiver)
@@ -240,12 +264,12 @@ class MessagingActivity : AppCompatActivity() {
             Client.api = Client.client.create(APIServices::class.java)
             val response = Client.api.postNotification(notification)
 
-          //  d("maulik","R$response")
-            if(response.isSuccessful) {
-               Log.d("m", "Response: ${Gson().toJson(response)}")
-            } else {
-                Log.e("TAG", response.errorBody()!!.string())
-            }
+            d("TAG","R$response")
+//            if(response.isSuccessful) {
+//               Log.d("m", "Response: ${Gson().toJson(response)}")
+//            } else {
+//                Log.e("TAG", response.errorBody()!!.string())
+//            }
         } catch(e: Exception) {
             Log.e("TAG", e.toString())
         }

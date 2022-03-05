@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.chat.MessagingActivity
 import com.example.cardviewdemo.services.model.UserProfile
-
 class UserAdapter(val context:Context, private val userList: ArrayList<UserProfile>): RecyclerView.Adapter<UserAdapter.UserviewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserviewHolder {
@@ -19,7 +18,7 @@ class UserAdapter(val context:Context, private val userList: ArrayList<UserProfi
     }
 
     override fun onBindViewHolder(holder: UserviewHolder, position: Int) {
-        val currentUser = userList[position]
+         val currentUser = userList[position]
         holder.textName.text = currentUser.Username
 
         holder.itemView.setOnClickListener {

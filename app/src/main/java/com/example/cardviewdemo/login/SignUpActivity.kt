@@ -17,17 +17,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import  com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import kotlinx.android.synthetic.main.activity_sign_up.etPassword
 import kotlinx.android.synthetic.main.activity_sign_up.ivEye
 
+var username : String? = null
 
 open class SignUpActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth : FirebaseAuth
     private  var prg : ProgressDialog? = null
     private lateinit var binding : ActivitySignUpBinding
-    private lateinit var username : String
     private lateinit var email: String
     private lateinit var password : String
     private lateinit var databaseReference :DatabaseReference
@@ -35,7 +36,6 @@ open class SignUpActivity : AppCompatActivity() {
     var user:FirebaseUser? = null
     private lateinit var userprofile : UserProfile
     private lateinit var editor: SharedPreferences.Editor
-
 
 
 
@@ -93,7 +93,7 @@ open class SignUpActivity : AppCompatActivity() {
         prg?.setMessage("Please wait...")
         prg?.show()
 
-        if (username.isEmpty()) {
+        if (username!!.isEmpty()) {
             invalid = false
             Toast.makeText(applicationContext, "Enter your Username", Toast.LENGTH_SHORT).show()
             etUserName.requestFocus()
@@ -145,7 +145,7 @@ open class SignUpActivity : AppCompatActivity() {
             etUserName.error = null
             etEmailUp.error =null
             etPassword.error= null
-            signUp(username,email,password)
+            signUp(username!!,email,password)
 
         }
         return invalid
@@ -282,6 +282,7 @@ open class SignUpActivity : AppCompatActivity() {
                       }
                       else -> {
                       //    databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
+                         // SharePref.save(this@SignUpActivity,"Username",username)
                           val hashMap:HashMap<String,String> = HashMap()
                           hashMap["Username"] = username
                           hashMap["Email"] = email

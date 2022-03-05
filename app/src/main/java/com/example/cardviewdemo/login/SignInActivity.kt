@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.chat.UsersActivity
+import com.example.cardviewdemo.services.model.App
 import com.example.cardviewdemo.services.model.UserProfile
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import kotlinx.android.synthetic.main.activity_sign_in.etPassword
@@ -205,6 +206,7 @@ class SignInActivity() : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             prg?.dismiss()
+                            App.user = username
                             SharePref.save(this, "isLogin", true)
                             SharePref.save(this, "User", email)
                             val intent = Intent(this@SignInActivity, UsersActivity::class.java)

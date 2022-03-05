@@ -1,48 +1,28 @@
 package com.example.cardviewdemo.services.model
 
-class UserProfile {
-     var  Username : String? = null
-      var Email : String? = null
-     var Uid:String? =null
+ class UserProfile {
+
+       var Username: String? = null
+       var Email: String? = null
+       var Uid: String? = null
 
     constructor()
 
-    constructor(username: String?, email: String?, uid: String?) {
-        this.Username = username
-        this.Email = email
-        this.Uid = uid
+    constructor(Username: String?, Email: String?, Uid: String?) {
+        this.Username = Username
+        this.Email = Email
+        this.Uid = Uid
     }
+/*
 
-  /*   fun getusername(): String?{
-        return Username
+     fun getusername(): String? {
+         return Username
+     }
+     fun  setusername(user:String){
+         this.Username = user
      }
 
-    fun setusername(username: String?){
-         this.Username = username
-     }
-
-
-     fun getemail(): String?{
-         return Email
-     }
-
-     fun setemail(email: String?){
-         this.Email = email
-     }
-
-    fun  getuid(): String? {
-        return Uid
-    }
-    fun setuid(uid: String?) {
-        this.Uid = uid
-    }
 */
-    /* fun getpassword(): String?{
-         return password
-     }
 
-     fun setpassword(password: String?){
-         this.password = password
-     }*/
 
 }

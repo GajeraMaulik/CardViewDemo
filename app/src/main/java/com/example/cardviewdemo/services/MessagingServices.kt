@@ -25,17 +25,17 @@ class MessagingServices : FirebaseMessagingService() {
 
         val CHANNEL_ID = "my_notification_channel"
         companion object{
-            //var sharedPref:SharedPreferences? = null
-            var sharePref = SharePref
+            var sharedPref:SharedPreferences? = null
+            //var sharePref = SharePref
 
             var token:String?
                 get(){
-                    return SharePref.getStringValue(context,"token")
-                  //  return sharedPref?.getString("token","")
+                  //  return SharePref.getStringValue(context,"token")
+                   return sharedPref?.getString("token","")
                 }
                 set(value){
-                    SharePref.save(context,"token",value!!)
-                   // sharedPref?.edit()?.putString("token",value)?.apply()
+                   // SharePref.save(context,"token",value!!)
+                    sharedPref?.edit()?.putString("token",value)?.apply()
                 }
         }
 
