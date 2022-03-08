@@ -8,13 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.chat.userName
-import com.example.cardviewdemo.services.model.Message
-import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.services.model.Mymessage
 import com.example.cardviewdemo.util.DateUtils
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.sent.view.*
-class MessageAdapter(val context: Context, private val messageList:ArrayList<Message>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class MessageAdapter(val context: Context, private val mymessageList:ArrayList<Mymessage>): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     val ITEM_RECEIVE = 1
     val ITEM_SENT = 2
@@ -37,7 +35,7 @@ class MessageAdapter(val context: Context, private val messageList:ArrayList<Mes
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-        val currentMessage = messageList[position]
+        val currentMessage = mymessageList[position]
         if (holder.javaClass == SentViewHolder::class.java){
             val viewHolder = holder as SentViewHolder
 
@@ -64,7 +62,7 @@ class MessageAdapter(val context: Context, private val messageList:ArrayList<Mes
     }
 
     override fun getItemViewType(position: Int): Int {
-        val currentMessage = messageList[position]
+        val currentMessage = mymessageList[position]
 
         if (FirebaseAuth.getInstance().currentUser?.uid.equals(currentMessage.senderId)){
             return ITEM_SENT
@@ -74,7 +72,7 @@ class MessageAdapter(val context: Context, private val messageList:ArrayList<Mes
     }
 
     override fun getItemCount(): Int {
-        return messageList.size
+        return mymessageList.size
     }
 
     class  SentViewHolder(itemView:View): RecyclerView.ViewHolder(itemView){

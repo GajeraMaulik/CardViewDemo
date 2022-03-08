@@ -1,18 +1,16 @@
 package com.example.cardviewdemo.services
 
 import com.example.cardviewdemo.constants.Constants.Companion.CONTENT_TYPE
+import com.example.cardviewdemo.constants.Constants.Companion.OAUTH_TOKEN
 import com.example.cardviewdemo.constants.Constants.Companion.SERVER_KEY
 import com.example.cardviewdemo.services.model.Message
-import com.example.cardviewdemo.services.model.NotificationData
+import com.example.cardviewdemo.services.model.Notificationpush
 import com.example.cardviewdemo.services.model.PushNotification
 import com.example.cardviewdemo.services.notifications.MyResponse
 import com.example.cardviewdemo.services.notifications.Sender
-import okhttp3.ResponseBody
-import org.jetbrains.annotations.NotNull
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -20,8 +18,14 @@ import retrofit2.http.POST
  interface APIServices {
         @Headers("Authorization: key =$SERVER_KEY","Content-type:$CONTENT_TYPE")
     @POST("/fcm/send")
+    suspend fun postNotification(@Body notification: PushNotification): Response<MyResponse>
 
-    suspend fun postNotification(@Body notification:PushNotification): Response<MyResponse>
+
+    @Headers("Authorization: Bearer $OAUTH_TOKEN","Content-type:$CONTENT_TYPE")
+    @POST("/v1/projects/cardviewdemo-4027f/messages:send")
+    suspend fun Notification(@Body notification: Message): Response<MyResponse>
+
+      fun sendNotification(@Body body: Sender?): Call<MyResponse>
 
      //    fun sendNotification(@Body body: Sender?): Call<MyResponse?>?
      /*  @POST("/message")

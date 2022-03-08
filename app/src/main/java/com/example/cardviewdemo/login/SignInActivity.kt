@@ -6,20 +6,22 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardviewdemo.databinding.ActivitySignInBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.*
+import androidx.lifecycle.ViewModelProvider
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.chat.UsersActivity
-import com.example.cardviewdemo.services.model.App
+import com.example.cardviewdemo.constants.Constants
+import com.example.cardviewdemo.databinding.ActivitySignInBinding
 import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.viewModel.LogInViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
-import kotlinx.android.synthetic.main.activity_sign_in.etPassword
-import kotlinx.android.synthetic.main.activity_sign_in.ivEye
+import java.util.*
 
 
 class SignInActivity() : AppCompatActivity() {
@@ -31,6 +33,7 @@ class SignInActivity() : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     private var ref: DatabaseReference? = null
     private var prg: ProgressDialog? = null
+    var logInViewModel: LogInViewModel? = null
     private lateinit var databaseReference: DatabaseReference
     private lateinit var user: UserProfile
 
@@ -55,6 +58,13 @@ class SignInActivity() : AppCompatActivity() {
 
         etUser.setBackgroundResource(R.drawable.edittext_selector)
         etPassword.setBackgroundResource(R.drawable.edittext_selector)
+
+        logInViewModel = ViewModelProvider(
+            this, ViewModelProvider.AndroidViewModelFactory
+                .getInstance(application)
+        ).get(LogInViewModel::class.java)
+
+        userSession
 
         signinBtn.setOnClickListener {
             isValid()
@@ -86,7 +96,8 @@ class SignInActivity() : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Enter your Email", Toast.LENGTH_SHORT).show()
                 etUser.requestFocus()
             } else {
-                firebaseAuth?.sendPasswordResetEmail(etUser.text.toString())
+                resetPassword(etUser.text.toString())
+       /*         firebaseAuth?.sendPasswordResetEmail(etUser.text.toString())
                     ?.addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             currentUser = firebaseAuth?.currentUser
@@ -105,18 +116,36 @@ class SignInActivity() : AppCompatActivity() {
                                 Toast.LENGTH_SHORT).show()
                         }
 
-                    }
+                    }*/
             }
         }
 
     }
 
+    private fun resetPassword(email: String) {
+        logInViewModel!!.addPasswordResetEmail(email)
+        logInViewModel!!.successPasswordReset!!.observe(this) { task ->
+            if (!task.isSuccessful) {
+                etUser.isClickable = true
+                etUser.setText("")
+                val error: String? =
+                    Objects.requireNonNull(task.exception)?.message
+                etUser.requestFocus()
+                Toast.makeText(this@SignInActivity, error, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@SignInActivity,
+                    "Please check your Email.",
+                    Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
 
     private fun isValid(): Boolean {
         var invalid = true
         username = etUser.text.toString().trim()
         password = etPassword.text.toString()
-
+        dismissKeyboard()
         // val myRefernce = databaseReference?.child(currentuser?.uid!!)
         prg?.setMessage("Please wait...")
         prg?.show()
@@ -153,6 +182,7 @@ class SignInActivity() : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
+        logInViewModel!!.userLogIn(email, password)
         /*   ref?.child("Users")!!.addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                   if (snapshot.hasChild(username)){
@@ -206,7 +236,7 @@ class SignInActivity() : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             prg?.dismiss()
-                            App.user = username
+                            Constants.user = username
                             SharePref.save(this, "isLogin", true)
                             SharePref.save(this, "User", email)
                             val intent = Intent(this@SignInActivity, UsersActivity::class.java)
@@ -240,6 +270,22 @@ class SignInActivity() : AppCompatActivity() {
             }
 
         }
+    }
+    private val userSession: Unit
+        private get() {
+            logInViewModel!!.firebaseUserLogInStatus
+            logInViewModel!!.firebaseUserLoginStatus!!.observe(this) { firebaseUser: FirebaseUser? ->
+                currentUser = firebaseUser
+                if (currentUser != null) {
+                    val intent = Intent(this@SignInActivity, UsersActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }
+    fun dismissKeyboard() {
+        val imm = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+        imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
     }
 }
 

@@ -9,18 +9,19 @@ import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Log.d
 import android.util.Patterns
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardviewdemo.services.model.UserProfile
+import androidx.lifecycle.Observer
+import com.example.cardviewdemo.R
 import com.example.cardviewdemo.databinding.ActivitySignUpBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.viewModel.SignInViewModel
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.*
 import com.google.firebase.database.*
-import  com.example.cardviewdemo.R
-import com.example.cardviewdemo.SharePref
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import kotlinx.android.synthetic.main.activity_sign_up.etPassword
-import kotlinx.android.synthetic.main.activity_sign_up.ivEye
+import java.util.*
 
 var username : String? = null
 
@@ -37,7 +38,7 @@ open class SignUpActivity : AppCompatActivity() {
     private lateinit var userprofile : UserProfile
     private lateinit var editor: SharedPreferences.Editor
 
-
+    var signInViewModel: SignInViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +151,48 @@ open class SignUpActivity : AppCompatActivity() {
         }
         return invalid
     }
+ /*   open fun signInUsers() {
+        signInViewModel.userSignIn(userName, emailId, pwd)
+        signInViewModel.signInUser.observe(this,
+            Observer<Task<*>> { task ->
+                if (!task.isSuccessful) {
+                    et_usernameSignIn.setClickable(true)
+                    et_emailIdSignIn.setClickable(true)
+                    et_pwdSignIn.setClickable(true)
+                    textToLogin.setClickable(true)
+                    progressBarSignInFrame.setVisibility(View.GONE)
+                    et_emailIdSignIn.setText("")
+                    et_pwdSignIn.setText("")
+                    et_usernameSignIn.setText("")
+                    et_usernameSignIn.requestFocus()
+                    try {
+                        throw Objects.requireNonNull(task.exception)
+                    } catch (existEmail: FirebaseAuthUserCollisionException) {
+                        Toast.makeText(context, "Email Id already exists.", Toast.LENGTH_SHORT)
+                            .show()
+                    } catch (weakPassword: FirebaseAuthWeakPasswordException) {
+                        Toast.makeText(context,
+                            "Password length should be more then six characters.",
+                            Toast.LENGTH_SHORT).show()
+                    } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(context,
+                            "Invalid credentials, please try again.",
+                            Toast.LENGTH_SHORT).show()
+                    } catch (e: java.lang.Exception) {
+                        Toast.makeText(context,
+                            "SignUp unsuccessful. Try again.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    getUserSession()
+                    addUserInDatabase(userName, emailId, userId)
+                    val intent = Intent(this@SignupActivity, HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            })
+    }
+*/
     private fun signUp(username:String,email: String,password:String){
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener  { task ->
 

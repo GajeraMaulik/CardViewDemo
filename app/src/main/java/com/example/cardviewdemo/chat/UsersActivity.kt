@@ -14,20 +14,17 @@ import com.example.cardviewdemo.adapter.UserAdapter
 import com.example.cardviewdemo.services.model.UserProfile
 import com.example.cardviewdemo.databinding.ActivityUsersBinding
 import com.example.cardviewdemo.login.SignInActivity
-import com.example.cardviewdemo.login.username
-import com.example.cardviewdemo.services.MessagingServices
-import com.example.cardviewdemo.services.model.App
+import com.example.cardviewdemo.services.notifications.MessagingServices
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.iid.FirebaseInstanceIdReceiver
-import com.google.firebase.iid.internal.FirebaseInstanceIdInternal
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessaging.getInstance
-import kotlinx.android.synthetic.main.activity_users.*
-import java.util.*
+import org.chromium.base.Log.d
 import kotlin.collections.ArrayList
 
 private lateinit var binding : ActivityUsersBinding
@@ -36,7 +33,7 @@ private lateinit var binding : ActivityUsersBinding
 private   var mDbRef:DatabaseReference? = null
 private   var mDatabase:FirebaseDatabase? = null
 private  lateinit var userAdapter: UserAdapter
- private  lateinit var firebaseUser: FirebaseUser
+ private  var firebaseUser: FirebaseUser? = null
  @SuppressLint("StaticFieldLeak")
 class UsersActivity : AppCompatActivity() {
 
@@ -63,7 +60,7 @@ class UsersActivity : AppCompatActivity() {
 
             // Get new FCM registration token
             val token = task.result
-               Log.d("TAG","FCM$token")
+               Log.d("TAG","FCM : $token")
             MessagingServices.token = token
         })
         userList = ArrayList()
@@ -92,12 +89,14 @@ class UsersActivity : AppCompatActivity() {
 
     }
     private fun getUserList(){
-        val firebase: FirebaseUser = FirebaseAuth.getInstance().currentUser!!
+        val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
 
-        val userId = firebase.uid
-            getInstance().subscribeToTopic("/topics/$userId")
-        mAuth = FirebaseAuth.getInstance()
+      //  val userId = firebase.currentUser
+        d("TAG","user: $currentUser")
+            getInstance().subscribeToTopic("/topics/$currentUser")
         mDbRef = FirebaseDatabase.getInstance().reference
+        mAuth = FirebaseAuth.getInstance()
+
         mDbRef!!.child("Users").addValueEventListener(object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {

@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Bitmap
+import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.services.model.Image
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.images_views.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-class ImageAdapter(  var items:ArrayList<Image>,private val context: Context): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+class ImageAdapter(var items:ArrayList<com.example.cardviewdemo.services.model.Image>, private val context: Context): RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageAdapter.ViewHolder {
 
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.images_views, parent, false))
@@ -61,7 +61,7 @@ class ImageAdapter(  var items:ArrayList<Image>,private val context: Context): R
        /* val prog :ProgressBar = view.findViewById(R.id.progressBar)
         val noData:ImageView = view.findViewById(R.id.noData)*/
     }
-    private fun setupDialog(item:Image) {
+    private fun setupDialog(item:com.example.cardviewdemo.services.model.Image) {
         val dialog = Dialog(context, R.style.DialogStyle)
         dialog.setContentView(R.layout.dialog_wallpaper)
         val dialogImageView = dialog.findViewById<ImageView>(R.id.dialogImageView)
