@@ -1,59 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/_2sdp">
+    android:padding="8dp">
 
-    <TextView
-        android:id="@+id/txt_sent_message"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/sent_box_backgroud"
-        android:elevation="5dp"
-        android:maxWidth="240dp"
-        android:padding="@dimen/_10sdp"
-        android:text="Hi, my message"
-        android:textColor="@color/white"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-   <!-- <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/_2sdp"
-        android:background="@drawable/sent_box_backgroud"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints">
+        android:layout_alignParentEnd="true">
+
 
         <TextView
-            android:id="@+id/txt_sent_message"
+            android:id="@+id/tv_chat_received"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_10sdp"
-            android:text="This is sent message"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/background_right_sender"
+            android:maxWidth="250dp"
+            android:padding="14dp"
+            android:text="@string/a_sample_message"
             android:textColor="@color/white"
-            android:textSize="@dimen/_15sdp" />
+            android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/tv_chat_time_received"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="7dp"
+            android:layout_toStartOf="@+id/tv_chat_received"
+            android:alpha="0.5"
+            android:text="@string/_9_00_pm"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_seen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_chat_received"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="3dp"
+            android:text="@string/seen"
+            android:textColor="@color/white"
+            android:textSize="12sp"/>
 
     </RelativeLayout>
--->
-    <TextView
-        android:id="@+id/txtMyMessageTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_2sdp"
-        android:background="@android:color/transparent"
-        android:text="@string/sent_time"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/_7sdp"
-        android:layout_marginEnd="@dimen/_5sdp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_sent_message"
-        app:layout_constraintEnd_toStartOf="@+id/txt_sent_message"
-        tools:ignore="MissingConstraints" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

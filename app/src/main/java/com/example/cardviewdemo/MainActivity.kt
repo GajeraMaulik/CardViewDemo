@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -17,14 +16,15 @@ import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.crudstatic.CRUDActivity
 import com.example.cardviewdemo.imagepicker.ImageShowActivity
 import com.example.cardviewdemo.listview.ListActivity
+import com.example.cardviewdemo.login.SignInActivity
 import com.example.cardviewdemo.progressbar.ProgressDialogActivity
 import com.example.cardviewdemo.services.model.ImageSlider
-import com.example.cardviewdemo.login.SignInActivity
 import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.viewpagerindicator.CirclePageIndicator
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MainActivity() : AppCompatActivity() {
@@ -36,12 +36,16 @@ class MainActivity() : AppCompatActivity() {
 
     var currentPage = 0
     var NUM_PAGES = 0
+     var firebaseUser : FirebaseUser? = null
+    lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         viewpager = findViewById(R.id.viewPager)
+        //firebaseUser = FirebaseUser().uid
+
 
 
 
@@ -145,7 +149,17 @@ class MainActivity() : AppCompatActivity() {
 
     }
     fun ChatView(view:View){
-        if (SharePref.getBooleanValue(this, "isLogin")) {
+
+        if (firebaseUser == null){
+        val intent = Intent(this, SignInActivity::class.java)
+        startActivity(intent)
+        finish()
+        }else{
+            val intent = Intent(this, UsersActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+/*        if (SharePref.getBooleanValue(this, "isLogin")) {
             Log.d("TAG","isLogin")
             val i = Intent(this, UsersActivity::class.java)
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -159,7 +173,7 @@ class MainActivity() : AppCompatActivity() {
                 startActivity(i)
                 finish()
             }
-        }
+        }*/
     }
 
 

@@ -9,21 +9,24 @@ import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.util.Log.d
 import android.util.Patterns
-import android.view.View
-import android.widget.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.databinding.ActivitySignUpBinding
-import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.services.model.Users
+import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.SignInViewModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.*
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import kotlinx.android.synthetic.main.activity_sign_up.etPassword
+import kotlinx.android.synthetic.main.activity_sign_up.ivEye
 import java.util.*
 
-var username : String? = null
+lateinit var username : String
 
 open class SignUpActivity : AppCompatActivity() {
 
@@ -34,11 +37,14 @@ open class SignUpActivity : AppCompatActivity() {
     private lateinit var password : String
     private lateinit var databaseReference :DatabaseReference
     private  lateinit var database : FirebaseDatabase
-    var user:FirebaseUser? = null
-    private lateinit var userprofile : UserProfile
+     private var currentUser:FirebaseUser?=null
+    private lateinit var userprofile : Users
     private lateinit var editor: SharedPreferences.Editor
-
-    var signInViewModel: SignInViewModel? = null
+    private lateinit var signInViewModel: SignInViewModel
+    var userId: String? = null
+    var imageUrl: String? = null
+    var timeStamp: String? = null
+    private var databaseViewModel= DatabaseViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,29 +53,25 @@ open class SignUpActivity : AppCompatActivity() {
         val actionBar= supportActionBar
         actionBar!!.hide()
         actionBar.setDisplayHomeAsUpEnabled(true)
+//        currentUser = FirebaseAuth.getInstance().currentUser!!
+
+        init()
+        listeners()
 
 
+
+
+    }
+
+    private fun init() {
         etEmailUp.setBackgroundResource(R.drawable.edittext_selector)
         etUserName.setBackgroundResource(R.drawable.edittext_selector)
         etPassword.setBackgroundResource(R.drawable.edittext_selector)
+        signInViewModel = SignInViewModel()
 
         firebaseAuth = FirebaseAuth.getInstance()
         prg = ProgressDialog(this)
-
-
-
-        signinBtnUp.setOnClickListener {
-            startActivity(Intent(this, SignInActivity::class.java))
-            finish()
-        }
-
-        registerBtn.setOnClickListener {
-         isValid()
-
-        }
-
         var isVisiblePassword = false
-
         ivEye.setOnClickListener {
             if (!isVisiblePassword) {
                 etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
@@ -83,10 +85,50 @@ open class SignUpActivity : AppCompatActivity() {
             }
             etPassword.setSelection(etPassword.text.length)
         }
+        signinBtnUp.setOnClickListener {
+            val intent = Intent(baseContext, SignInActivity::class.java)
+            startActivity(intent)
+            // overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+            finish()
+        }
+    }
+
+    fun listeners() {
+        registerBtn.setOnClickListener {
+                etUserName.clearFocus()
+                etEmailUp.clearFocus()
+                etPassword.clearFocus()
+                username = etUserName.text.toString().trim()
+                email  = etEmailUp.text.toString().trim()
+                password = etPassword.text.toString().trim()
+                if (password.isEmpty() && email.isEmpty() && username.isEmpty()) {
+                    Toast.makeText(this@SignUpActivity, "Fields are empty!", Toast.LENGTH_SHORT)
+                        .show()
+                    etUserName.requestFocus()
+                } else if (username.isEmpty()) {
+                    etUserName.error = "Please enter a username."
+                    etUserName.requestFocus()
+                } else if (email.isEmpty()) {
+                    etEmailUp.error = "Please enter your Email Id."
+                    etEmailUp.requestFocus()
+                } else if (password.isEmpty()) {
+                    etPassword.error = "Please set your password."
+                    etPassword.requestFocus()
+                } else {
+                    etUserName.isClickable = false
+                    etEmailUp.isClickable = false
+                    etPassword.isClickable = false
+                    signinBtnUp.isClickable = false
+                    dismissKeyboard()
+                    signInUsers()
+                }
+            //isValid()
+            }
 
     }
 
-    private fun isValid(): Boolean {
+
+private fun isValid(): Boolean {
         var invalid = true
           username = etUserName.text.toString().trim()
           email  = etEmailUp.text.toString().trim()
@@ -94,18 +136,12 @@ open class SignUpActivity : AppCompatActivity() {
         prg?.setMessage("Please wait...")
         prg?.show()
 
-        if (username!!.isEmpty()) {
+        if (username.isEmpty()) {
             invalid = false
             Toast.makeText(applicationContext, "Enter your Username", Toast.LENGTH_SHORT).show()
             etUserName.requestFocus()
             prg?.dismiss()
-        } /*else if (username.length <= 8) {
-            invalid = false
-            prg?.dismiss()
-            etUserName.error ="Please enter a minimum 8 characters"
-            etUserName.requestFocus()
-
-        }*/
+        }
         else if (email.isEmpty()){
             invalid=false
             Toast.makeText(applicationContext, "Enter your Email", Toast.LENGTH_SHORT).show()
@@ -146,53 +182,87 @@ open class SignUpActivity : AppCompatActivity() {
             etUserName.error = null
             etEmailUp.error =null
             etPassword.error= null
-            signUp(username!!,email,password)
+            dismissKeyboard()
+            signInUsers()
+
+           // signUp(username,email,password)
 
         }
         return invalid
     }
- /*   open fun signInUsers() {
-        signInViewModel.userSignIn(userName, emailId, pwd)
-        signInViewModel.signInUser.observe(this,
-            Observer<Task<*>> { task ->
-                if (!task.isSuccessful) {
-                    et_usernameSignIn.setClickable(true)
-                    et_emailIdSignIn.setClickable(true)
-                    et_pwdSignIn.setClickable(true)
-                    textToLogin.setClickable(true)
-                    progressBarSignInFrame.setVisibility(View.GONE)
-                    et_emailIdSignIn.setText("")
-                    et_pwdSignIn.setText("")
-                    et_usernameSignIn.setText("")
-                    et_usernameSignIn.requestFocus()
-                    try {
-                        throw Objects.requireNonNull(task.exception)
-                    } catch (existEmail: FirebaseAuthUserCollisionException) {
-                        Toast.makeText(context, "Email Id already exists.", Toast.LENGTH_SHORT)
-                            .show()
-                    } catch (weakPassword: FirebaseAuthWeakPasswordException) {
-                        Toast.makeText(context,
-                            "Password length should be more then six characters.",
-                            Toast.LENGTH_SHORT).show()
-                    } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(context,
-                            "Invalid credentials, please try again.",
-                            Toast.LENGTH_SHORT).show()
-                    } catch (e: java.lang.Exception) {
-                        Toast.makeText(context,
-                            "SignUp unsuccessful. Try again.",
-                            Toast.LENGTH_SHORT).show()
-                    }
-                } else {
+
+     fun signInUsers() {
+         signInViewModel.userSignIn(username, email, password)
+         signInViewModel.signInUser.observe(this,
+             Observer<Task<*>> { task ->
+                 if (!task.isSuccessful) {
+                     etUserName.isClickable = true
+                     etEmailUp.isClickable = true
+                     etPassword.isClickable = true
+                     registerBtn.isClickable = true
+                    // progressBarSignInFrame.setVisibility(View.GONE)
+                     etEmailUp.setText("")
+                     etPassword.setText("")
+                     etUserName.setText("")
+                     etUserName.requestFocus()
+                     try {
+                         throw Objects.requireNonNull(task.exception)!!
+                     } catch (existEmail: FirebaseAuthUserCollisionException) {
+                         Toast.makeText(this, "Email Id already exists.", Toast.LENGTH_SHORT)
+                             .show()
+                     } catch (weakPassword: FirebaseAuthWeakPasswordException) {
+                         Toast.makeText(this,
+                             "Password length should be more then six characters.",
+                             Toast.LENGTH_SHORT).show()
+                     } catch (malformedEmail: FirebaseAuthInvalidCredentialsException) {
+                         Toast.makeText(this,
+                             "Invalid credentials, please try again.",
+                             Toast.LENGTH_SHORT).show()
+                     } catch (e: java.lang.Exception) {
+                         Toast.makeText(this,
+                             "SignUp unsuccessful. Try again.",
+                             Toast.LENGTH_SHORT).show()
+                     }
+                 } else {
                     getUserSession()
-                    addUserInDatabase(userName, emailId, userId)
-                    val intent = Intent(this@SignupActivity, HomeActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                     addUserInDatabase(username, email)
+                     val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+                     startActivity(intent)
+                     finish()
+                 }
+             })
+    }
+     fun dismissKeyboard() {
+        val imm = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+        imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+    }
+
+      fun addUserInDatabase(userName: String, email: String) {
+        val tsLong = System.currentTimeMillis()
+        timeStamp = tsLong.toString()
+        imageUrl = "default"
+        userId = currentUser?.uid
+       //  Senddata(userId,userName,email,timeStamp)
+        databaseViewModel.addUserDatabase(userId.toString(), userName, email, timeStamp.toString(),imageUrl.toString())
+          databaseViewModel.successAddUserDb?.observe(this,
+              Observer<Boolean?> { aBoolean ->
+                  if (aBoolean) Toast.makeText(this, "", Toast.LENGTH_SHORT).show() else {
+                      Toast.makeText(this, "ERROR WHILE ADDING DATA IN DATABASE.", Toast.LENGTH_SHORT).show()
+                  }
+              })
+    }
+
+     fun getUserSession() {
+        signInViewModel.getUserFirebaseSession()
+        signInViewModel.userFirebaseSession.observe(this,
+            Observer { firebaseUser ->
+                if (firebaseUser != null) {
+                    currentUser = firebaseUser
                 }
             })
     }
-*/
+
+
     private fun signUp(username:String,email: String,password:String){
         firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener  { task ->
 
@@ -240,9 +310,10 @@ open class SignUpActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun  VerifyEmail(): Boolean{
         val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener { task ->
+        currentUser?.sendEmailVerification()?.addOnCompleteListener { task ->
             if (task.isSuccessful){
                 Toast.makeText(this,task.exception?.message,Toast.LENGTH_LONG).show()
                 task.exception?.message?.let { d("TAG", it) }
@@ -279,12 +350,14 @@ open class SignUpActivity : AppCompatActivity() {
         }
         return false
     }
+/*
+
     private fun addUsertoDatabase(username:String,email:String,uid:String){
         databaseReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
-        databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
+        databaseReference.child("Users").child(uid).setValue(Users(username,email,uid))
     }
 
-     /*private fun  VerifyEmail(): Boolean{
+     private fun  VerifyEmail(): Boolean{
         val firebaseUser : FirebaseUser? = firebaseAuth.currentUser
          firebaseUser?.sendEmailVerification()?.addOnCompleteListener { task ->
              if (task.isSuccessful){
@@ -306,8 +379,8 @@ open class SignUpActivity : AppCompatActivity() {
      }
 */
 
-      private fun Senddata(username: String,email: String,uid: String,password: String): Boolean {
-           userprofile = UserProfile(username,email,password)
+      private fun Senddata(  userId: String?, userName: String, emailId: String, timestamp: String?): Boolean {
+           //userprofile = Users(username,email,password)
             databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(username)
           databaseReference.child("Users").addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
@@ -327,11 +400,11 @@ open class SignUpActivity : AppCompatActivity() {
                       //    databaseReference.child("Users").child(uid).setValue(UserProfile(username,email,uid))
                          // SharePref.save(this@SignUpActivity,"Username",username)
                           val hashMap:HashMap<String,String> = HashMap()
-                          hashMap["Username"] = username
-                          hashMap["Email"] = email
-                          hashMap["Uid"] = uid
-                          hashMap["Pass"] = password
-
+                          hashMap["id"] = userId!!
+                          hashMap["username"] = userName
+                          hashMap["emailId"] = emailId
+                          hashMap["timestamp"] = timestamp!!
+                          hashMap["status"] = "offline"
                           databaseReference.setValue(hashMap).addOnCompleteListener {
                               if (it.isSuccessful){
                                   etUserName.text = null
@@ -359,6 +432,7 @@ open class SignUpActivity : AppCompatActivity() {
           return true
     }
 }
+
 
 
 

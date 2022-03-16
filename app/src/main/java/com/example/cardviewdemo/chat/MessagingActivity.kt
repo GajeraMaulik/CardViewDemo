@@ -2,235 +2,267 @@ package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.d
-import android.view.inputmethod.InputMethodManager
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.cardviewdemo.SharePref
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
+import com.example.cardviewdemo.fragments.BottomSheetProfileDetailUser
 import com.example.cardviewdemo.services.APIServices
-import com.example.cardviewdemo.services.MessagingServices
 import com.example.cardviewdemo.services.model.*
 import com.example.cardviewdemo.services.model.Data
 import com.example.cardviewdemo.services.notifications.*
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
+import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_messaging_view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 
-private lateinit var binding: ActivityMessagingViewBinding
-private  lateinit  var mymessageList: ArrayList<Mymessage>
-private lateinit var mRef: DatabaseReference
-var firebaseAuth: FirebaseAuth? = null
+
 var receiverRoom: String? = null
 var senderRoom:String? = null
-var receiverUid : String? = null
-
-var userName : String? = null
-
+lateinit var userId_receiver // userId of other user who'll receive the text // Or the user id of profile currently opened
+        : String
+lateinit var userId_sender // current user id
+        : String
 class MessagingActivity : AppCompatActivity() {
-    var firebaseUser : FirebaseUser? = null
-    private  lateinit var messageAdapter : MessageAdapter
-    private lateinit var databaseViewModel:DatabaseViewModel
-    var topic = ""
-   var apiService : APIServices? = null
-    var notify = false
-    lateinit var name :String
+    lateinit var binding: ActivityMessagingViewBinding
 
+    lateinit var logInViewModel: LogInViewModel
+    lateinit var databaseViewModel: DatabaseViewModel
+
+
+    var profileUserNAme: String? = null
+    var profileImageURL: String? = null
+    var bio: String? = null
+    var currentFirebaseUser: FirebaseUser? = null
+
+
+    var chat: String? = null
+    var timeStamp: Long? = null
+
+    var user_status: String? = null
+    var messageAdapter: MessageAdapter? = null
+      private lateinit var chatsArrayList: ArrayList<Mymessage>
+    lateinit var context: Context
+    var bottomSheetProfileDetailUser: BottomSheetProfileDetailUser? = null
+
+    lateinit var client1: Client1
+    lateinit var apiService: APIServices
+    var notify = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+      //  setContentView(R.layout.activity_messaging_view)
+        window.statusBarColor = ContextCompat.getColor(this,R.color.colorChat)
+
         binding = ActivityMessagingViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val actionBar = supportActionBar
-         val name = intent.getStringExtra("Username").toString()
-         userName = SharePref.getStringValue(this,"User").toString()
+        userId_receiver = intent.getStringExtra("userid")!!
+        userId_sender = FirebaseAuth.getInstance().currentUser.toString()
 
-        actionBar!!.title = name
-        actionBar.setDisplayHomeAsUpEnabled(true)
-
-         receiverUid = intent.getStringExtra("Uid")
-         firebaseUser = FirebaseAuth.getInstance().currentUser
-
-       // firebaseUser = FirebaseAuth.getInstance().currentUser
-        mRef = FirebaseDatabase.getInstance().reference
-        databaseViewModel = DatabaseViewModel()
-
-        //senderRoom = receiverUid + firebaseUser
-    //   receiverRoom = firebaseUser + receiverUid
+        senderRoom = userId_receiver + userId_sender
+        receiverRoom = userId_sender + userId_receiver
 
 
+        init()
+        getCurrentFirebaseUser()
+        fetchAndSaveCurrentProfileTextAndData()
 
-        mymessageList = ArrayList()
-        messageAdapter = MessageAdapter(this, mymessageList)
-        binding.rvChatView.adapter = messageAdapter
+        chatsArrayList = ArrayList()
+        messageAdapter = MessageAdapter(chatsArrayList, context, userId_sender)
+        recycler_view_messages_record.adapter = messageAdapter
 
-
-
-
-        // logic for adding data to recyclerView
-        readMessage(firebaseUser!!.uid,receiverUid!!)
-
-
-
-        messageBox.setOnClickListener {
-            d("box","hello")
-            rvChatView.postDelayed({
-                rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
-            }, 500)
-        }
-
-
-
-
-        // adding the message to database
-        ivSend.setOnClickListener {
-            val message  = messageBox.text.toString()
-            if (message.isNotEmpty()){
-                Sendmessage(firebaseUser!!.uid, receiverUid!!, message,System.currentTimeMillis())
-                    d("TAG","Me : $firebaseUser")
-                topic = "/topics/${firebaseUser!!.uid}"
-                    resetInput()
-                MessagingServices.token?.let {
-                   // Message(Data(firebaseUser!!.uid, message, "New Message",firebaseUser?.uid!!),NotificationX(message,firebaseUser!!.uid!!),it)
-                    PushNotification(NotificationData(firebaseUser!!.uid,message),it)
-                        .also {
-                        sendNotification1(receiverUid!!,firebaseUser!!.uid,message)
+        binding.ivUserImage.setOnClickListener {
+            profileUserNAme?.let { it1 ->
+                profileImageURL?.let { it2 ->
+                    bio?.let { it3 ->
+                        openBottomSheetDetailFragment(it1,
+                            it2,
+                            it3)
                     }
                 }
-            }else{
-                d("TAG","Message$message")
-                Toast.makeText(this,"Message Box Empty",Toast.LENGTH_LONG).show()
             }
-
         }
 
 
+        binding.ivSendButton.setOnClickListener {
+            notify = true
+            chat = binding.etChat.text.toString().trim { it <= ' ' }
+            if (chat != "") {
+                addChatInDataBase()
+            } else {
+                Toast.makeText(this@MessagingActivity, "Message can't be empty.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            binding.etChat.setText("")
+        }
+
+
+
     }
-    private fun resetInput() {
-        // Clean text box
-        messageBox.text?.clear()
 
-        // Hide keyboard
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    private fun openBottomSheetDetailFragment(username: String, imageUrl: String, bio: String) {
+        bottomSheetProfileDetailUser =
+            BottomSheetProfileDetailUser(username, imageUrl, bio)
+        assert(supportActionBar != null)
+        bottomSheetProfileDetailUser!!.show(supportFragmentManager, "edit")
+    }
+
+    private fun getCurrentFirebaseUser() {
+        logInViewModel.firebaseUserLogInStatus
+        logInViewModel.firebaseUserLoginStatus.observe(this
+        ) { firebaseUser ->
+            currentFirebaseUser = firebaseUser
+            userId_sender = currentFirebaseUser!!.uid
+        }
     }
 
 
-   @SuppressLint("NotifyDataSetChanged")
-    fun Sendmessage(senderId:String, receiverId:String, message: String, time:Long) {
-       val messageObject = Mymessage(message, senderId, receiverId, time)
-       mRef.child("Chats").child(senderId).child("messages").push()
-           .setValue(messageObject).addOnSuccessListener {
-               mRef.child("Chats").child(receiverId).child("messages").push()
-                   .setValue(messageObject)
-           }
-       binding.rvChatView.adapter!!.notifyDataSetChanged()
-       resetInput()
-       rvChatView.postDelayed({
-           rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
-
-       }, 500)
-       d("TAG", "Message: $message")
-
-
-     /*  databaseViewModel.fetchingUserDataCurrent()
-       databaseViewModel.fetchUserCurrentData!!.observe(this,
-           Observer { dataSnapshot ->
-               val users: UserProfile = dataSnapshot?.getValue(UserProfile::class.java)!!
-               if (notify) {
-                   sendNotification1(receiverId, users.getUsername()!!, message)
-               }
-               notify = false
-           })*/
-
-   }
-
-
-    fun readMessage(senderID : String,receiverId: String) {
-        mRef.child("Chats").child(senderID).child("messages")
-            .addValueEventListener(object : ValueEventListener {
-
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    mymessageList.clear()
-                    for (postsnapshot in snapshot.children) {
-                        Log.d("data", "$postsnapshot")
-                        val message = postsnapshot.getValue(Mymessage::class.java)
-
-                        if (message!!.senderId.equals(senderID) && message.receiverId.equals(receiverId) ||
-                            message.senderId.equals(receiverId) && message.receiverId.equals(senderID)
-                        ){
-                            mymessageList.add(message)
-
-                        }
-                        rvChatView.postDelayed({
-                            rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
-
-                        }, 500)
-                    }
-                    binding.rvChatView.adapter?.notifyDataSetChanged()
-
+    private fun fetchAndSaveCurrentProfileTextAndData() {
+      /*  if (userId_receiver == null) {
+            userId_receiver = intent.getStringExtra("userId")
+        }*/
+        databaseViewModel.fetchSelectedUserProfileData(userId_receiver)
+        databaseViewModel.fetchSelectedProfileUserData?.observe(this
+        ) { dataSnapshot ->
+            val user = dataSnapshot.getValue(Users::class.java)!!
+            profileUserNAme = user.getUsername()
+            profileImageURL = user.getImageUrl()
+            bio = user.getBio()
+            user_status = user.getStatus()
+            try {
+                if (user_status!!.contains("online") && isNetworkConnected()) {
+                    binding.ivUserStatusMessageView.setBackgroundResource(R.drawable.online_status)
+                } else {
+                    binding.ivUserStatusMessageView.setBackgroundResource(R.drawable.offline_status)
                 }
-
-
-                override fun onCancelled(error: DatabaseError) {
-                }
-
-            })
-
-   /*     mRef.child("Chats").child(senderRoom!!).child("messages")
-            .addValueEventListener(object : ValueEventListener {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    messageList.clear()
-                    for (postsnapshot in snapshot.children) {
-                        Log.d("data", "$postsnapshot")
-                        val message = postsnapshot.getValue(Message::class.java)
-
-                        messageList.add(message!!)
-
-                        rvChatView.postDelayed({
-                            rvChatView.scrollToPosition((rvChatView.adapter as MessageAdapter).itemCount - 1)
-
-                        }, 500)
-                    }
-                    binding.rvChatView.adapter!!.notifyDataSetChanged()
-
-                }
-
-
-                override fun onCancelled(error: DatabaseError) {
-                }
-
-            })*/
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            binding.tvProfileUserName.text = profileUserNAme
+            if (profileImageURL == "default") {
+                binding.ivUserImage.setImageResource(R.drawable.sample_img)
+            } else {
+                Glide.with(applicationContext).load(profileImageURL).into(binding.ivUserImage)
+            }
+            fetchChatFromDatabase(userId_receiver, userId_sender)
+        }
+        addIsSeen()
     }
-    private fun sendNotification1(userId_receiver:String, username:String, msg: String){
-            databaseViewModel.getTokenDatabaseRef()
-        databaseViewModel.getTokenRefDb!!.observe(this) { databaseReference ->
-            val query: Query = databaseReference!!.orderByKey().equalTo(userId_receiver)
+
+    fun addIsSeen() {
+        val isSeen = "seen"
+        databaseViewModel.fetchChatUser()
+        databaseViewModel.fetchedChat?.observe(this
+        ) { dataSnapshot ->
+            for (dataSnapshot1 in dataSnapshot!!.children) {
+                d("TAG","data : $dataSnapshot")
+                val chats = dataSnapshot1.getValue(Chats::class.java)
+                if (chats?.getSenderId().equals(userId_receiver) && chats?.getReceiverId().equals(userId_sender)) {
+                    databaseViewModel.addIsSeenInDatabase(isSeen, dataSnapshot1)
+                    d("TAG","data1: $dataSnapshot1")
+                }
+            }
+        }
+    }
+
+
+    @Throws(InterruptedException::class, IOException::class)
+    fun isNetworkConnected(): Boolean {   //check internet connectivity
+        val command = "ping -c 1 google.com"
+        return Runtime.getRuntime().exec(command).waitFor() == 0
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun fetchChatFromDatabase(myId: String, senderId: String) {
+        databaseViewModel.fetchChatUser()
+        databaseViewModel.fetchedChat?.observe(this
+        ) { dataSnapshot ->
+            chatsArrayList.clear()
+            for (snapshot in dataSnapshot!!.children) {
+
+
+                val chats:Mymessage= snapshot.getValue(Mymessage::class.java)!!
+                d("TAG","chat :$chats")
+
+                if (chats.getReceiverId() == senderId && chats.getSenderId() == myId || chats.getReceiverId() == myId && chats.getSenderId() == senderId) {
+                        chatsArrayList.add(chats)
+                   }
+
+                d("TAG","chats :$chatsArrayList")
+
+                messageAdapter = MessageAdapter(chatsArrayList, context, userId_sender)
+                recycler_view_messages_record.adapter = messageAdapter
+                recycler_view_messages_record.postDelayed({
+                    recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
+
+                }, 500)
+                //binding.recyclerViewMessagesRecord.adapter?.notifyDataSetChanged()
+
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun addChatInDataBase() {
+       // val msg = chat
+
+        val tsLong = System.currentTimeMillis()
+        timeStamp = tsLong
+        databaseViewModel.addChatDb(userId_receiver, userId_sender, chat, timeStamp)
+        databaseViewModel.successAddChatDb?.observe(this
+        ) { aBoolean ->
+            if (aBoolean) {
+
+
+                // Toast.makeText(MessageActivity.this, "Sent.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this@MessagingActivity, "Message can't be sent.", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        databaseViewModel.fetchingUserDataCurrent()
+        databaseViewModel.fetchUserCurrentData?.observe(this
+        ) { dataSnapshot ->
+            val users = dataSnapshot.getValue(Users::class.java)
+            assert(users != null)
+            if (notify) {
+                if (chat != null) {
+                    sendNotification(userId_receiver,userId_sender, chat!!)
+                }
+            }
+            notify = false
+        }
+    }
+
+    private fun sendNotification(userId_receiver: String?, username: String?, msg: String) {
+        databaseViewModel.getTokenDatabaseRef()
+        databaseViewModel.getTokenRefDb?.observe(this
+        ) { databaseReference ->
+            val query = databaseReference.orderByKey().equalTo(userId_receiver)
             query.addValueEventListener(object : ValueEventListener {
-                override  fun onDataChange(dataSnapshot: DataSnapshot) {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
                     for (snapshot in dataSnapshot.children) {
-                        val token: Token? = snapshot.getValue(Token::class.java)
-                        val data = Data("$username",
-                            msg,
-                            "New Message",
-                            userId_receiver)
+                        val token = snapshot.getValue(Token::class.java)
+                        val data = Data(userId_sender,R.drawable.ic_baseline_textsms_24,"$username:$msg","New Message",userId_receiver)
                         assert(token != null)
-                        val sender = Sender(data, token?.getToken(token.token))
-                        apiService!!.sendNotification(sender)
+                        val sender = Sender(data,token?.token)
+                        apiService.sendNotification(sender)
                             .enqueue(object : Callback<MyResponse?> {
                                 override fun onResponse(
                                     call: Call<MyResponse?>,
@@ -243,7 +275,11 @@ class MessagingActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                override fun onFailure(call: Call<MyResponse?>, t: Throwable) {}
+                                override fun onFailure(
+                                    call: Call<MyResponse?>,
+                                    t: Throwable,
+                                ) {
+                                }
                             })
                     }
                 }
@@ -254,73 +290,64 @@ class MessagingActivity : AppCompatActivity() {
     }
 
 
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-       try {
-            Client.api = Client.client.create(APIServices::class.java)
-           var notificationObject ="{\n" +
-                   "    \"to\": \"foBd9K3bRFe3JcHTBB_7Ja:APA91bHUluTgYRwfJ0luPmTw5kLZ8sdaLKoIu8nuAWDHAaovpkQ9tAb-mqjFxzmmguMiHlrjbm0v5KiHx5WQAJsuuRU3FsTd5X8l_yAHONxQ8RLy0DN6Audv8ZjM_rvS6eTX9--x9QtR\",\n" +
-                   "    \"notification\": {\n" +
-                   "        \"title\": \"Check this Mobile (title)\",\n" +
-                   "        \"body\": \"Rich Notification testing (body)\",\n" +
-                   "        \"mutable_content\": true,\n" +
-                   "        \"sound\": \"Tri-tone\"\n" +
-                   "    },\n" +
-                   "    \"data\": {\n" +
-                   "        \"url\": \"<url of media image>\",\n" +
-                   "        \"dl\": \"<deeplink action on tap of notification>\"\n" +
-                   "    }\n" +
-                   "}"
-          //  val jsonData=toJson(notificationObject)
-           val token: String? =MessagingServices.token
-           //val notificationpush:Notificationpush=Notificationpush(notification.data,Notification("Messsage","XYZ"),token.toString())
-           val oldResponse=Client.api.postNotification(notification)
-           //d("TAG","Old Response :$oldResponse")
-        //   val response = Client.api.Notification(notification)
+    private fun init() {
+      //  databaseViewModel = DatabaseViewModel()
+      //  logInViewModel = LogInViewModel()
+        val actionBar= supportActionBar
+        actionBar!!.hide()
+        actionBar.setDisplayHomeAsUpEnabled(true)
+
+        chatsArrayList = ArrayList()
 
 
-// Send a message to the devices subscribed to the provided topic.
+        databaseViewModel =
+            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(
+                application))[DatabaseViewModel::class.java]
+        logInViewModel =
+            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(
+                application))[LogInViewModel::class.java]
+        context = this@MessagingActivity
+        client1 = Client1()
+        apiService = client1.getClient("https://fcm.googleapis.com/").create(APIServices::class.java)
 
-// Send a message to the devices subscribed to the provided topic.
+        binding.ivBackButton.setOnClickListener(View.OnClickListener {
+            val intent = Intent(applicationContext, UsersActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            finish()
+        })
 
-            d("TAG","Response :$oldResponse")
-          // val sender : Sender = Sender(response,t)
-//            if(response.isSuccessful) {
-//               Log.d("m", "Response: ${Gson().toJson(response)}")
-//            } else {
-//                Log.e("TAG", response.errorBody()!!.string())
-//            }
-        } catch(e: Exception) {
-            Log.e("TAG", e.toString())
-        }
-    }
-    private fun toJson(data:String): JSONObject {
-
-        var newData: String = data.replace("\"","")
-        newData = newData.replace("{","")
-        newData = newData.replace("}","")
-
-        val newObject = newData.split(":")
-        val name = newObject[0]
-        val value = newObject[1]
-        val rootObject = JSONObject()
-        rootObject.put(name,value)
-
-        return rootObject
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
+    private fun currentUser(userid: String) {
+        val editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit()
+        editor.putString("currentuser", userid)
+        editor.apply()
     }
 
 
+    private fun addStatusInDatabase(status: String) {
+        databaseViewModel.addStatusInDatabase("status", status)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        addStatusInDatabase("online")
+        currentUser(userId_receiver!!)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        addStatusInDatabase("offline")
+        currentUser("none")
+    }
     fun onBackKeyPressedOnKeyboard() {
-        binding.messageBox.clearFocus()
+        binding.etChat.clearFocus()
     }
-
 
 
 }
+
 
 
 

@@ -1,10 +1,21 @@
 package com.example.cardviewdemo.services.model
 
-import android.icu.text.CaseMap
+class Data{
+     var title: String? = null
+      var icon: Int? = null
+     var message: String? = null
+     var s: String?= null
+     var userId_receiver: String? = null
 
-data class Data(
-    val title: String?,
-    val message: String?,
-    val s: String?,
-    val userId_receiver: String?
-)
+     constructor(){
+
+     }
+     constructor(title:String?, icon: Int?, message:String?, s:String?, userId_receiver:String?){
+         this.title =title
+         this.icon = icon
+         this.message = message
+         this.s=s
+         this.userId_receiver = userId_receiver
+     }
+}
+

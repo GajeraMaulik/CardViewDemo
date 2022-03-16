@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
+import android.view.View
+import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.cardviewdemo.R
@@ -15,9 +17,10 @@ import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.constants.Constants
 import com.example.cardviewdemo.databinding.ActivitySignInBinding
-import com.example.cardviewdemo.services.model.UserProfile
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
@@ -33,16 +36,23 @@ class SignInActivity() : AppCompatActivity() {
     private var currentUser: FirebaseUser? = null
     private var ref: DatabaseReference? = null
     private var prg: ProgressDialog? = null
-    var logInViewModel: LogInViewModel? = null
-    private lateinit var databaseReference: DatabaseReference
-    private lateinit var user: UserProfile
+    lateinit var logInViewModel: LogInViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        init()
+        getUserSession()
+        listener()
+
+    }
+    private fun init() {
+        logInViewModel = LogInViewModel()
+        logInViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
+            .getInstance(application))[LogInViewModel::class.java]
         val firebaseDatabase = FirebaseDatabase.getInstance()
 
         val actionBar = supportActionBar
@@ -52,30 +62,12 @@ class SignInActivity() : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         ref = firebaseDatabase.reference
-        ref = FirebaseDatabase.getInstance()
-            .getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
+        ref = FirebaseDatabase.getInstance().getReferenceFromUrl("https://cardviewdemo-4027f-default-rtdb.firebaseio.com/")
         prg = ProgressDialog(this)
 
         etUser.setBackgroundResource(R.drawable.edittext_selector)
         etPassword.setBackgroundResource(R.drawable.edittext_selector)
 
-        logInViewModel = ViewModelProvider(
-            this, ViewModelProvider.AndroidViewModelFactory
-                .getInstance(application)
-        ).get(LogInViewModel::class.java)
-
-        userSession
-
-        signinBtn.setOnClickListener {
-            isValid()
-            Log.d("TAG", "$username")
-        }
-
-        signupBtn.setOnClickListener {
-            startActivity(Intent(this, SignUpActivity::class.java))
-            finish()
-
-        }
         var isVisiblePassword = false
         ivEye.setOnClickListener {
 
@@ -91,40 +83,42 @@ class SignInActivity() : AppCompatActivity() {
             }
             etPassword.setSelection(etPassword.text.length)
         }
+
         forgotPassword.setOnClickListener {
             if (etUser.text.toString().isEmpty()) {
                 Toast.makeText(applicationContext, "Enter your Email", Toast.LENGTH_SHORT).show()
                 etUser.requestFocus()
             } else {
                 resetPassword(etUser.text.toString())
-       /*         firebaseAuth?.sendPasswordResetEmail(etUser.text.toString())
-                    ?.addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            currentUser = firebaseAuth?.currentUser
-                            Toast.makeText(applicationContext,
-                                "Reset Password Link Sent ${etUser.text}",
-                                Toast.LENGTH_SHORT).show()
-                        } else if (task.isComplete) {
-                            databaseReference = FirebaseDatabase.getInstance()
-                                .getReferenceFromUrl("https://tanamgroceryapp-default-rtdb.firebaseio.com/")
-                            databaseReference.child("Users")
-                            databaseReference.child(username).child("Password")
-                                .setValue(currentUser?.uid)
-                        } else {
-                            Toast.makeText(applicationContext,
-                                task.exception?.message.toString(),
-                                Toast.LENGTH_SHORT).show()
-                        }
+                /*         firebaseAuth?.sendPasswordResetEmail(etUser.text.toString())
+                             ?.addOnCompleteListener { task ->
+                                 if (task.isSuccessful) {
+                                     currentUser = firebaseAuth?.currentUser
+                                     Toast.makeText(applicationContext,
+                                         "Reset Password Link Sent ${etUser.text}",
+                                         Toast.LENGTH_SHORT).show()
+                                 } else if (task.isComplete) {
+                                     databaseReference = FirebaseDatabase.getInstance()
+                                         .getReferenceFromUrl("https://tanamgroceryapp-default-rtdb.firebaseio.com/")
+                                     databaseReference.child("Users")
+                                     databaseReference.child(username).child("Password")
+                                         .setValue(currentUser?.uid)
+                                 } else {
+                                     Toast.makeText(applicationContext,
+                                         task.exception?.message.toString(),
+                                         Toast.LENGTH_SHORT).show()
+                                 }
 
-                    }*/
+                             }*/
             }
         }
+
 
     }
 
     private fun resetPassword(email: String) {
-        logInViewModel!!.addPasswordResetEmail(email)
-        logInViewModel!!.successPasswordReset!!.observe(this) { task ->
+        logInViewModel.addPasswordResetEmail(email)
+        logInViewModel.successPasswordReset!!.observe(this) { task ->
             if (!task.isSuccessful) {
                 etUser.isClickable = true
                 etUser.setText("")
@@ -138,6 +132,44 @@ class SignInActivity() : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
 
             }
+        }
+    }
+
+    private fun listener() {
+
+        val buttonClick = AlphaAnimation(1f, 0.8f)
+        signinBtn.setOnClickListener(View.OnClickListener { v: View ->
+            etUser.clearFocus()
+            etPassword.clearFocus()
+            v.startAnimation(buttonClick)
+            dismissKeyboard()
+            username = etUser.text.toString().trim()
+            password = etPassword.text.toString()
+            if (password.isEmpty() && username.isEmpty()) {
+                Toast.makeText(this@SignInActivity, "Fields are empty!", Toast.LENGTH_SHORT).show()
+                etUser.requestFocus()
+            } else if (username.isEmpty()) {
+                etUser.error = "Please enter your Email Id."
+                etUser.requestFocus()
+            } else if (password.isEmpty()) {
+                etPassword.error = "Please enter your password."
+                etPassword.requestFocus()
+            } else {
+               // scrollViewLogin.setClickable(false)
+                etUser.isClickable = false
+                etPassword.isClickable = false
+                etUser.isClickable = false
+                signupBtn.isClickable = false
+               // frameLayoutLogin.setVisibility(View.VISIBLE)
+                logInUser()
+            }
+          //  isValid()
+        })
+        signupBtn.setOnClickListener {
+            val intent = Intent(baseContext, SignUpActivity::class.java)
+            startActivity(intent)
+           // overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
+            finish()
         }
     }
 
@@ -173,7 +205,8 @@ class SignInActivity() : AppCompatActivity() {
                 invalid = true
                 etUser.error = null
                 etPassword.error = null
-                login(username, password)
+                logInUser()
+             //   login(username, password)
 
             }
         }
@@ -182,7 +215,7 @@ class SignInActivity() : AppCompatActivity() {
     }
 
     private fun login(email: String, password: String) {
-        logInViewModel!!.userLogIn(email, password)
+        logInViewModel.userLogIn(email, password)
         /*   ref?.child("Users")!!.addListenerForSingleValueEvent(object : ValueEventListener{
               override fun onDataChange(snapshot: DataSnapshot) {
                   if (snapshot.hasChild(username)){
@@ -236,7 +269,7 @@ class SignInActivity() : AppCompatActivity() {
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             prg?.dismiss()
-                            Constants.user = username
+                         //   Constants.user = username
                             SharePref.save(this, "isLogin", true)
                             SharePref.save(this, "User", email)
                             val intent = Intent(this@SignInActivity, UsersActivity::class.java)
@@ -271,18 +304,66 @@ class SignInActivity() : AppCompatActivity() {
 
         }
     }
-    private val userSession: Unit
-        private get() {
-            logInViewModel!!.firebaseUserLogInStatus
-            logInViewModel!!.firebaseUserLoginStatus!!.observe(this) { firebaseUser: FirebaseUser? ->
-                currentUser = firebaseUser
-                if (currentUser != null) {
-                    val intent = Intent(this@SignInActivity, UsersActivity::class.java)
-                    startActivity(intent)
-                    finish()
+
+
+
+    fun logInUser() {
+        logInViewModel.userLogIn(username, password)
+        logInViewModel.logInUser!!.observe(this) { task ->
+            if (!task.isSuccessful) {
+                //frameLayoutLogin.setVisibility(View.GONE)
+              //  scrollViewLogin.setClickable(true)
+                etUser.isClickable = true
+                etPassword.isClickable = true
+                etUser.isClickable = true
+               // textToSignUp.setClickable(true)
+                etUser.setText("")
+                etPassword.setText("")
+                etUser.requestFocus()
+                try {
+                    throw Objects.requireNonNull(task.exception)!!
+                } catch (invalidEmail: FirebaseAuthInvalidUserException) {
+                    Toast.makeText(this@SignInActivity,
+                        "Invalid credentials, please try again.",
+                        Toast.LENGTH_SHORT).show()
+                } catch (wrongPassword: FirebaseAuthInvalidCredentialsException) {
+                    Toast.makeText(this@SignInActivity,
+                        "Wrong password or username , please try again.",
+                        Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@SignInActivity,
+                        "Check Internet Connection.",
+                        Toast.LENGTH_SHORT)
+                        .show()
                 }
+            } else {
+              //  val intent = Intent(this@SignInActivity, UsersActivity::class.java)
+               /* SharePref.save(this@SignInActivity,"isLogin",true)
+                SharePref.save(this@SignInActivity,"username", username)*/
+                SharePref.save(this, "isLogin", true)
+                SharePref.save(this, "User", username)
+                val intent = Intent(this@SignInActivity, UsersActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.putExtra("username", username)
+                startActivity(intent)
+
+                finish()
+
             }
         }
+    }
+
+    private fun getUserSession() {
+        logInViewModel.firebaseUserLogInStatus
+        logInViewModel.firebaseUserLoginStatus.observe(this) { firebaseUser ->
+            currentUser = firebaseUser
+            if (currentUser != null) {
+                val intent = Intent(this@SignInActivity, UsersActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+    }
     fun dismissKeyboard() {
         val imm = (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
         imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)

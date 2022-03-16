@@ -113,7 +113,6 @@
     <string name="save_this_card">Save this card</string>
     <string name="make_payment">MAKE PAYMENT</string>
     <string name="cash_on_ndelivery">Cash On\nDelivery</string>
-    <string name="todo">TODO</string>
     <string name="credit_ncard">Credit \nCard</string>
     <string name="paipal_nmethod">Paipal \nMethod</string>
     <string name="a_bank">A Bank</string>
@@ -137,7 +136,29 @@
     <string name="error_invalid_password">"The password is invalid it must 8 characters at least"</string>
     <string name="passwor_pattern">Password is too weak</string>
     <string name="demo">Demo</string>
-    <string name="user">Maulik</string>
     <string name="sent_time">12:00 PM</string>
 
+    <string name="user">User</string>
+    <string name="username">Username</string>
+    <string name="messages_here">Messages here!</string>
+    <string name="type_your_messages_here">Type a message</string>
+    <string name="a_sample_message">A sample message</string>
+    <string name="profile">Profile</string>
+    <string name="s">Username</string>
+    <string name="todo1">TODO</string>
+    <string name="todo">TODO</string>
+    <string name="name">Name</string>
+    <string name="hey_there">Hey there!</string>
+    <string name="bio">Bio</string>
+    <string name="your_text_here">Your text here.</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="once_you_start_chatting_all_your_chat_appear_here">All your chats will appear here!</string>
+    <string name="_9_00_pm">9:00 PM</string>
+    <string name="toodo">TODO</string>
+    <string name="search">Search…</string>
+    <string name="seen">Seen</string>
+    <string name="forgot_your_password">Forget password?\u0020</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="by_clicking_reset_you_will_receive_an_email_n_to_reset_your_password">By clicking RESET, you will receive an email \n to reset your password.</string>
 </resources>

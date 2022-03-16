@@ -6,8 +6,10 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".chat.UsersActivity">
 
+<!--
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvUserView"
@@ -20,7 +22,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/user_layout" />
 
-       <!-- <LinearLayout
+       &lt;!&ndash; <LinearLayout
             android:id="@+id/mainActivityTextContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +52,72 @@
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_menu_send" />
         </LinearLayout>
+&ndash;&gt;
 -->
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="170dp"
+            android:indeterminateTint="@android:color/white"
+            />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorChat">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/iv_profile_image"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="10dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="25dp"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+
+
+                </androidx.appcompat.widget.Toolbar>
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tab_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/colorChat"
+                            app:tabIndicatorColor="#fff"
+                            app:tabSelectedTextColor="#fff"
+                            app:tabTextColor="#A5A5AE" />
+                </androidx.viewpager.widget.ViewPager>
+
+
+        </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

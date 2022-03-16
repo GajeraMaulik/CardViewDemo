@@ -7,15 +7,18 @@ import com.google.android.gms.tasks.Task
 
 class FirebaseSignUpInstance {
     private val mAuth = FirebaseAuth.getInstance()
-    private var firebaseUser: FirebaseUser? = null
-    var firebaseUsers = MutableLiveData<FirebaseUser?>()
+    private  var firebaseUser: FirebaseUser? = null
+    var firebaseUsers = MutableLiveData<FirebaseUser>()
+    init {
+//        firebaseUser = FirebaseAuth.getInstance().currentUser!!
+    }
     fun signInUser(
-        userNameSignIn: String?,
-        emailSignIn: String?,
-        passwordSignIn: String?
+        userNameSignIn: String,
+        emailSignIn: String,
+        passwordSignIn: String
     ): MutableLiveData<Task<*>> {
         val taskSignIn = MutableLiveData<Task<*>>()
-        mAuth.createUserWithEmailAndPassword(emailSignIn!!, passwordSignIn!!)
+        mAuth.createUserWithEmailAndPassword(emailSignIn, passwordSignIn)
             .addOnCompleteListener { value ->
                 firebaseUser = mAuth.currentUser
                 firebaseUsers.value = firebaseUser

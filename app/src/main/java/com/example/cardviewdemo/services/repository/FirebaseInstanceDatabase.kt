@@ -2,23 +2,29 @@ package com.example.cardviewdemo.services.repository
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log.d
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
+import com.example.cardviewdemo.SharePref
+import com.example.cardviewdemo.chat.receiverRoom
+import com.example.cardviewdemo.chat.senderRoom
+import com.example.cardviewdemo.chat.userId_sender
+import com.example.cardviewdemo.services.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.*
 
+
 class FirebaseInstanceDatabase {
-    private val instance = FirebaseDatabase.getInstance()
+    private val instance = FirebaseDatabase.getInstance().reference
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
     private val storageReference = FirebaseStorage.getInstance().getReference("uploads")
-
-
-    fun fetchAllUserByNames(): MutableLiveData<DataSnapshot>? {
+    lateinit var users:Users
+    fun fetchAllUserByNames(): MutableLiveData<DataSnapshot> {
         val fetchAllUSerName = MutableLiveData<DataSnapshot>()
-        instance.getReference("Users").orderByChild("username")
+        instance.child("Users").orderByChild(firebaseUser!!.uid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     fetchAllUSerName.value = dataSnapshot
@@ -29,19 +35,17 @@ class FirebaseInstanceDatabase {
         return fetchAllUSerName
     }
 
-
     private fun getFileExtension(uri: Uri, context: Context): String? {
         val contentResolver = Objects.requireNonNull(context).contentResolver
         val mimeTypeMap = MimeTypeMap.getSingleton()
         return mimeTypeMap.getMimeTypeFromExtension(contentResolver.getType(uri))
     }
 
-
     fun fetchFileReference(
         timeStamp: String,
         imageUri: Uri,
         context: Context,
-    ): MutableLiveData<StorageReference>? {
+    ): MutableLiveData<StorageReference> {
         val fetchFileReferenceImage = MutableLiveData<StorageReference>()
         val fileReference =
             storageReference.child(timeStamp + "." + getFileExtension(imageUri, context))
@@ -49,9 +53,9 @@ class FirebaseInstanceDatabase {
         return fetchFileReferenceImage
     }
 
-    fun fetchSelectedUserIdData(userId: String?): MutableLiveData<DataSnapshot>? {
+    fun fetchSelectedUserIdData(userId: String?): MutableLiveData<DataSnapshot> {
         val fetchSelectedUserIDData = MutableLiveData<DataSnapshot>()
-        instance.getReference("Users").child(userId!!)
+        instance.child("Users").child(userId!!)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     fetchSelectedUserIDData.value = dataSnapshot
@@ -62,16 +66,17 @@ class FirebaseInstanceDatabase {
         return fetchSelectedUserIDData
     }
 
-    fun getTokenRef(): MutableLiveData<DatabaseReference>? {
-        val getTokenReference = MutableLiveData<DatabaseReference>()
-        val reference = FirebaseDatabase.getInstance().getReference("Tokens")
-        getTokenReference.value = reference
-        return getTokenReference
-    }
+    val tokenRef: MutableLiveData<DatabaseReference>
+        get() {
+            val getTokenReference = MutableLiveData<DatabaseReference>()
+            val reference = FirebaseDatabase.getInstance().getReference("Tokens")
+            getTokenReference.value = reference
+            return getTokenReference
+        }
 
-    fun fetchUserDataCurrent(): MutableLiveData<DataSnapshot>? {
+    fun fetchUserDataCurrent(): MutableLiveData<DataSnapshot> {
         val fetchCurrentUserData = MutableLiveData<DataSnapshot>()
-        instance.getReference("Users").child(firebaseUser!!.uid)
+        instance.child("Users").child(firebaseUser!!.uid)
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     fetchCurrentUserData.value = dataSnapshot
@@ -82,13 +87,19 @@ class FirebaseInstanceDatabase {
         return fetchCurrentUserData
     }
 
-    fun fetchSearchUser(searchString: String): MutableLiveData<DataSnapshot>? {
+    fun fetchSearchUser(searchString: String): MutableLiveData<DataSnapshot> {
+        users = Users()
+
         val fetchSearchUserData = MutableLiveData<DataSnapshot>()
-        val query = instance.getReference("Users").orderByChild("search")
+        val query = instance.child("Users").orderByChild("search")
             .startAt(searchString)
             .endAt(searchString + "\uf8ff")
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //d("TAG","fetchSearchUser : ${dataSnapshot.children("username")}")
+               //  users  = dataSnapshot.getValue(Users::class.java)!!
+                //val newName : String = users.getUsername()
+                //d("TAG","fetchSearchUser : $newName")
                 fetchSearchUserData.value = dataSnapshot
             }
 
@@ -97,12 +108,15 @@ class FirebaseInstanceDatabase {
         return fetchSearchUserData
     }
 
+    fun fetchChatUser(): MutableLiveData<DataSnapshot> {
 
-    fun fetchChatUser(): MutableLiveData<DataSnapshot>? {
         val fetchUserChat = MutableLiveData<DataSnapshot>()
-        instance.getReference("Chats").addValueEventListener(object : ValueEventListener {
+        instance.child("Chats").child(userId_sender).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                d("TAG","before:$dataSnapshot")
+
                 fetchUserChat.value = dataSnapshot
+                d("TAG","after:$dataSnapshot")
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -114,8 +128,8 @@ class FirebaseInstanceDatabase {
         receiverId: String,
         senderId: String,
         message: String,
-        timestamp: String,
-    ): MutableLiveData<Boolean>? {
+        timestamp: Long,
+    ): MutableLiveData<Boolean> {
         val successAddChatsDb = MutableLiveData<Boolean>()
         val hashMap = HashMap<String, Any>()
         hashMap["receiverId"] = receiverId
@@ -123,12 +137,14 @@ class FirebaseInstanceDatabase {
         hashMap["message"] = message
         hashMap["timestamp"] = timestamp
         hashMap["seen"] = false
-        instance.getReference("Chats").push().setValue(hashMap).addOnCompleteListener {
-            successAddChatsDb.value = true
+        instance.child("Chats").child(senderId).push().setValue(hashMap).addOnCompleteListener {
+            instance.child("Chats").child(receiverId).push().setValue(hashMap)
+
+         successAddChatsDb.value = true
         }.addOnFailureListener { successAddChatsDb.value = false }
 
         //creating chatList in database for better performance in chatListFragment .
-        val chatRef = instance.getReference("ChatList")
+        val chatRef = instance.child("ChatList")
             .child(senderId)
             .child(receiverId)
         chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -141,7 +157,7 @@ class FirebaseInstanceDatabase {
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-        val chatRef2 = instance.getReference("ChatList")
+        val chatRef2 = instance.child("ChatList")
             .child(receiverId)
             .child(senderId)
         chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -157,9 +173,9 @@ class FirebaseInstanceDatabase {
         return successAddChatsDb
     }
 
-    fun getChatList(currentUserId: String?): MutableLiveData<DataSnapshot>? {
+    fun getChatList(currentUserId: String?): MutableLiveData<DataSnapshot> {
         val getChatLists = MutableLiveData<DataSnapshot>()
-        val chatRef = instance.getReference("ChatList")
+        val chatRef = instance.child("ChatList")
             .child(firebaseUser!!.uid)
         chatRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -171,8 +187,7 @@ class FirebaseInstanceDatabase {
         return getChatLists
     }
 
-
-    fun addIsSeenInDatabase(isSeen: String, dataSnapshot: DataSnapshot): MutableLiveData<Boolean>? {
+    fun addIsSeenInDatabase(isSeen: String, dataSnapshot: DataSnapshot): MutableLiveData<Boolean> {
         val successAddIsSeen = MutableLiveData<Boolean>()
         val map = HashMap<String, Any>()
         map[isSeen] = true
@@ -183,8 +198,7 @@ class FirebaseInstanceDatabase {
         return successAddIsSeen
     }
 
-
-    fun addImageUrlInDatabase(imageUrl: String, mUri: Any): MutableLiveData<Boolean>? {
+    fun addImageUrlInDatabase(imageUrl: String, mUri: Any): MutableLiveData<Boolean> {
         val successAddUriImage = MutableLiveData<Boolean>()
         val reference = FirebaseDatabase.getInstance().getReference("Users").child(
             firebaseUser!!.uid)
@@ -197,7 +211,7 @@ class FirebaseInstanceDatabase {
         return successAddUriImage
     }
 
-    fun addUsernameInDatabase(usernameUpdated: String, username: Any): MutableLiveData<Boolean>? {
+    fun addUsernameInDatabase(usernameUpdated: String, username: Any): MutableLiveData<Boolean> {
         val successAddUserName = MutableLiveData<Boolean>()
         val reference = FirebaseDatabase.getInstance().getReference("Users").child(
             firebaseUser!!.uid)
@@ -212,7 +226,7 @@ class FirebaseInstanceDatabase {
         return successAddUserName
     }
 
-    fun addBioInDatabase(bioUpdated: String, bio: Any): MutableLiveData<Boolean>? {
+    fun addBioInDatabase(bioUpdated: String, bio: Any): MutableLiveData<Boolean> {
         val successAddBio = MutableLiveData<Boolean>()
         val reference = FirebaseDatabase.getInstance().getReference("Users").child(
             firebaseUser!!.uid)
@@ -225,7 +239,7 @@ class FirebaseInstanceDatabase {
         return successAddBio
     }
 
-    fun addStatusInDatabase(statusUpdated: String, status: Any): MutableLiveData<Boolean>? {
+    fun addStatusInDatabase(statusUpdated: String, status: Any): MutableLiveData<Boolean> {
         val successAddStatus = MutableLiveData<Boolean>()
         val id = firebaseUser!!.uid
         val ref = FirebaseDatabase.getInstance().getReference("Users")
@@ -248,14 +262,13 @@ class FirebaseInstanceDatabase {
         return successAddStatus
     }
 
-
     fun addUserInDatabase(
         userId: String,
         userName: String,
         emailId: String,
         timestamp: String,
         imageUrl: String,
-    ): MutableLiveData<Boolean>? {
+    ): MutableLiveData<Boolean> {
         val successAddUserDb = MutableLiveData<Boolean>()
         val hashMap = HashMap<String, String>()
         hashMap["id"] = userId
@@ -266,7 +279,7 @@ class FirebaseInstanceDatabase {
         hashMap["bio"] = "Hey there!"
         hashMap["status"] = "offline"
         hashMap["search"] = userName.toLowerCase()
-        instance.getReference("Users").child(userId).setValue(hashMap).addOnCompleteListener {
+        instance.child("Users").child(userId).setValue(hashMap).addOnCompleteListener {
             successAddUserDb.value = true
         }.addOnFailureListener { successAddUserDb.value = false }
         return successAddUserDb

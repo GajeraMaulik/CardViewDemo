@@ -9,58 +9,56 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
 
-class DatabaseViewModel  : ViewModel() {
+class DatabaseViewModel : ViewModel(){
     var instance: FirebaseInstanceDatabase? = null
-    var successAddUserDb: LiveData<Boolean?>? = null
-    var fetchUserCurrentData: LiveData<DataSnapshot?>? = null
-    var fetchUserNames: LiveData<DataSnapshot?>? = null
-    var fetchSelectedProfileUserData: LiveData<DataSnapshot?>? = null
-    var successAddChatDb: LiveData<Boolean?>? = null
-    var fetchedChat: LiveData<DataSnapshot?>? = null
-    var imageFileReference: LiveData<StorageReference?>? = null
-    var successAddImageUrlInDatabase: LiveData<Boolean?>? = null
-    var successAddUsernameInDatabase: LiveData<Boolean?>? = null
-    var successAddBioInDatabase: LiveData<Boolean?>? = null
-    var successAddStatusInDatabase: LiveData<Boolean?>? = null
-    var fetchSearchUser: LiveData<DataSnapshot?>? = null
-    var successAddIsSeen: LiveData<Boolean?>? = null
-    var getChaListUserDataSnapshot: LiveData<DataSnapshot?>? = null
-    var getTokenRefDb: LiveData<DatabaseReference?>? = null
+    var successAddUserDb: LiveData<Boolean>?= null
+    var fetchUserCurrentData: LiveData<DataSnapshot>? = null
+    var fetchUserNames: LiveData<DataSnapshot>?=null
+    var fetchSelectedProfileUserData: LiveData<DataSnapshot>?=null
+    var successAddChatDb: LiveData<Boolean>?=null
+     var fetchedChat : LiveData<DataSnapshot?>?=null
+    var imageFileReference: LiveData<StorageReference>?=null
+    var successAddImageUrlInDatabase: LiveData<Boolean>?=null
+    var successAddUsernameInDatabase: LiveData<Boolean>?=null
+    var successAddBioInDatabase: LiveData<Boolean>?=null
+    var successAddStatusInDatabase: LiveData<Boolean>?=null
+    var fetchSearchUser: LiveData<DataSnapshot>?=null
+    var successAddIsSeen: LiveData<Boolean>?=null
+    var getChaListUserDataSnapshot: LiveData<DataSnapshot>?=null
+    var getTokenRefDb: LiveData<DatabaseReference>?=null
 
 
-    fun DatabaseViewModel() {
+
+    init{
+
         instance = FirebaseInstanceDatabase()
     }
 
-    fun addUserDatabase(
-        userId: String?,
-        userName: String?,
-        emailId: String?,
-        timestamp: String?,
-        imageUrl: String?,
-    ) {
-        successAddUserDb =
-            instance?.addUserInDatabase(userId!!, userName!!, emailId!!, timestamp!!, imageUrl!!)
+
+
+    fun addUserDatabase(userId: String, userName: String, emailId: String, timestamp: String,imageUrl: String) {
+        successAddUserDb = instance?.addUserInDatabase(userId, userName, emailId, timestamp,imageUrl)
     }
 
     fun fetchingUserDataCurrent() {
-        fetchUserCurrentData = instance?.fetchUserDataCurrent()
+         fetchUserCurrentData = instance?.fetchUserDataCurrent()
     }
 
     fun fetchUserByNameAll() {
         fetchUserNames = instance?.fetchAllUserByNames()
     }
 
-    fun fetchSelectedUserProfileData(userId: String?) {
+    fun fetchSelectedUserProfileData(userId: String) {
         fetchSelectedProfileUserData = instance?.fetchSelectedUserIdData(userId)
     }
 
-    fun addChatDb(receiverId: String?, senderId: String?, message: String?, timestamp: String?) {
-        successAddChatDb = instance?.addChatsInDatabase(receiverId!!, senderId!!, message!!, timestamp!!)
+    fun addChatDb(receiverId: String?, senderId: String?, message: String?, timestamp: Long?) {
+        successAddChatDb =
+            instance?.addChatsInDatabase(receiverId!!, senderId!!, message!!, timestamp!!)
     }
 
     fun fetchChatUser() {
-        fetchedChat = instance?.fetchChatUser()
+        fetchedChat = instance?.fetchChatUser()!!
     }
 
     fun fetchImageFileReference(timeStamp: String?, imageUri: Uri?, context: Context?) {
@@ -96,7 +94,7 @@ class DatabaseViewModel  : ViewModel() {
     }
 
     fun getTokenDatabaseRef() {
-        getTokenRefDb = instance?.getTokenRef()
+        getTokenRefDb = instance?.tokenRef
     }
 
 

@@ -1,13 +1,14 @@
 package com.example.cardviewdemo.services.notifications
 
 import retrofit2.Response
-
-class Sender(data: com.example.cardviewdemo.services.model.Data, token: Unit?) {
+import com.example.cardviewdemo.services.model.Data
+class Sender{
 
     var data: Data? = null
     var to: String? = null
-
-    fun Sender(data: Data?, to: String?) {
+constructor(){
+}
+    constructor(data: Data?, to: String?) {
         this.data = data
         this.to = to
     }

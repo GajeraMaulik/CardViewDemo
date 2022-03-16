@@ -9,16 +9,13 @@ import com.google.firebase.auth.FirebaseUser
 
 
 class SignInViewModel : ViewModel() {
-    private lateinit var signUpInstance : FirebaseSignUpInstance
+      var signUpInstance = FirebaseSignUpInstance()
 
-    var signInUser: LiveData<Task<*>>? = null
-    lateinit var userFirebaseSession: MutableLiveData<FirebaseUser?>
+    lateinit var signInUser: LiveData<Task<*>>
+    lateinit var userFirebaseSession: MutableLiveData<FirebaseUser>
 
-    fun SignInViewModel() {
-        signUpInstance = FirebaseSignUpInstance()
-    }
 
-    fun userSignIn(userNameSignIn: String?, emailSignIn: String?, passwordSignIn: String?) {
+    fun userSignIn(userNameSignIn: String, emailSignIn: String, passwordSignIn: String) {
         signInUser = signUpInstance.signInUser(userNameSignIn, emailSignIn, passwordSignIn)
     }
 

@@ -45,4 +45,10 @@
     <color name="stepview_text_selected">@color/tcstepper</color>
 
 
+    <color name="colorChat">#000000</color>
+    <color name="colorChatDark">#242325</color>
+    <color name="colorChatAccent">#63FFA3</color>
+    <color name="background">#16191c</color>
+
+
 </resources>

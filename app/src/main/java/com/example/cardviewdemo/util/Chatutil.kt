@@ -1,7 +1,6 @@
 package com.example.cardviewdemo.util
 
-import com.example.cardviewdemo.chat.firebaseAuth
-import com.example.cardviewdemo.services.model.UserProfile
+import com.example.cardviewdemo.services.model.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -69,7 +68,7 @@ class Chatutil {
         databaseReference?.updateChildren(map)
     }
     fun getUserName():String? {
-        val user = firebaseAuth?.currentUser
+        val user = FirebaseAuth.getInstance().currentUser
         return if (user != null) {
             user.displayName
         } else return null
