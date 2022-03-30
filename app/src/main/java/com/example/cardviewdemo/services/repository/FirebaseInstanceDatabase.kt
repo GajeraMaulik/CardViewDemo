@@ -6,10 +6,10 @@ import android.util.Log.d
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import com.example.cardviewdemo.SharePref
-import com.example.cardviewdemo.chat.receiverRoom
-import com.example.cardviewdemo.chat.senderRoom
-import com.example.cardviewdemo.chat.userId_sender
+import com.example.cardviewdemo.chat.*
+import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Users
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -18,10 +18,12 @@ import java.util.*
 
 
 class FirebaseInstanceDatabase {
-    private val instance = FirebaseDatabase.getInstance().reference
+     val instance = FirebaseDatabase.getInstance().reference
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
     private val storageReference = FirebaseStorage.getInstance().getReference("uploads")
-    lateinit var users:Users
+     var users=Users()
+     var chats= Chats()
+  lateinit var context:Context
     fun fetchAllUserByNames(): MutableLiveData<DataSnapshot> {
         val fetchAllUSerName = MutableLiveData<DataSnapshot>()
         instance.child("Users").orderByChild(firebaseUser!!.uid)
@@ -88,7 +90,7 @@ class FirebaseInstanceDatabase {
     }
 
     fun fetchSearchUser(searchString: String): MutableLiveData<DataSnapshot> {
-        users = Users()
+      //  users = Users()
 
         val fetchSearchUserData = MutableLiveData<DataSnapshot>()
         val query = instance.child("Users").orderByChild("search")
@@ -111,7 +113,26 @@ class FirebaseInstanceDatabase {
     fun fetchChatUser(): MutableLiveData<DataSnapshot> {
 
         val fetchUserChat = MutableLiveData<DataSnapshot>()
-        instance.child("Chats").child(userId_sender).addValueEventListener(object : ValueEventListener {
+        instance.child("Chats").child("${newCurrentuser}_$newReceiver").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                d("TAG","before:$dataSnapshot")
+
+                fetchUserChat.value = dataSnapshot
+
+                d("TAG","after:$dataSnapshot")
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+
+        return fetchUserChat
+    }
+
+/*    fun fetchChatUser1(): MutableLiveData<DataSnapshot> {
+
+        val fetchUserChat = MutableLiveData<DataSnapshot>()
+        instance.child("Chats").get()
+            .addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 d("TAG","before:$dataSnapshot")
 
@@ -122,30 +143,32 @@ class FirebaseInstanceDatabase {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
         return fetchUserChat
-    }
+    }*/
 
     fun addChatsInDatabase(
+        currentUserId: String,
         receiverId: String,
-        senderId: String,
         message: String,
         timestamp: Long,
     ): MutableLiveData<Boolean> {
         val successAddChatsDb = MutableLiveData<Boolean>()
         val hashMap = HashMap<String, Any>()
         hashMap["receiverId"] = receiverId
-        hashMap["senderId"] = senderId
+        hashMap["currentuserId"] = currentUserId
         hashMap["message"] = message
         hashMap["timestamp"] = timestamp
         hashMap["seen"] = false
-        instance.child("Chats").child(senderId).push().setValue(hashMap).addOnCompleteListener {
-            instance.child("Chats").child(receiverId).push().setValue(hashMap)
+        instance.child("Chats").child("${newCurrentuser}_$newReceiver").child("$timestamp")   .setValue(hashMap).addOnCompleteListener {
+           // instance.child("Chats").child(receiverId).push().setValue(hashMap)
 
          successAddChatsDb.value = true
         }.addOnFailureListener { successAddChatsDb.value = false }
 
+
+
         //creating chatList in database for better performance in chatListFragment .
         val chatRef = instance.child("ChatList")
-            .child(senderId)
+            .child(currentUserId)
             .child(receiverId)
         chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -159,11 +182,58 @@ class FirebaseInstanceDatabase {
         })
         val chatRef2 = instance.child("ChatList")
             .child(receiverId)
-            .child(senderId)
+            .child(currentUserId)
         chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    chatRef2.child("id").setValue(senderId)
+                    chatRef2.child("id").setValue(currentUserId)
+                    chatRef2.child("timestamp").setValue(timestamp)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+        return successAddChatsDb
+    }
+
+    fun addChatsInDatabase1(
+         comunication:String,
+        message: String,
+        timestamp: Long,
+    ): MutableLiveData<Boolean> {
+        val successAddChatsDb = MutableLiveData<Boolean>()
+        val hashMap = HashMap<String, Any>()
+        hashMap["comunication"] = comunication
+        hashMap["message"] = message
+        hashMap["timestamp"] = timestamp
+        hashMap["seen"] = false
+        instance.child("Chats").child(comunication).push().setValue(hashMap).addOnCompleteListener {
+            // instance.child("Chats").child(receiverId).push().setValue(hashMap)
+
+            successAddChatsDb.value = true
+        }.addOnFailureListener { successAddChatsDb.value = false }
+
+        //creating chatList in database for better performance in chatListFragment .
+        val chatRef = instance.child("ChatList")
+            .child(newCurrentuser!!)
+          .child(newReceiver!!)
+        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef.child("id").setValue(newCurrentuser!!)
+                    chatRef.child("timestamp").setValue(timestamp)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+        val chatRef2 = instance.child("ChatList")
+            .child(newReceiver!!)
+            .child(newCurrentuser!!)
+        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef2.child("id").setValue(newReceiver)
                     chatRef2.child("timestamp").setValue(timestamp)
                 }
             }
@@ -279,6 +349,7 @@ class FirebaseInstanceDatabase {
         hashMap["bio"] = "Hey there!"
         hashMap["status"] = "offline"
         hashMap["search"] = userName.toLowerCase()
+       // SharePref.save(context,"user","username")
         instance.child("Users").child(userId).setValue(hashMap).addOnCompleteListener {
             successAddUserDb.value = true
         }.addOnFailureListener { successAddUserDb.value = false }

@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.chat.newCurrentuser
+import com.example.cardviewdemo.chat.newReceiver
+import com.example.cardviewdemo.chat.userId_receiver
+import com.example.cardviewdemo.chat.userId_sender
 import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Mymessage
 import com.example.cardviewdemo.util.DateUtils
@@ -23,17 +27,18 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     private val MSG_TYPE_LEFT_RECEIVED = 0
     private val MSG_TYPE_RIGHT_RECEIVED = 1
-    private var chatArrayList: ArrayList<Mymessage> = ArrayList()
+    private var chatArrayList: ArrayList<Chats> = ArrayList()
     private var context: Context? = null
     private var currentUser_sender: String? = null
+
 
     constructor(){
 
     }
-    constructor(chatArrayList: ArrayList<Mymessage>, context: Context?, currentUser_sender: String?) {
+    constructor(chatArrayList: ArrayList<Chats>, context: Context?,senderId_receiverId: String) {
         this.chatArrayList = chatArrayList
         this.context = context
-        this.currentUser_sender = currentUser_sender
+        this.currentUser_sender = senderId_receiverId
     }
 
 
@@ -49,22 +54,22 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
            val chats = chatArrayList[position]
-       d("TAG","chat : ${chats.getMessage()}")
-       val message: String = chats.getMessage().toString()
+       d("TAG","Message Adapter: ${chats.getMessage()}")
+       val message: String? = chats.getMessage()
        val timeStamp: Long? = chats.getTimestamp()
        val isSeen: Boolean = chats.getSeen()
-       val intTimeStamp = timeStamp
-       val time_msg_received = DateUtils.formatTime(timeStamp)
+       //val intTimeStamp = timeStamp
+       val time_msg_received:String = DateUtils.formatTime(timeStamp)
        holder.tv_time.text = time_msg_received
        holder.tv_msg.text = message
-       if (position == chatArrayList.size - 1) {
+       if (position == chatArrayList.size -1) {
            if (isSeen) {
                holder.tv_seen.visibility = View.VISIBLE
-               val seen = "Seen"
+               val seen:String = "Seen"
                holder.tv_seen.text = seen
            } else {
                holder.tv_seen.visibility = View.VISIBLE
-               val delivered = "Delivered"
+               val delivered:String = "Delivered"
                holder.tv_seen.text = delivered
            }
        } else {
@@ -136,7 +141,9 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     class MessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tv_msg: TextView = itemView.findViewById(R.id.tv_chat_received)
-        var tv_time: TextView = itemView.findViewById(R.id.tv_chat_time_received)
+
+        var tv_time: TextView  = itemView.findViewById(R.id.tv_chat_time_received)
+
         var tv_seen: TextView = itemView.findViewById(R.id.tv_seen)
 
     }
@@ -144,7 +151,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
     override fun getItemViewType(position: Int): Int {
         return if (chatArrayList[position].getReceiverId().equals(currentUser_sender)) {
             MSG_TYPE_LEFT_RECEIVED
-        } else MSG_TYPE_RIGHT_RECEIVED
+        } else  MSG_TYPE_RIGHT_RECEIVED
     }
 
 

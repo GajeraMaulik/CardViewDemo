@@ -16,7 +16,8 @@ import com.google.android.gms.tasks.Task
 class FirebaseLoginInstance {
     private val mAuth = FirebaseAuth.getInstance()
     private val firebaseUser = mAuth.currentUser
-    lateinit var  context:Context
+//    lateinit var  context:Context
+    var users = Users()
     val firebaseUserLoginStatus : MutableLiveData<FirebaseUser>
         get() {
             val firebaseUserLoginStatus = MutableLiveData<FirebaseUser>()
@@ -39,7 +40,7 @@ class FirebaseLoginInstance {
         val reference = FirebaseDatabase.getInstance().getReference("Tokens")
         val token = Token(newToken)
         assert(firebaseUser != null)
-        reference.child(firebaseUser?.uid!!).setValue(token)
+        reference.child(firebaseUser!!.uid).setValue(token)
         return successTokenUpdate
     }
 

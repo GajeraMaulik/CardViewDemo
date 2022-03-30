@@ -15,7 +15,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 class BottomSheetProfileDetailUser(var username: String, var imageURL: String, var bio: String) : BottomSheetDialogFragment() {
-    var iv_profile_bottom_sheet_profile_image: CircleImageView? = null
+    lateinit var iv_profile_bottom_sheet_profile_image: CircleImageView
     private var tv_profile__bottom_sheet_fragment_username: TextView? = null
     private var tv_profile_bottom_sheet_fragment_bio: TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,9 +40,9 @@ class BottomSheetProfileDetailUser(var username: String, var imageURL: String, v
         tv_profile__bottom_sheet_fragment_username?.text = username
         tv_profile_bottom_sheet_fragment_bio!!.text = bio
         if (imageURL == "default") {
-            iv_profile_bottom_sheet_profile_image?.setImageResource(R.drawable.sample_img)
+            iv_profile_bottom_sheet_profile_image.setImageResource(R.drawable.sample_img)
         } else {
-            Glide.with(this).load(imageURL).into(iv_profile_bottom_sheet_profile_image!!)
+            Glide.with(this).load(imageURL).into(iv_profile_bottom_sheet_profile_image)
         }
     }
 

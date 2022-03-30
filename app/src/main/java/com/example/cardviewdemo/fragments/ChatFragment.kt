@@ -1,6 +1,5 @@
 package com.example.cardviewdemo.fragments
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -15,20 +14,16 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
-import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.services.model.ChatList
 import com.example.cardviewdemo.services.model.Users
-import com.example.cardviewdemo.services.notifications.MessagingServices
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import java.util.*
 
-@SuppressLint("StaticFieldLeak")
 
-
-class ChatFragment(usersActivity: UsersActivity) : Fragment() {
+class ChatFragment : Fragment(){
     lateinit var userAdapter: UserFragmentAdapter
     private lateinit var mUsers: ArrayList<Users>
     private var currentUserId: String? = null
@@ -57,18 +52,22 @@ class ChatFragment(usersActivity: UsersActivity) : Fragment() {
 
     fun getTokens() {
 
-        MessagingServices.sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+     //   MessagingServices.sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w("MAulik", "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
             // Get new FCM registration token
+
             val token = task.result
             Log.d("TAG","FCM : $token")
-            updateToken(token)
-          // MessagingServices.token = token
+
+            if (task.isSuccessful) {
+                updateToken(token)
+            }else {                Log.w("MAulik", "Fetching FCM registration token failed", task.exception)
+                                    return@OnCompleteListener
+            }
+
+
+
+            // MessagingServices.token = token
         })
     }
 

@@ -1,17 +1,22 @@
 package com.example.cardviewdemo.services.notifications
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.Build
-import android.content.SharedPreferences
 import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
@@ -20,10 +25,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.chat.MessagingActivity
+import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlin.random.Random
 
 @SuppressLint("StaticFieldLeak")
 private lateinit var context:Context
@@ -33,8 +40,8 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
         application).create(
         LogInViewModel::class.java)
 
-    val CHANNEL_ID = "my_notification_channel"
-    companion object{
+   val CHANNEL_ID = "my_notification_channel"
+ /*   companion object{
         var sharedPref: SharedPreferences? = null
         //var sharePref = SharePref
 
@@ -47,7 +54,7 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
                 // SharePref.save(context,"token",value!!)
                 sharedPref?.edit()?.putString("token",value)?.apply()
             }
-    }
+    }*/
 
     override fun onNewToken(p0: String) {
         super.onNewToken(p0)
@@ -85,7 +92,7 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
             }
         }
         /*  Log.d("FCM Response", "FCM Message received")
-          val intent = Intent(this,UsersActivity::class.java)
+          val intent = Intent(this, UsersActivity::class.java)
           val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
           val notificationId = Random.nextInt()
 
@@ -106,7 +113,7 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
           notificationManager.notify(notificationId,notification)*/
     }
 
-    /*     @RequiresApi(Build.VERSION_CODES.O)
+         @RequiresApi(Build.VERSION_CODES.O)
          private fun createNotificationChannel(notificationManager: NotificationManager){
 
              val channelName = "ChannelFirebaseChat"
@@ -117,7 +124,7 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
              }
              notificationManager.createNotificationChannel(channel)
 
-         }*/
+         }
 
 
     @RequiresApi(O)
@@ -133,10 +140,11 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
         val bundle = Bundle()
         bundle.putString("userId", user)
         intent.putExtras(bundle)
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, j, intent, FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this, j, intent, FLAG_IMMUTABLE)
         val defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val oreoNotification = OreoNotification(this)
+        val oreoNotification:OreoNotification = OreoNotification(this)
         val builder: Notification.Builder =
             oreoNotification.getOreoNotification(title, body, pendingIntent, defaultSound, icon)
         var i = 0
@@ -156,11 +164,16 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
         val j = user!!.replace("[\\D]".toRegex(), "").toInt()
         val intent = Intent(this, MessagingActivity::class.java)
         val bundle = Bundle()
+
         bundle.putString("userId", user)
         intent.putExtras(bundle)
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, j, intent, FLAG_ONE_SHOT)
+
+        val pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
         assert(icon != null)
         val builder = NotificationCompat.Builder(this)
             .setSmallIcon(R.mipmap.ic_launcher)

@@ -45,8 +45,8 @@ object Client {
 
 
 
-        val client: Retrofit
-            get() {
+        fun getClient(url:String): Retrofit
+                 {
             //    interceptor = HttpLoggingInterceptor()
              //   interceptor.level = HttpLoggingInterceptor.Level.BODY
 
@@ -79,7 +79,7 @@ object Client {
 
                 if (retrofit == null) {
                     retrofit = Retrofit.Builder()
-                        .baseUrl(Constants.BASE_URL)
+                        .baseUrl(url)
                         .addConverterFactory(GsonConverterFactory.create())
                         //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .client(okHttpClient)

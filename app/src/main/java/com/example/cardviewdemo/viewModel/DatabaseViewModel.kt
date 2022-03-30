@@ -8,6 +8,7 @@ import com.example.cardviewdemo.services.repository.FirebaseInstanceDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.storage.StorageReference
+import java.util.*
 
 class DatabaseViewModel : ViewModel(){
     var instance: FirebaseInstanceDatabase? = null
@@ -16,7 +17,7 @@ class DatabaseViewModel : ViewModel(){
     var fetchUserNames: LiveData<DataSnapshot>?=null
     var fetchSelectedProfileUserData: LiveData<DataSnapshot>?=null
     var successAddChatDb: LiveData<Boolean>?=null
-     var fetchedChat : LiveData<DataSnapshot?>?=null
+     var fetchedChat : LiveData<DataSnapshot>?= null
     var imageFileReference: LiveData<StorageReference>?=null
     var successAddImageUrlInDatabase: LiveData<Boolean>?=null
     var successAddUsernameInDatabase: LiveData<Boolean>?=null
@@ -52,14 +53,21 @@ class DatabaseViewModel : ViewModel(){
         fetchSelectedProfileUserData = instance?.fetchSelectedUserIdData(userId)
     }
 
-    fun addChatDb(receiverId: String?, senderId: String?, message: String?, timestamp: Long?) {
+    fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?) {
         successAddChatDb =
-            instance?.addChatsInDatabase(receiverId!!, senderId!!, message!!, timestamp!!)
+            instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!)
+    }
+    fun addChatDb1(comunication: String?, message: String?, timestamp: Long?) {
+        successAddChatDb =
+            instance?.addChatsInDatabase1(comunication!!, message!!, timestamp!!)
     }
 
     fun fetchChatUser() {
         fetchedChat = instance?.fetchChatUser()!!
     }
+  /*  fun fetchChatUser1() {
+        fetchedChat = instance?.fetchChatUser1()!!
+    }*/
 
     fun fetchImageFileReference(timeStamp: String?, imageUri: Uri?, context: Context?) {
         imageFileReference = instance?.fetchFileReference(timeStamp!!, imageUri!!, context!!)

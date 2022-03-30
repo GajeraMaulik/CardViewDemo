@@ -41,13 +41,13 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
 
     override fun onBindViewHolder(holder: UserFragmentHolder, position: Int) {
         val users: Users = usersArrayList[position]
-        val imageUrl: String? = users.getImageUrl()
+        val imageUrl: String = users.getImageUrl()
         val userName: String = users.getUsername()
-        val bio: String? = users.getBio()
-        val user_status: String? = users.getStatus()
+        val bio: String = users.getBio()
+        val user_status: String = users.getStatus()
         if (isChat) {
             try {
-                if (user_status!!.contains("online")  && isNetworkConnected()) {
+                if (user_status.contains("online")  && isNetworkConnected()) {
                     holder.iv_status_user_list.setBackgroundResource(R.drawable.online_status)
                 } else {
                     holder.iv_status_user_list.setBackgroundResource(R.drawable.offline_status)
@@ -68,13 +68,13 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
         holder.tv_name.text = userName
         holder.iv_profile_image.setOnClickListener(View.OnClickListener {
             bottomSheetProfileDetailUser =
-                BottomSheetProfileDetailUser(userName!!, imageUrl!!, bio!!)
+                BottomSheetProfileDetailUser(userName, imageUrl, bio)
             val manager = (context as AppCompatActivity?)!!.supportFragmentManager
             bottomSheetProfileDetailUser.show(manager, "edit")
         })
         holder.itemView.setOnClickListener {
             val intent = Intent(context, MessagingActivity::class.java)
-            intent.putExtra("userid", users.getId())
+            intent.putExtra("userId", users.getId())
             context.startActivity(intent)
         }
     }

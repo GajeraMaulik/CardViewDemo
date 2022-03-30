@@ -29,7 +29,6 @@ import java.util.*
 
 
 private lateinit var binding: ActivityCameraBinding
-private var mStorageRef: FirebaseStorage?= null
 
 
 class CameraActivity : AppCompatActivity() {
@@ -37,7 +36,6 @@ class CameraActivity : AppCompatActivity() {
          private var mCameraUri: Uri? = null
         private var mGalleryUri: Uri? = null
           private var mProfileUri:Uri? =null
-    private lateinit var cursor:Cursor
 
     private val profileLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK ) {

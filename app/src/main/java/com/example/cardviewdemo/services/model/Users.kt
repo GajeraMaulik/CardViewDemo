@@ -3,28 +3,21 @@ package com.example.cardviewdemo.services.model
 
  class Users{
 
-    private var id: String = "1"
-      private var emailId: String = "mgmaulik14"
-      private var timestamp: String = "012"
-     private var imageUrl: String = "default"
-    private var username: String = "m"
 
-     private var bio: String ="hi"
+    private lateinit var id: String
+      private lateinit var emailId: String
+      private lateinit var timestamp: String
+     private lateinit var imageUrl: String
+    private lateinit var username: String
 
-     private var status: String = "online"
+     private lateinit var bio: String
 
+     private lateinit var status: String
+    constructor() {
 
-    constructor() {}
+    }
 
-    constructor(
-        id: String,
-        username: String,
-        emailId: String,
-        timestamp: String,
-        status: String,
-        imageUrl: String,
-        bio: String,
-    ) {
+    constructor(id: String, username: String, emailId: String, timestamp: String, status: String, imageUrl: String, bio: String, ) {
         this.id = id
         this.username = username
         this.emailId = emailId

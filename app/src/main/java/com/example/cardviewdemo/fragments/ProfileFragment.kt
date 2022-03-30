@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 
- class ProfileFragment(usersActivity: UsersActivity) : Fragment() {
+ class ProfileFragment : Fragment() {
     lateinit var databaseViewModel: DatabaseViewModel
     lateinit var dataImageByte: ByteArray
 
@@ -51,7 +51,7 @@ import java.util.*
 
 
 
-    override fun onCreateView(
+     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -139,7 +139,8 @@ import java.util.*
                 e.printStackTrace()
             }
             val baos = ByteArrayOutputStream()
-                bmp?.compress(Bitmap.CompressFormat.JPEG, 90, baos) //compression
+
+                bmp?.compress(Bitmap.CompressFormat.JPEG, 10, baos) //compression
                 dataImageByte = baos.toByteArray()
 
 

@@ -90,8 +90,9 @@
                 android:resource="@xml/file_path" />
         </provider>
         <service
-            android:name=".services.MessagingServices"
-            android:exported="false">
+            android:name=".services.notifications.MessagingServices"
+            android:exported="true"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

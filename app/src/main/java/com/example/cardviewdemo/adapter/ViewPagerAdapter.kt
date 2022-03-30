@@ -3,12 +3,13 @@ package com.example.cardviewdemo.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import java.util.ArrayList
 
-class ViewPagerAdapter(fm: FragmentManager) :
-    FragmentStatePagerAdapter(fm) {
+class ViewPagerAdapter(fm: FragmentManager, behavior: Int) :
+    FragmentStatePagerAdapter(fm, behavior) {
     private val listFragment: MutableList<Fragment> = ArrayList()
     private val listTitles: MutableList<String> = ArrayList()
+
+
     override fun getItem(position: Int): Fragment {
         return listFragment[position]
     }

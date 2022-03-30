@@ -1,15 +1,16 @@
 package com.example.cardviewdemo.services.notifications
 
-class Data(toString: String, s1: String, s2: String, userId_receiver: String) {
+class Data{
     private var user: String? = null
-    private var icon: String? = null
+    private var icon: Int? = null
     private var body: String? = null
     private var title: String? = null
     private var sent: String? = null
+constructor(){
 
-    fun Data() {}
+}
 
-    fun Data(user: String?, body: String?, title: String?, sent: String?) {
+    constructor(user: String?,icon: Int?, body: String?, title: String?, sent: String?) {
         this.user = user
         this.icon = icon
         this.body = body
@@ -25,11 +26,11 @@ class Data(toString: String, s1: String, s2: String, userId_receiver: String) {
         this.user = user
     }
 
-    fun getIcon(): String? {
+    fun getIcon(): Int? {
         return icon
     }
 
-    fun setIcon(icon: String?) {
+    fun setIcon(icon: Int?) {
         this.icon = icon
     }
 

@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.cardviewdemo.R
@@ -26,6 +27,7 @@ import com.example.cardviewdemo.fragments.ChatFragment
 import com.example.cardviewdemo.fragments.ProfileFragment
 import com.example.cardviewdemo.fragments.UserFragment
 import com.example.cardviewdemo.login.SignInActivity
+import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Users
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.LogInViewModel
@@ -43,7 +45,6 @@ class UsersActivity : AppCompatActivity() {
     private lateinit var logInViewModel: LogInViewModel
     private lateinit var toolbar: Toolbar
     private lateinit var databaseViewModel: DatabaseViewModel
-
     lateinit var linearLayout: LinearLayout
     lateinit var progressBar: ProgressBar
     var currentUserName: TextView? = null
@@ -54,6 +55,11 @@ class UsersActivity : AppCompatActivity() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager
     private lateinit var viewPagerAdapter: ViewPagerAdapter
+
+    val chatfragment =ChatFragment()
+    val userFragment =UserFragment()
+    val profileFragment = ProfileFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        // setContentView(R.layout.activity_users)
@@ -61,8 +67,13 @@ class UsersActivity : AppCompatActivity() {
         binding = ActivityUsersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        d("2", "2 user:(${Chats().getSenderId()})")
 
         window.statusBarColor = ContextCompat.getColor(this,R.color.colorChat)
+
+        viewPagerAdapter = ViewPagerAdapter(supportFragmentManager,PagerAdapter.POSITION_UNCHANGED)
+
+
 
 
         init()
@@ -73,9 +84,9 @@ class UsersActivity : AppCompatActivity() {
     }
     private fun setupPagerFragment() {
 
-        viewPagerAdapter.addFragment(ChatFragment(this), "Chats")
-        viewPagerAdapter.addFragment(UserFragment(this), "Users")
-        viewPagerAdapter.addFragment(ProfileFragment(this), "Profile")
+        viewPagerAdapter.addFragment(chatfragment, "Chats")
+        viewPagerAdapter.addFragment(userFragment, "Users")
+        viewPagerAdapter.addFragment(profileFragment, "Profile")
         viewPager.adapter = viewPagerAdapter
         tabLayout.setupWithViewPager(viewPager)
     }
@@ -91,6 +102,7 @@ class UsersActivity : AppCompatActivity() {
                 linearLayout.visibility = View.VISIBLE
                 username = user.getUsername()
                 imageUrl = user.getImageUrl()
+                intent.putExtra("userid",user.getId())
                 d("TAG","$username")
                  // Toast.makeText(this, "Welcome back $username.", Toast.LENGTH_SHORT).show();
                 currentUserName?.text = username
@@ -117,7 +129,6 @@ class UsersActivity : AppCompatActivity() {
         databaseViewModel = DatabaseViewModel()
         viewPager = ViewPager(this)
         toolbar = Toolbar(this)
-        viewPagerAdapter = ViewPagerAdapter(supportFragmentManager,)
         logInViewModel = LogInViewModel()
         logInViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
             .getInstance(application))[LogInViewModel::class.java]
@@ -185,10 +196,11 @@ class UsersActivity : AppCompatActivity() {
 
     }
 */
-    open fun menuIconColor(menuItem: MenuItem, color: Int) {
+
+     fun menuIconColor(menuItem: MenuItem, color: Int) {
         val drawable: Drawable = menuItem.icon
         drawable.mutate()
-        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+        drawable.setColorFilter(color, PorterDuff.Mode.DST_ATOP)
     }
 
     private fun getUserAuthToSignOut() {
@@ -203,7 +215,10 @@ class UsersActivity : AppCompatActivity() {
     }
     fun onOptionMenuClicked() {
         toolbar.inflateMenu(R.menu.chat_menu)
+        toolbar
         toolbar.setOnMenuItemClickListener { item ->
+          //  menuIconColor(item,R.color.white)
+
             if (item.itemId == R.id.logout) {
                 getUserAuthToSignOut()
                 Toast.makeText(this@UsersActivity, "Logged out", Toast.LENGTH_SHORT).show()

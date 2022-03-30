@@ -1,25 +1,28 @@
 package com.example.cardviewdemo.services.model
 
 class Chats {
-    private  var receiverId: String?=null
-    private var senderId: String? = null
-    private var message: String? = null
-    private var timestamp: String? = null
-    private var seen = false
-    constructor() {}
+    private  var receiverId: String? =null
+    private  var currentuserId: String?= null
+    private  var message: String?=null
+        private var timestamp: Long? = null
+    var seen:Boolean = false
 
-    constructor(receiverId: String?, senderId: String?, message: String?, timestamp: String?, seen: Boolean) {
+    constructor()
+
+    constructor(receiverId: String, currentuserId: String, message: String, timestamp: Long, seen: Boolean) {
         this.receiverId = receiverId
-        this.senderId = senderId
+        this.currentuserId = currentuserId
         this.message = message
         this.timestamp = timestamp
         this.seen = seen
     }
 
-    fun getSeen(): Boolean {
+    @JvmName("getSeen1")
+    fun getSeen(): Boolean{
         return seen
     }
 
+    @JvmName("setSeen1")
     fun setSeen(seen: Boolean) {
         this.seen = seen
     }
@@ -29,31 +32,31 @@ class Chats {
         return receiverId
     }
 
-    fun setReceiverId(receiverId: String?) {
+    fun setReceiverId(receiverId: String) {
         this.receiverId = receiverId
     }
 
-    fun getSenderId(): String? {
-        return senderId
+    fun getCurrentuserId(): String?{
+        return currentuserId
     }
 
-    fun setSenderId(senderId: String?) {
-        this.senderId = senderId
+    fun setCurrentuserId(currentuserId: String) {
+        this.currentuserId = currentuserId
     }
 
     fun getMessage(): String? {
         return message
     }
 
-    fun setMessage(message: String?) {
+    fun setMessage(message: String) {
         this.message = message
     }
 
-    fun getTimestamp(): String? {
+    fun getTimestamp(): Long ?{
         return timestamp
     }
 
-    fun setTimestamp(timestamp: String?) {
+    fun setTimestamp(timestamp: Long) {
         this.timestamp = timestamp
     }
 }

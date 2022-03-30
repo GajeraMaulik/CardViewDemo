@@ -19,13 +19,14 @@ import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.services.model.Users
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
 
-class UserFragment(usersActivity: UsersActivity): Fragment(){
+class UserFragment: Fragment(){
     private lateinit var databaseViewModel: DatabaseViewModel
     private lateinit var mUSer: ArrayList<Users>
     private var currentUserId: String? = null
     private var recyclerView: RecyclerView? = null
     private var userFragmentAdapter: UserFragmentAdapter? = null
     var et_search: EditText? = null
+
 
 
 
@@ -51,7 +52,7 @@ class UserFragment(usersActivity: UsersActivity): Fragment(){
         databaseViewModel.fetchUserCurrentData?.observe(viewLifecycleOwner){ dataSnapshot ->
             val user = dataSnapshot.getValue(Users::class.java)
             if (user != null) {
-                d("TAG", user.getUsername()!!)
+             //   d("TAG", user.getUsername())
                 currentUserId = user.getId()
             }
         }
