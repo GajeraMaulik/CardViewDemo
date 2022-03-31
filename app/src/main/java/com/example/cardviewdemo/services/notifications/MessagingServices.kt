@@ -24,6 +24,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.chat.MessagingActivity
 import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.viewModel.LogInViewModel
@@ -78,6 +79,8 @@ class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
 
         val preferences = getSharedPreferences("PREFS", MODE_PRIVATE)
         val currentUser = preferences.getString("currentuser", "none")
+
+
 
         val mAuth = FirebaseAuth.getInstance()
         val firebaseUser = mAuth.currentUser

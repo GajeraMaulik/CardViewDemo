@@ -23,6 +23,7 @@ import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import com.viewpagerindicator.CirclePageIndicator
 import java.util.*
 
@@ -33,6 +34,8 @@ class MainActivity() : AppCompatActivity() {
 
 
     private var viewpager: ViewPager? = null
+    lateinit var database : FirebaseDatabase
+
 
     var currentPage = 0
     var NUM_PAGES = 0
@@ -46,6 +49,8 @@ class MainActivity() : AppCompatActivity() {
         viewpager = findViewById(R.id.viewPager)
         //firebaseUser = FirebaseUser().uid
 
+        database= FirebaseDatabase.getInstance()
+        database.setPersistenceEnabled(true)
 
 
 

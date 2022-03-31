@@ -57,10 +57,10 @@ class DatabaseViewModel : ViewModel(){
         successAddChatDb =
             instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!)
     }
-    fun addChatDb1(comunication: String?, message: String?, timestamp: Long?) {
+  /*  fun addChatDb1(comunication: String?, message: String?, timestamp: Long?) {
         successAddChatDb =
             instance?.addChatsInDatabase1(comunication!!, message!!, timestamp!!)
-    }
+    }*/
 
     fun fetchChatUser() {
         fetchedChat = instance?.fetchChatUser()!!

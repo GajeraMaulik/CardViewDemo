@@ -20,7 +20,7 @@ import java.util.*
 class FirebaseInstanceDatabase {
      val instance = FirebaseDatabase.getInstance().reference
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
-    private val storageReference = FirebaseStorage.getInstance().getReference("uploads")
+    private val storageReference = FirebaseStorage.getInstance().getReference("Profile")
      var users=Users()
      var chats= Chats()
   lateinit var context:Context
@@ -196,7 +196,7 @@ class FirebaseInstanceDatabase {
         return successAddChatsDb
     }
 
-    fun addChatsInDatabase1(
+/*    fun addChatsInDatabase1(
          comunication:String,
         message: String,
         timestamp: Long,
@@ -241,7 +241,7 @@ class FirebaseInstanceDatabase {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
         return successAddChatsDb
-    }
+    }*/
 
     fun getChatList(currentUserId: String?): MutableLiveData<DataSnapshot> {
         val getChatLists = MutableLiveData<DataSnapshot>()

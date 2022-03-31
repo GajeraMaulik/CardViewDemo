@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
 import com.example.cardviewdemo.services.model.ChatList
 import com.example.cardviewdemo.services.model.Users
@@ -95,8 +96,8 @@ class ChatFragment : Fragment(){
         databaseViewModel.fetchUserByNameAll()
         databaseViewModel.fetchUserNames?.observe(viewLifecycleOwner) { dataSnapshot ->
             mUsers.clear()
-            for (dataSnapshot1 in dataSnapshot!!.children) {
-                val users = dataSnapshot1.getValue(Users::class.java)
+            for (dataSnapshot in dataSnapshot!!.children) {
+                val users = dataSnapshot.getValue(Users::class.java)
                 for (chatList in userList) {
                     assert(users != null)
                     if (users!!.getId() == chatList.getId()) {

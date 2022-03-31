@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_messaging_view.*
 import retrofit2.Call
@@ -50,6 +52,7 @@ class MessagingActivity : AppCompatActivity() {
     lateinit var client: Client
     lateinit var apiService: APIServices
 
+
     lateinit var logInViewModel: LogInViewModel
     lateinit var databaseViewModel: DatabaseViewModel
     lateinit var firebaseInstanceDatabase: FirebaseInstanceDatabase
@@ -65,29 +68,23 @@ class MessagingActivity : AppCompatActivity() {
     var timeStamp: Long? = null
 
     var user_status: String? = null
+    lateinit var progressBar: ProgressBar
     var messageAdapter: MessageAdapter? = null
       private lateinit var chatsArrayList: ArrayList<Chats>
     var bottomSheetProfileDetailUser: BottomSheetProfileDetailUser? = null
     var notify = false
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      //  setContentView(R.layout.activity_messaging_view)
         window.statusBarColor = ContextCompat.getColor(this,R.color.colorChat)
 
         binding = ActivityMessagingViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userId_receiver = intent.getStringExtra("userId")!!
-        userId_sender  = FirebaseAuth.getInstance().uid
+        userId_sender  = intent.getStringExtra("user")
 
 
 
-        d("maulik","$userId_sender")
-       val setsenderId = chats.setCurrentuserId(userId_sender.toString())
-        d("1","maulik :: ${chats.getCurrentuserId()}")
-
-
-        messageRoom = "${newCurrentuser}_$newReceiver"
-        messageRoom1 ="${newReceiver}_$newCurrentuser"
 
 
         firebaseInstanceDatabase = FirebaseInstanceDatabase()
@@ -126,6 +123,8 @@ class MessagingActivity : AppCompatActivity() {
 
         })
 
+
+
         iv_user_image.setOnClickListener {
             profileUserNAme?.let { it1 ->
                 profileImageURL?.let { it2 ->
@@ -140,7 +139,7 @@ class MessagingActivity : AppCompatActivity() {
             d("box","hello")
             recycler_view_messages_record.postDelayed({
                 recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
-            }, 1000)
+            }, 100)
         }
 
          iv_send_button.setOnClickListener {
@@ -148,6 +147,7 @@ class MessagingActivity : AppCompatActivity() {
             chat =et_chat.text.toString().trim { it <= ' ' }
             if (chat != "") {
                 addChatInDataBase()
+
             } else {
                 Toast.makeText(this@MessagingActivity, "Message can't be empty.", Toast.LENGTH_SHORT)
                     .show()
@@ -177,12 +177,12 @@ class MessagingActivity : AppCompatActivity() {
         ) { firebaseUser ->
             currentFirebaseUser = firebaseUser
             userId_sender = currentFirebaseUser.uid
-
         }
 
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun fetchAndSaveCurrentProfileTextAndData() {
         if (userId_receiver == null) {
             userId_receiver = intent.getStringExtra("userId")
@@ -212,7 +212,12 @@ class MessagingActivity : AppCompatActivity() {
             } else {
                 Glide.with(applicationContext).load(profileImageURL).into(iv_user_image)
             }
-            fetchChatFromDatabase(userId_sender!!, userId_receiver!!)
+            if (recycler_view_messages_record != null){
+                fetchChatFromDatabase(userId_sender!!, userId_receiver!!)
+              binding.progressBar1.visibility = View.GONE
+
+            }
+
             //fetchChatFromDatabase1()
 
         }
@@ -233,6 +238,7 @@ class MessagingActivity : AppCompatActivity() {
                     d("TAG","data1: $dataSnapshot")
                 }
             }
+
         }
     }
 
@@ -262,11 +268,9 @@ class MessagingActivity : AppCompatActivity() {
                 }
 
             }
-
+            progressBar.visibility
             messageAdapter = MessageAdapter(chatsArrayList, this, userId_sender!!)
             recycler_view_messages_record.adapter = messageAdapter
-         //   binding.recyclerViewMessagesRecord.adapter?.notifyDataSetChanged()
-
              recycler_view_messages_record.postDelayed({
                  recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
 
@@ -400,7 +404,7 @@ class MessagingActivity : AppCompatActivity() {
         d("TAG","userId_receiver:$userId_receiver")
         client = Client
 
-
+        progressBar = ProgressBar(this)
         chatsArrayList = ArrayList()
         databaseViewModel =
             ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(
@@ -441,6 +445,7 @@ class MessagingActivity : AppCompatActivity() {
         super.onPause()
         addStatusInDatabase("offline")
         currentUser("none")
+        onBackKeyPressedOnKeyboard()
     }
     fun onBackKeyPressedOnKeyboard() {
         binding.etChat.clearFocus()

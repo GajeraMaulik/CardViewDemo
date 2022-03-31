@@ -33,6 +33,7 @@ import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -47,6 +48,8 @@ class UsersActivity : AppCompatActivity() {
     private lateinit var databaseViewModel: DatabaseViewModel
     lateinit var linearLayout: LinearLayout
     lateinit var progressBar: ProgressBar
+    lateinit var database : FirebaseDatabase
+
     var currentUserName: TextView? = null
     private lateinit var profileImage: CircleImageView
     var username: String? = null
@@ -67,7 +70,8 @@ class UsersActivity : AppCompatActivity() {
         binding = ActivityUsersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        d("2", "2 user:(${Chats().getSenderId()})")
+  //      database= FirebaseDatabase.getInstance()
+//        database.setPersistenceEnabled(true)
 
         window.statusBarColor = ContextCompat.getColor(this,R.color.colorChat)
 
@@ -102,7 +106,7 @@ class UsersActivity : AppCompatActivity() {
                 linearLayout.visibility = View.VISIBLE
                 username = user.getUsername()
                 imageUrl = user.getImageUrl()
-                intent.putExtra("userid",user.getId())
+                intent.putExtra("user",username)
                 d("TAG","$username")
                  // Toast.makeText(this, "Welcome back $username.", Toast.LENGTH_SHORT).show();
                 currentUserName?.text = username
