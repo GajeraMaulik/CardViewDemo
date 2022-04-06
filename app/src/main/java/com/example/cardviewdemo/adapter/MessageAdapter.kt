@@ -21,16 +21,16 @@ import kotlinx.android.synthetic.main.sent.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+var  messsge:String?=null
 
 class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
 
     private val MSG_TYPE_LEFT_RECEIVED = 0
     private val MSG_TYPE_RIGHT_RECEIVED = 1
-    private var chatArrayList: ArrayList<Chats> = ArrayList()
     private var context: Context? = null
     private var currentUser_sender: String? = null
-
+    var chatArrayList: ArrayList<Chats> = ArrayList()
 
     constructor(){
 
@@ -55,14 +55,15 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageHolder> {
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
            val chats = chatArrayList[position]
        d("TAG","Message Adapter: ${chats.getMessage()}")
-       val message: String? = chats.getMessage()
+        messsge = chats.getMessage()
        val timeStamp: Long? = chats.getTimestamp()
        val isSeen: Boolean = chats.getSeen()
        //val intTimeStamp = timeStamp
        val time_msg_received:String = DateUtils.formatTime(timeStamp)
        holder.tv_time.text = time_msg_received
-       holder.tv_msg.text = message
-       if (position == chatArrayList.size -1) {
+       holder.tv_msg.text = messsge
+
+        if (position == chatArrayList.size -1) {
            if (isSeen) {
                holder.tv_seen.visibility = View.VISIBLE
                val seen:String = "Seen"

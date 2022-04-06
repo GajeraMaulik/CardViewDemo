@@ -2,6 +2,7 @@ package com.example.cardviewdemo.fragments
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -28,6 +29,7 @@ import com.google.firebase.storage.UploadTask
 import de.hdodenhof.circleimageview.CircleImageView
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
  class ProfileFragment : Fragment() {
@@ -95,9 +97,12 @@ import java.util.*
 
 
         if (imageUri != null) {
+            val formatter = SimpleDateFormat("dd-mm", Locale.getDefault())
+            val now = Date()
+            val filename = formatter.format(now).toString() + ".jpeg"
             val tsLong = System.currentTimeMillis()
             timeStamp = tsLong.toString()
-            databaseViewModel.fetchImageFileReference(timeStamp, imageUri, context)
+            databaseViewModel.fetchImageFileReference(filename, imageUri, context)
             databaseViewModel.imageFileReference?.observe(this
             ) { storageReference ->
                 fileReference = storageReference
@@ -131,16 +136,17 @@ import java.util.*
 
         if (requestCode == IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
-            var bmp : Bitmap? = null
+            var bmp : Bitmap
+            bmp = MediaStore.Images.Media.getBitmap(Activity().contentResolver,imageUri)
 
             try {
-                bmp = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(Activity()).contentResolver, data.data)
+                 bmp = MediaStore.Images.Media.getBitmap(Activity().contentResolver,imageUri)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
             val baos = ByteArrayOutputStream()
 
-                bmp?.compress(Bitmap.CompressFormat.JPEG, 10, baos) //compression
+                bmp.compress(Bitmap.CompressFormat.valueOf(""), 10, baos) //compression
                 dataImageByte = baos.toByteArray()
 
 

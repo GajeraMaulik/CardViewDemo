@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.repository.FirebaseInstanceDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
@@ -16,6 +17,7 @@ class DatabaseViewModel : ViewModel(){
     var fetchUserCurrentData: LiveData<DataSnapshot>? = null
     var fetchUserNames: LiveData<DataSnapshot>?=null
     var fetchSelectedProfileUserData: LiveData<DataSnapshot>?=null
+    var fetchlastmessage:LiveData<DataSnapshot>?=null
     var successAddChatDb: LiveData<Boolean>?=null
      var fetchedChat : LiveData<DataSnapshot>?= null
     var imageFileReference: LiveData<StorageReference>?=null
@@ -51,6 +53,10 @@ class DatabaseViewModel : ViewModel(){
 
     fun fetchSelectedUserProfileData(userId: String) {
         fetchSelectedProfileUserData = instance?.fetchSelectedUserIdData(userId)
+    }
+
+    fun fetchlastmessage(userId: String){
+        fetchlastmessage = instance?.fetchlastmessage(userId)
     }
 
     fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?) {

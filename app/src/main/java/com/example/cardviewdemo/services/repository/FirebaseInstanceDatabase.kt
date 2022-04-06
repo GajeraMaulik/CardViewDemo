@@ -2,10 +2,14 @@ package com.example.cardviewdemo.services.repository
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.util.Log.d
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import com.example.cardviewdemo.SharePref
+import com.example.cardviewdemo.adapter.MessageAdapter
+import com.example.cardviewdemo.adapter.UserFragmentAdapter
+import com.example.cardviewdemo.adapter.messsge
 import com.example.cardviewdemo.chat.*
 import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Users
@@ -14,16 +18,21 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.text.SimpleDateFormat
 import java.util.*
 
 
 class FirebaseInstanceDatabase {
-     val instance = FirebaseDatabase.getInstance().reference
+    val instance = FirebaseDatabase.getInstance().reference
     private val firebaseUser = FirebaseAuth.getInstance().currentUser
-    private val storageReference = FirebaseStorage.getInstance().getReference("Profile")
-     var users=Users()
-     var chats= Chats()
-  lateinit var context:Context
+    private val storageReference = FirebaseStorage.getInstance().getReference("Profiles")
+    lateinit var adapter: MessageAdapter
+    lateinit var useradapter : UserFragmentAdapter
+
+    val latestestmessageMap = HashMap<String, Chats>()
+    var users = Users()
+    var chats = Chats()
+    lateinit var context: Context
     fun fetchAllUserByNames(): MutableLiveData<DataSnapshot> {
         val fetchAllUSerName = MutableLiveData<DataSnapshot>()
         instance.child("Users").orderByChild(firebaseUser!!.uid)
@@ -90,7 +99,7 @@ class FirebaseInstanceDatabase {
     }
 
     fun fetchSearchUser(searchString: String): MutableLiveData<DataSnapshot> {
-      //  users = Users()
+        //  users = Users()
 
         val fetchSearchUserData = MutableLiveData<DataSnapshot>()
         val query = instance.child("Users").orderByChild("search")
@@ -99,7 +108,7 @@ class FirebaseInstanceDatabase {
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //d("TAG","fetchSearchUser : ${dataSnapshot.children("username")}")
-               //  users  = dataSnapshot.getValue(Users::class.java)!!
+                //  users  = dataSnapshot.getValue(Users::class.java)!!
                 //val newName : String = users.getUsername()
                 //d("TAG","fetchSearchUser : $newName")
                 fetchSearchUserData.value = dataSnapshot
@@ -113,22 +122,23 @@ class FirebaseInstanceDatabase {
     fun fetchChatUser(): MutableLiveData<DataSnapshot> {
 
         val fetchUserChat = MutableLiveData<DataSnapshot>()
-        instance.child("Chats").child("${newCurrentuser}_$newReceiver").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                d("TAG","before:$dataSnapshot")
+        instance.child("Chats").child("${newCurrentuser}_$newReceiver")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    d("TAG", "before:$dataSnapshot")
 
-                fetchUserChat.value = dataSnapshot
+                    fetchUserChat.value = dataSnapshot
 
-                d("TAG","after:$dataSnapshot")
-            }
+                    d("TAG", "after:$dataSnapshot")
+                }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
+                override fun onCancelled(databaseError: DatabaseError) {}
+            })
 
         return fetchUserChat
     }
 
-/*    fun fetchChatUser1(): MutableLiveData<DataSnapshot> {
+    /*    fun fetchChatUser1(): MutableLiveData<DataSnapshot> {
 
         val fetchUserChat = MutableLiveData<DataSnapshot>()
         instance.child("Chats").get()
@@ -144,6 +154,106 @@ class FirebaseInstanceDatabase {
         })
         return fetchUserChat
     }*/
+    fun refreshRecyclerview() {
+        adapter.chatArrayList.clear()
+        latestestmessageMap.values.forEach {
+            adapter.chatArrayList.add(it)
+        }
+    }
+
+    fun fetchlastmessage(userId: String) :MutableLiveData<DataSnapshot>{
+        adapter = MessageAdapter()
+        useradapter = UserFragmentAdapter()
+        //     thelastmessage = "default"
+        /*    databaseViewModel = DatabaseViewModel()
+        databaseViewModel.getTokenDatabaseRef()*/
+        // context = getApplicationContext()
+        //  val firebaseUser = FirebaseAuth.getInstance().currentUser
+        /*     databaseViewModel.getTokenRefDb?.observe(getApplicationContext()){
+        databaseReference ->
+        val query = databaseReference.child("Chats").child("${newCurrentuser}_$newReceiver").child("timestamp").orderByKey().limitToLast(1)
+        query.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val   message:String = snapshot.child("message").value.toString()
+                d("newmessage","$message")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })*/
+       val fetchlastChat = MutableLiveData<DataSnapshot>()
+        instance.child("latest-message").child("${newCurrentuser}_$newReceiver")
+        instance.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val chats = snapshot.getValue(Chats::class.java)!!
+                Log.d("Maulik", "val : === ${chats.getMessage()?.last()}")
+                 //   fetchlastChat.value = chat.getMessage()
+                 adapter.chatArrayList.add(useradapter.chats)
+                Log.d("Maulik", "after val : === $snapshot")
+               latestestmessageMap["message"] = chats
+                refreshRecyclerview()
+            }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                val chat = snapshot.getValue(Chats::class.java)!!
+               // fetchlastChat.value = snapshot
+                adapter.chatArrayList.add(chat)
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+
+        instance.addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                fetchlastChat.value =snapshot
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+        return fetchlastChat
+
+        /*.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (datasnapshot in snapshot.children) {
+                    val chat = datasnapshot.getValue(Chats::class.java) ?: return
+                    if (chat.getReceiverId().equals(firebaseUser?.uid) && chat.getCurrentuserId()
+                            .equals(userid) ||
+                        chat.getReceiverId().equals(userid) && chat.getCurrentuserId()
+                            .equals(firebaseUser?.uid)
+                    ) {
+                        thelastmessage = chat.getMessage()
+                    }
+                }
+                when (thelastmessage) {
+                    "default" -> lastmessage.text = "No message"
+                    else ->
+                        lastmessage.text = thelastmessage
+                }
+                thelastmessage = "default"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })*/
+    }
+
+
+
+
+
 
     fun addChatsInDatabase(
         currentUserId: String,
@@ -158,11 +268,28 @@ class FirebaseInstanceDatabase {
         hashMap["message"] = message
         hashMap["timestamp"] = timestamp
         hashMap["seen"] = false
-        instance.child("Chats").child("${newCurrentuser}_$newReceiver").child("$timestamp")   .setValue(hashMap).addOnCompleteListener {
-           // instance.child("Chats").child(receiverId).push().setValue(hashMap)
+        val lastMessage = HashMap<String, Any>()
+        lastMessage.put("lastMsg", message)
+        lastMessage.put("lastMsgtime",timestamp)
+
+
+        instance.child("Chats").child("${newCurrentuser}_$newReceiver").child("$timestamp").setValue(hashMap).addOnCompleteListener {
+         //   instance.child("LetestsChats").child("${newCurrentuser}_$newReceiver").child("$timestamp").setValue(hashMap)
+
 
          successAddChatsDb.value = true
         }.addOnFailureListener { successAddChatsDb.value = false }
+
+        instance.child("Lastmessage").child("${newCurrentuser}_$newReceiver").updateChildren(lastMessage).addOnCompleteListener {
+            successAddChatsDb.value =true
+        }.addOnFailureListener { successAddChatsDb.value = false }
+
+        /*val latestMessageref = instance.child("/latest-message/${newCurrentuser}_$newReceiver")
+        latestMessageref.setValue(hashMap).addOnCompleteListener {
+            successAddChatsDb.value =true
+        }.addOnFailureListener { successAddChatsDb.value = false }
+
+*/
 
 
 
@@ -175,24 +302,56 @@ class FirebaseInstanceDatabase {
                 if (!dataSnapshot.exists()) {
                     chatRef.child("id").setValue(receiverId)
                     chatRef.child("timestamp").setValue(timestamp)
+                  //  chatRef.child("message").setValue(message)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+
         val chatRef2 = instance.child("ChatList")
             .child(receiverId)
             .child(currentUserId)
-        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        chatRef2.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (!dataSnapshot.exists()) {
                     chatRef2.child("id").setValue(currentUserId)
                     chatRef2.child("timestamp").setValue(timestamp)
+                 //   chatRef2.child("message").setValue(message)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+   /*     chatRef.addChildEventListener(object :ChildEventListener{
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                if (!dataSnapshot.exists()) {
+                    chatRef2.child("id").setValue(currentUserId)
+                    chatRef2.child("timestamp").setValue(timestamp)
+                    chatRef2.child("message").setValue(message)
+                }
+
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                if (dataSnapshot.exists()) {
+                    chatRef2.child("id").setValue(currentUserId)
+                    chatRef2.child("timestamp").setValue(timestamp)
+                    chatRef2.child("message").setValue(message)
+                }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
+*/
         return successAddChatsDb
     }
 
@@ -247,6 +406,7 @@ class FirebaseInstanceDatabase {
         val getChatLists = MutableLiveData<DataSnapshot>()
         val chatRef = instance.child("ChatList")
             .child(firebaseUser!!.uid)
+           // .child("message")
         chatRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 getChatLists.value = dataSnapshot

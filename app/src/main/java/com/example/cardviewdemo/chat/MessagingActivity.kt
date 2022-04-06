@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.MessageAdapter
+import com.example.cardviewdemo.adapter.UserFragmentAdapter
 import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
 import com.example.cardviewdemo.fragments.BottomSheetProfileDetailUser
 import com.example.cardviewdemo.services.APIServices
@@ -24,15 +25,14 @@ import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_messaging_view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 var newReceiver: String? = ""
@@ -46,11 +46,13 @@ var userId_receiver // userId of other user who'll receive the text // Or the us
  var userId_sender // current user id
         : String? = null
 
+ lateinit var chatsArrayList: ArrayList<Chats>
+var chat: String =""
 
 class MessagingActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMessagingViewBinding
     lateinit var client: Client
     lateinit var apiService: APIServices
+    lateinit var binding: ActivityMessagingViewBinding
 
 
     lateinit var logInViewModel: LogInViewModel
@@ -62,15 +64,13 @@ class MessagingActivity : AppCompatActivity() {
     var bio: String? = null
     lateinit var currentFirebaseUser: FirebaseUser
     var chats = Chats()
-
+    var userFragmentAdapter = UserFragmentAdapter()
     var user =Users()
-    var chat: String =""
     var timeStamp: Long? = null
 
     var user_status: String? = null
     lateinit var progressBar: ProgressBar
     var messageAdapter: MessageAdapter? = null
-      private lateinit var chatsArrayList: ArrayList<Chats>
     var bottomSheetProfileDetailUser: BottomSheetProfileDetailUser? = null
     var notify = false
     @SuppressLint("NotifyDataSetChanged")
@@ -82,46 +82,6 @@ class MessagingActivity : AppCompatActivity() {
         setContentView(binding.root)
         userId_receiver = intent.getStringExtra("userId")!!
         userId_sender  = intent.getStringExtra("user")
-
-
-
-
-
-        firebaseInstanceDatabase = FirebaseInstanceDatabase()
-        firebaseInstanceDatabase.instance.child("Chats").addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                //  if (snapshot.exists()){
-                for (datasnapchot in snapshot.children){
-                    val key = datasnapchot.key.toString().split("_")
-                    Currentuser = key[0]
-                    ReceiverUser =key[1]
-
-                    if (userId_sender == Currentuser   && userId_receiver == ReceiverUser){
-                        newCurrentuser = Currentuser
-                        newReceiver = ReceiverUser
-
-                        d("if","if")
-
-                    }else if (userId_receiver == Currentuser   && userId_sender == ReceiverUser  ){
-                        newCurrentuser = Currentuser
-                        newReceiver = ReceiverUser
-                        d("if","elseif")
-                    }
-
-                    d("key","newFirst name :$Currentuser")
-                    d("key","new Second name :$ReceiverUser")
-                    d("key","current :$userId_sender")
-                    d("key","Receiver:$userId_receiver")
-                    d("key","newCurrentuser:$newCurrentuser")
-                    d("key","newReceiver:$newReceiver")
-                }
-                // }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
 
 
 
@@ -147,18 +107,60 @@ class MessagingActivity : AppCompatActivity() {
             chat =et_chat.text.toString().trim { it <= ' ' }
             if (chat != "") {
                 addChatInDataBase()
-
             } else {
                 Toast.makeText(this@MessagingActivity, "Message can't be empty.", Toast.LENGTH_SHORT)
                     .show()
             }
             et_chat.setText("")
         }
+        firebaseInstanceDatabase = FirebaseInstanceDatabase()
+        firebaseInstanceDatabase.instance.child("Chats").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                 if (snapshot.exists()){
+                for (datasnapchot in snapshot.children){
+                    val key = datasnapchot.key.toString().split("_")
+                    Currentuser = key[0]
+                    ReceiverUser =key[1]
+
+
+                    if (userId_sender == Currentuser   && userId_receiver == ReceiverUser){
+                        newCurrentuser = Currentuser
+                        newReceiver = ReceiverUser
+                        d("key","Both Same")
+                        d("if","if")
+
+                    }else if (userId_receiver == Currentuser   && userId_sender == ReceiverUser  ){
+                        d("key","Both not same")
+                        newCurrentuser = Currentuser
+                        newReceiver = ReceiverUser
+                        d("if","elseif")
+                    }
+                   /* else
+                    {
+                        newCurrentuser="";
+                        newReceiver="";
+                    }
+*/
+                    d("key","newFirst name :$Currentuser")
+                    d("key","new Second name :$ReceiverUser")
+                    d("key","current :$userId_sender")
+                    d("key","Receiver:$userId_receiver")
+                    d("key","newCurrentuser:$newCurrentuser")
+                    d("key","newReceiver:$newReceiver")
+                }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
 
         init()
         getCurrentFirebaseUser()
         fetchAndSaveCurrentProfileTextAndData()
 
+     //   userFragmentAdapter.lastmessage()
 
     }
 
@@ -258,17 +260,15 @@ class MessagingActivity : AppCompatActivity() {
             chatsArrayList.clear()
              for (snapshot in dataSnapshot.children) {
                  chats = snapshot.getValue(Chats::class.java)!!
+                 if (chats.getReceiverId().equals(receiverId) && chats.getCurrentuserId().equals(senderId)|| chats.getReceiverId().equals(senderId )&&
+                     chats.getCurrentuserId().equals(receiverId)) {
+                     chatsArrayList.add(chats)
 
-                if (chats.getReceiverId().equals(receiverId) && chats.getCurrentuserId().equals(senderId)|| chats.getReceiverId().equals(senderId )&&
-                    chats.getCurrentuserId().equals(receiverId)) {
-                  chatsArrayList.add(chats)
+                     d("TAG","cht : hiiiiiiiii")
 
-                    d("TAG","cht : hiiiiiiiii")
+                 }
+             }
 
-                }
-
-            }
-            progressBar.visibility
             messageAdapter = MessageAdapter(chatsArrayList, this, userId_sender!!)
             recycler_view_messages_record.adapter = messageAdapter
              recycler_view_messages_record.postDelayed({
@@ -310,25 +310,35 @@ class MessagingActivity : AppCompatActivity() {
         }
     }
 */
+
     private fun addChatInDataBase() {
         val msg = chat
 
+        val chats  = Chats()
         val tsLong = System.currentTimeMillis()
         timeStamp = tsLong
 
-        if (newCurrentuser=="" && newReceiver==""){
-            newCurrentuser = userId_sender
-            newReceiver= userId_receiver
 
+        d("key","Receiver value $newReceiver")
+        d("key","Sender value $newCurrentuser")
+
+        if (newCurrentuser == "" && newReceiver == ""){
+            d("key","Both null")
+            newCurrentuser = userId_sender
+            newReceiver = userId_receiver
         }
+
         d("key","addchat current:$newCurrentuser")
         d("key","addchat receiver:$newReceiver")
 
         databaseViewModel.addChatDb(userId_sender, userId_receiver, msg, timeStamp)
 
+
         d("key","addchat after current:$newCurrentuser")
         d("key","addchat afeter receiver: $newReceiver")
         // databaseViewModel.addChatDb1(comunication,msg,timeStamp)
+
+
 
         databaseViewModel.successAddChatDb?.observe(this
         ) { aBoolean ->
@@ -416,8 +426,10 @@ class MessagingActivity : AppCompatActivity() {
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIServices::class.java)
 
         binding.ivBackButton.setOnClickListener(View.OnClickListener {
+            newReceiver="";
+            newCurrentuser="";
             val intent = Intent(applicationContext, UsersActivity::class.java)
-          //  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+           intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
             finish()
         })
@@ -453,6 +465,8 @@ class MessagingActivity : AppCompatActivity() {
 
 
 }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
@@ -17,11 +18,13 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.ViewPagerAdapter
+import com.example.cardviewdemo.constants.Constants
 import com.example.cardviewdemo.databinding.ActivityUsersBinding
 import com.example.cardviewdemo.fragments.ChatFragment
 import com.example.cardviewdemo.fragments.ProfileFragment
@@ -81,11 +84,13 @@ class UsersActivity : AppCompatActivity() {
 
 
         init()
+       // Constants.lastmessage()
         fetchCurrentUserdata()
         setupPagerFragment()
         onOptionMenuClicked()
 
     }
+
     private fun setupPagerFragment() {
 
         viewPagerAdapter.addFragment(chatfragment, "Chats")

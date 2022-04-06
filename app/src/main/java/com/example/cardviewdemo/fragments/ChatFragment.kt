@@ -1,7 +1,6 @@
 package com.example.cardviewdemo.fragments
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,13 +12,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.SharePref
+import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
+import com.example.cardviewdemo.chat.chatsArrayList
+import com.example.cardviewdemo.chat.newCurrentuser
+import com.example.cardviewdemo.chat.newReceiver
+import com.example.cardviewdemo.chat.userId_sender
 import com.example.cardviewdemo.services.model.ChatList
+import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Users
 import com.example.cardviewdemo.viewModel.DatabaseViewModel
 import com.example.cardviewdemo.viewModel.LogInViewModel
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
 import java.util.*
 
@@ -34,7 +40,6 @@ class ChatFragment : Fragment(){
     private lateinit var logInViewModel: LogInViewModel
     private lateinit var recyclerView_chat_fragment: RecyclerView
     var relative_layout_chat_fragment: RelativeLayout? = null
-
 
 
     override fun onCreateView(
@@ -81,6 +86,7 @@ class ChatFragment : Fragment(){
                 currentUserId = users.getId()
             }
         }
+
         databaseViewModel.getChaListUserDataSnapshot(currentUserId)
         databaseViewModel.getChaListUserDataSnapshot?.observe(viewLifecycleOwner
         ) { dataSnapshot ->
@@ -88,16 +94,20 @@ class ChatFragment : Fragment(){
                 val chatList = dataSnapshot1.getValue(ChatList::class.java)
                 userList.add(chatList!!)
             }
-            chatLists()
         }
+        chatLists()
+
     }
 
+
+
     private fun chatLists() {
+
         databaseViewModel.fetchUserByNameAll()
         databaseViewModel.fetchUserNames?.observe(viewLifecycleOwner) { dataSnapshot ->
-            mUsers.clear()
-            for (dataSnapshot in dataSnapshot!!.children) {
-                val users = dataSnapshot.getValue(Users::class.java)
+             mUsers.clear()
+            for (dataSnapshot1 in dataSnapshot!!.children) {
+                val users = dataSnapshot1.getValue(Users::class.java)
                 for (chatList in userList) {
                     assert(users != null)
                     if (users!!.getId() == chatList.getId()) {
@@ -112,6 +122,8 @@ class ChatFragment : Fragment(){
             }
             userAdapter = UserFragmentAdapter(mUsers,requireActivity(),true)
             recyclerView_chat_fragment.adapter = userAdapter
+          //  databaseViewModel.instance?.lastmessage()
+
         }
     }
 

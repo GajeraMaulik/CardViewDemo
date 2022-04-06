@@ -21,6 +21,7 @@ import com.example.cardviewdemo.viewModel.DatabaseViewModel
 
 class UserFragment: Fragment(){
     private lateinit var databaseViewModel: DatabaseViewModel
+    var chatFragment = ChatFragment()
     private lateinit var mUSer: ArrayList<Users>
     private var currentUserId: String? = null
     private var recyclerView: RecyclerView? = null
@@ -38,7 +39,6 @@ class UserFragment: Fragment(){
         val view: View = inflater.inflate(R.layout.fragment_user, container, false)
         init(view)
         fetchingAllUserNAme()
-
         return view
     }
 
@@ -54,6 +54,7 @@ class UserFragment: Fragment(){
             if (user != null) {
              //   d("TAG", user.getUsername())
                 currentUserId = user.getId()
+
             }
         }
         databaseViewModel.fetchUserByNameAll()
@@ -64,6 +65,7 @@ class UserFragment: Fragment(){
                     val user: Users = snapshot.getValue(Users::class.java)!!
                     if (!currentUserId.equals(user.getId())) {
                         mUSer.add(user)
+
                     }
                     userFragmentAdapter = UserFragmentAdapter(mUSer,requireContext(),false)
 

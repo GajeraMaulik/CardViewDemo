@@ -3,8 +3,8 @@ package com.example.cardviewdemo.services.model
 class Chats {
     private  var receiverId: String? =null
     private  var currentuserId: String?= null
-    private  var message: String?=null
-        private var timestamp: Long? = null
+    private var message: String?= null
+       private var timestamp: Long? = null
     var seen:Boolean = false
 
     constructor()
@@ -48,7 +48,7 @@ class Chats {
         return message
     }
 
-    fun setMessage(message: String) {
+    fun setMessage(message: String?) {
         this.message = message
     }
 
