@@ -3,8 +3,6 @@ package com.example.cardviewdemo.constants
 import android.util.Log
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
-import com.example.cardviewdemo.chat.newCurrentuser
-import com.example.cardviewdemo.chat.newReceiver
 import com.example.cardviewdemo.services.model.Chats
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*

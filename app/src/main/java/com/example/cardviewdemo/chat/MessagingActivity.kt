@@ -34,13 +34,9 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
+var channelid:String? = null
 
-var newReceiver: String? = ""
-var newCurrentuser:String? = ""
-var Currentuser:String? = ""
-var ReceiverUser:String?=""
-var messageRoom:String?=""
-var messageRoom1:String?=""
+
 var userId_receiver // userId of other user who'll receive the text // Or the user id of profile currently opened
         : String? = null
  var userId_sender // current user id
@@ -113,48 +109,6 @@ class MessagingActivity : AppCompatActivity() {
             }
             et_chat.setText("")
         }
-        firebaseInstanceDatabase = FirebaseInstanceDatabase()
-        firebaseInstanceDatabase.instance.child("Chats").addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                 if (snapshot.exists()){
-                for (datasnapchot in snapshot.children){
-                    val key = datasnapchot.key.toString().split("_")
-                    Currentuser = key[0]
-                    ReceiverUser =key[1]
-
-
-                    if (userId_sender == Currentuser   && userId_receiver == ReceiverUser){
-                        newCurrentuser = Currentuser
-                        newReceiver = ReceiverUser
-                        d("key","Both Same")
-                        d("if","if")
-
-                    }else if (userId_receiver == Currentuser   && userId_sender == ReceiverUser  ){
-                        d("key","Both not same")
-                        newCurrentuser = Currentuser
-                        newReceiver = ReceiverUser
-                        d("if","elseif")
-                    }
-                   /* else
-                    {
-                        newCurrentuser="";
-                        newReceiver="";
-                    }
-*/
-                    d("key","newFirst name :$Currentuser")
-                    d("key","new Second name :$ReceiverUser")
-                    d("key","current :$userId_sender")
-                    d("key","Receiver:$userId_receiver")
-                    d("key","newCurrentuser:$newCurrentuser")
-                    d("key","newReceiver:$newReceiver")
-                }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
 
         init()
         getCurrentFirebaseUser()
@@ -318,25 +272,15 @@ class MessagingActivity : AppCompatActivity() {
         val tsLong = System.currentTimeMillis()
         timeStamp = tsLong
 
+        if(channelid == null){
+            channelid = "${userId_sender}_$userId_receiver"
+        }else{
+            channelid = intent.getStringExtra("channelid")
 
-        d("key","Receiver value $newReceiver")
-        d("key","Sender value $newCurrentuser")
-
-        if (newCurrentuser == "" && newReceiver == ""){
-            d("key","Both null")
-            newCurrentuser = userId_sender
-            newReceiver = userId_receiver
         }
 
-        d("key","addchat current:$newCurrentuser")
-        d("key","addchat receiver:$newReceiver")
 
-        databaseViewModel.addChatDb(userId_sender, userId_receiver, msg, timeStamp)
-
-
-        d("key","addchat after current:$newCurrentuser")
-        d("key","addchat afeter receiver: $newReceiver")
-        // databaseViewModel.addChatDb1(comunication,msg,timeStamp)
+        databaseViewModel.addChatDb(userId_sender, userId_receiver, msg, timeStamp, channelid!!)
 
 
 
@@ -426,8 +370,7 @@ class MessagingActivity : AppCompatActivity() {
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIServices::class.java)
 
         binding.ivBackButton.setOnClickListener(View.OnClickListener {
-            newReceiver="";
-            newCurrentuser="";
+
             val intent = Intent(applicationContext, UsersActivity::class.java)
            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)

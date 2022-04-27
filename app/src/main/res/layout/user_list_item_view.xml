@@ -83,6 +83,20 @@
 </LinearLayout>
 </LinearLayout>
 
+    <TextView
+        android:id="@+id/onseenMessage"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:background="@drawable/online_status"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginStart="@dimen/_260sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone"
+        android:text="1"
+        android:textColor="@color/black"
+        android:textSize="15sp" />
 
 
 

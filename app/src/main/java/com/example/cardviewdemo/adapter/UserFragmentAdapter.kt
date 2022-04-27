@@ -115,32 +115,8 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
             context.startActivity(intent)
         }
 
-        firebaseInstanceDatabase.instance.child("Lastmessage").child("${newCurrentuser}_$newReceiver").addValueEventListener(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val lastmsg: String? = snapshot.child("lastMsg").getValue(String::class.java)
-                    val time: Long? = snapshot.child("lastMsgtime").getValue(Long::class.java)
-                 //   if (userId_receiver == newReceiver) {
-                        holder.tv_last_message.text = lastmsg
 
-                //   }
-                }else{
-                    holder.tv_last_message.text = "Tap to chat"
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-            }
 
-        })
-       /*     databaseViewModel.fetchlastmessage("${newCurrentuser}_$newReceiver")
-            databaseViewModel.fetchlastmessage?.observe(context as AppCompatActivity) { dataSnapshot ->
-               for (snapshot in dataSnapshot.children) {
-
-                   val chat = dataSnapshot.getValue(Chats::class.java)!!
-                   d("Maulik", "h-------------${chat.getMessage()}")
-
-                }
-             }*/
     }
     override fun getItemCount(): Int {
         return usersArrayList.size

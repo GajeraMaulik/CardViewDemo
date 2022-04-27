@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "619450930163",
+    "firebase_url": "https://cardviewdemo-4027f-default-rtdb.firebaseio.com",
+    "project_id": "cardviewdemo-4027f",
+    "storage_bucket": "cardviewdemo-4027f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619450930163:android:c811ce6c93202f3719f886",
+        "android_client_info": {
+          "package_name": "com.example.cardviewdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "619450930163-oh2fn7des28acl1qqtbdcbttsmlq4ge2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5MF5IOidjaYkTglwNpf0uC61-AZI1X-0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "619450930163-oh2fn7des28acl1qqtbdcbttsmlq4ge2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

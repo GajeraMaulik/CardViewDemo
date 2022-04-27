@@ -122,7 +122,7 @@ class FirebaseInstanceDatabase {
     fun fetchChatUser(): MutableLiveData<DataSnapshot> {
 
         val fetchUserChat = MutableLiveData<DataSnapshot>()
-        instance.child("Chats").child("${newCurrentuser}_$newReceiver")
+        instance.child("Chats").child("$channelid").child("messages")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     d("TAG", "before:$dataSnapshot")
@@ -138,117 +138,7 @@ class FirebaseInstanceDatabase {
         return fetchUserChat
     }
 
-    /*    fun fetchChatUser1(): MutableLiveData<DataSnapshot> {
 
-        val fetchUserChat = MutableLiveData<DataSnapshot>()
-        instance.child("Chats").get()
-            .addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                d("TAG","before:$dataSnapshot")
-
-                fetchUserChat.value = dataSnapshot
-                d("TAG","after:$dataSnapshot")
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-        return fetchUserChat
-    }*/
-    fun refreshRecyclerview() {
-        adapter.chatArrayList.clear()
-        latestestmessageMap.values.forEach {
-            adapter.chatArrayList.add(it)
-        }
-    }
-
-    fun fetchlastmessage(userId: String) :MutableLiveData<DataSnapshot>{
-        adapter = MessageAdapter()
-        useradapter = UserFragmentAdapter()
-        //     thelastmessage = "default"
-        /*    databaseViewModel = DatabaseViewModel()
-        databaseViewModel.getTokenDatabaseRef()*/
-        // context = getApplicationContext()
-        //  val firebaseUser = FirebaseAuth.getInstance().currentUser
-        /*     databaseViewModel.getTokenRefDb?.observe(getApplicationContext()){
-        databaseReference ->
-        val query = databaseReference.child("Chats").child("${newCurrentuser}_$newReceiver").child("timestamp").orderByKey().limitToLast(1)
-        query.addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val   message:String = snapshot.child("message").value.toString()
-                d("newmessage","$message")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })*/
-       val fetchlastChat = MutableLiveData<DataSnapshot>()
-        instance.child("latest-message").child("${newCurrentuser}_$newReceiver")
-        instance.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chats = snapshot.getValue(Chats::class.java)!!
-                Log.d("Maulik", "val : === ${chats.getMessage()?.last()}")
-                 //   fetchlastChat.value = chat.getMessage()
-                 adapter.chatArrayList.add(useradapter.chats)
-                Log.d("Maulik", "after val : === $snapshot")
-               latestestmessageMap["message"] = chats
-                refreshRecyclerview()
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                val chat = snapshot.getValue(Chats::class.java)!!
-               // fetchlastChat.value = snapshot
-                adapter.chatArrayList.add(chat)
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
-
-        instance.addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                fetchlastChat.value =snapshot
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })
-        return fetchlastChat
-
-        /*.addValueEventListener(object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (datasnapshot in snapshot.children) {
-                    val chat = datasnapshot.getValue(Chats::class.java) ?: return
-                    if (chat.getReceiverId().equals(firebaseUser?.uid) && chat.getCurrentuserId()
-                            .equals(userid) ||
-                        chat.getReceiverId().equals(userid) && chat.getCurrentuserId()
-                            .equals(firebaseUser?.uid)
-                    ) {
-                        thelastmessage = chat.getMessage()
-                    }
-                }
-                when (thelastmessage) {
-                    "default" -> lastmessage.text = "No message"
-                    else ->
-                        lastmessage.text = thelastmessage
-                }
-                thelastmessage = "default"
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-        })*/
-    }
 
 
 
@@ -260,6 +150,7 @@ class FirebaseInstanceDatabase {
         receiverId: String,
         message: String,
         timestamp: Long,
+        channelid:String
     ): MutableLiveData<Boolean> {
         val successAddChatsDb = MutableLiveData<Boolean>()
         val hashMap = HashMap<String, Any>()
@@ -268,90 +159,129 @@ class FirebaseInstanceDatabase {
         hashMap["message"] = message
         hashMap["timestamp"] = timestamp
         hashMap["seen"] = false
-        val lastMessage = HashMap<String, Any>()
-        lastMessage.put("lastMsg", message)
-        lastMessage.put("lastMsgtime",timestamp)
+
+        val participantsList =ArrayList<String>()
+        participantsList.add(currentUserId)
+        participantsList.add(receiverId)
+
+        val receiverList = HashMap<String, Any>()
+        //   receiverList["receiverId"]=receiverId
+        receiverList["id"]= currentUserId
+        receiverList["timestamp"]=timestamp
+        receiverList["participants"]=participantsList
+        //   receiverList["count"]=0
+        receiverList["channelid"]= channelid
+        receiverList["seen"] = false
+        receiverList["lastmsg"]=message
+
+        val currentUserList = HashMap<String,Any>()
+        currentUserList["id"]=receiverId
+        //  currentUserList["count"]=0
+        currentUserList["timestamp"]=timestamp
+        currentUserList["participants"]=participantsList
+        currentUserList["channelid"]=channelid
+        currentUserList["seen"] = false
+        currentUserList["lastmsg"]=message
+
+        val groupinfo = HashMap<String,Any>()
+        groupinfo["groupname"]= "defualt"
+        groupinfo["timestamp"]=timestamp
+        groupinfo["createby"]= currentUserId
+        groupinfo["channelid"]= "${currentUserId}_$receiverId"
+        groupinfo["seen"] = false
+        groupinfo["lastmsg"]=message
+
+        instance.child("Chats").child("$channelid").child("messages").child("$timestamp").setValue(hashMap).addOnCompleteListener {
 
 
-        instance.child("Chats").child("${newCurrentuser}_$newReceiver").child("$timestamp").setValue(hashMap).addOnCompleteListener {
-         //   instance.child("LetestsChats").child("${newCurrentuser}_$newReceiver").child("$timestamp").setValue(hashMap)
-
-
-         successAddChatsDb.value = true
+            successAddChatsDb.value = true
         }.addOnFailureListener { successAddChatsDb.value = false }
+        instance.child("Chats").child("$channelid").child("Participants").setValue(participantsList)
 
-        instance.child("Lastmessage").child("${newCurrentuser}_$newReceiver").updateChildren(lastMessage).addOnCompleteListener {
-            successAddChatsDb.value =true
-        }.addOnFailureListener { successAddChatsDb.value = false }
-
-        /*val latestMessageref = instance.child("/latest-message/${newCurrentuser}_$newReceiver")
-        latestMessageref.setValue(hashMap).addOnCompleteListener {
-            successAddChatsDb.value =true
-        }.addOnFailureListener { successAddChatsDb.value = false }
-
-*/
-
-
+        instance.child("Chats").child("$channelid").child("Info").setValue(groupinfo)
 
         //creating chatList in database for better performance in chatListFragment .
         val chatRef = instance.child("ChatList")
+
             .child(currentUserId)
-            .child(receiverId)
-        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            .child("$channelid")
+
+            .updateChildren(currentUserList)
+        chatRef.addOnCompleteListener {
+            successAddChatsDb.value=true
+        }.addOnFailureListener { successAddChatsDb.value=false }
+
+/*        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    chatRef.child("id").setValue(receiverId)
+                    chatRef.child("id").setValue(userId_receiver)
                     chatRef.child("timestamp").setValue(timestamp)
-                  //  chatRef.child("message").setValue(message)
+                    chatRef.child("channelid").setValue("${userId_sender}_${userId_receiver}")
+                    chatRef.child("lastmsg").setValue(message)
+                    chatRef.updateChildren(receiverList)
+                 //   chatRef.child("username").setValue(username)
+               //     chatRef.child("seen").setValue()
+                    successAddChatsDb.value=true
                 }
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
+override fun onCancelled(databaseError: DatabaseError) {}
+    })*/
 
         val chatRef2 = instance.child("ChatList")
+
             .child(receiverId)
-            .child(currentUserId)
-        chatRef2.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    chatRef2.child("id").setValue(currentUserId)
-                    chatRef2.child("timestamp").setValue(timestamp)
-                 //   chatRef2.child("message").setValue(message)
-                }
-            }
+            .child("$channelid")
 
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-   /*     chatRef.addChildEventListener(object :ChildEventListener{
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                if (!dataSnapshot.exists()) {
-                    chatRef2.child("id").setValue(currentUserId)
-                    chatRef2.child("timestamp").setValue(timestamp)
-                    chatRef2.child("message").setValue(message)
-                }
+            .updateChildren(receiverList)
+        chatRef2.addOnCompleteListener {
+            successAddChatsDb.value=true
+        }.addOnFailureListener { successAddChatsDb.value=false }
 
-            }
+        /*      chatRef2.addListenerForSingleValueEvent(object : ValueEventListener {
+                  override fun onDataChange(dataSnapshot: DataSnapshot) {
+                      if (!dataSnapshot.exists()) {
+                          chatRef2.child("id").setValue(userId_sender)
+                          chatRef2.child("timestamp").setValue(timestamp)
+                          chatRef2.child("channelid").setValue("${userId_sender}_$userId_receiver")
+                          chatRef2.child("lastmsg").setValue(message)
+                          chatRef2.updateChildren(receiverList)
+                      //    chatRef2.child("username").setValue(username)
+                          successAddChatsDb.value=true
+                      }
+                  }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                if (dataSnapshot.exists()) {
-                    chatRef2.child("id").setValue(currentUserId)
-                    chatRef2.child("timestamp").setValue(timestamp)
-                    chatRef2.child("message").setValue(message)
-                }
-            }
+                  override fun onCancelled(databaseError: DatabaseError) {}
+              })*/
+        /*     chatRef.addChildEventListener(object :ChildEventListener{
+                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                     if (!dataSnapshot.exists()) {
+                         chatRef2.child("id").setValue(currentUserId)
+                         chatRef2.child("timestamp").setValue(timestamp)
+                         chatRef2.child("message").setValue(message)
+                     }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-            }
+                 }
 
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-            }
+                 override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                     if (dataSnapshot.exists()) {
+                         chatRef2.child("id").setValue(currentUserId)
+                         chatRef2.child("timestamp").setValue(timestamp)
+                         chatRef2.child("message").setValue(message)
+                     }
+                 }
 
-            override fun onCancelled(error: DatabaseError) {
-            }
+                 override fun onChildRemoved(snapshot: DataSnapshot) {
+                 }
 
-        })
-*/
+                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                 }
+
+                 override fun onCancelled(error: DatabaseError) {
+                 }
+
+             })
+     */
         return successAddChatsDb
     }
 

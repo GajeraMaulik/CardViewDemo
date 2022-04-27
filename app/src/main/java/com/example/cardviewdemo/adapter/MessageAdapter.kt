@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
-import com.example.cardviewdemo.chat.newCurrentuser
-import com.example.cardviewdemo.chat.newReceiver
 import com.example.cardviewdemo.chat.userId_receiver
 import com.example.cardviewdemo.chat.userId_sender
 import com.example.cardviewdemo.services.model.Chats

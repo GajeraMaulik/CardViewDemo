@@ -55,13 +55,11 @@ class DatabaseViewModel : ViewModel(){
         fetchSelectedProfileUserData = instance?.fetchSelectedUserIdData(userId)
     }
 
-    fun fetchlastmessage(userId: String){
-        fetchlastmessage = instance?.fetchlastmessage(userId)
-    }
 
-    fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?) {
+
+    fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?, channelid:String) {
         successAddChatDb =
-            instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!)
+            instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!, channelid)
     }
   /*  fun addChatDb1(comunication: String?, message: String?, timestamp: Long?) {
         successAddChatDb =

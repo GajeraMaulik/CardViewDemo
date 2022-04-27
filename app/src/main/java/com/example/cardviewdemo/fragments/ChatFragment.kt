@@ -12,11 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.adapter.ChatListAdapter
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
 import com.example.cardviewdemo.chat.chatsArrayList
-import com.example.cardviewdemo.chat.newCurrentuser
-import com.example.cardviewdemo.chat.newReceiver
 import com.example.cardviewdemo.chat.userId_sender
 import com.example.cardviewdemo.services.model.ChatList
 import com.example.cardviewdemo.services.model.Chats
@@ -32,14 +31,17 @@ import java.util.*
 
 class ChatFragment : Fragment(){
     lateinit var userAdapter: UserFragmentAdapter
-    private lateinit var mUsers: ArrayList<Users>
     private var currentUserId: String? = null
+    lateinit var chatAdapter:ChatListAdapter
+    private lateinit var mUSer: ArrayList<Users>
+  //  private lateinit var mUsers: ArrayList<ChatList?>
     private lateinit var userList //list of all other users with chat record
-            : ArrayList<ChatList>
+            : ArrayList<ChatList?>
     private lateinit var databaseViewModel: DatabaseViewModel
     private lateinit var logInViewModel: LogInViewModel
     private lateinit var recyclerView_chat_fragment: RecyclerView
     var relative_layout_chat_fragment: RelativeLayout? = null
+    private var userFragmentAdapter: ChatListAdapter? = null
 
 
     override fun onCreateView(
@@ -50,7 +52,8 @@ class ChatFragment : Fragment(){
         // Inflate the layout for this fragment
         val view:View = inflater.inflate(R.layout.fragment_chat, container, false)
         init(view)
-        fetchAllChat()
+        chatLists()
+
        getTokens()
 
         return view
@@ -77,54 +80,27 @@ class ChatFragment : Fragment(){
         })
     }
 
-    private fun fetchAllChat() {
-        databaseViewModel.fetchingUserDataCurrent()
-        databaseViewModel.fetchUserCurrentData?.observe(viewLifecycleOwner
-        ) { dataSnapshot ->
-            val users= dataSnapshot.getValue(Users::class.java)
-            if (users != null) {
-                currentUserId = users.getId()
-            }
-        }
 
-        databaseViewModel.getChaListUserDataSnapshot(currentUserId)
-        databaseViewModel.getChaListUserDataSnapshot?.observe(viewLifecycleOwner
-        ) { dataSnapshot ->
-            for (dataSnapshot1 in dataSnapshot.children) {
-                val chatList = dataSnapshot1.getValue(ChatList::class.java)
-                userList.add(chatList!!)
-            }
-        }
-        chatLists()
-
-    }
 
 
 
     private fun chatLists() {
 
-        databaseViewModel.fetchUserByNameAll()
-        databaseViewModel.fetchUserNames?.observe(viewLifecycleOwner) { dataSnapshot ->
-             mUsers.clear()
-            for (dataSnapshot1 in dataSnapshot!!.children) {
-                val users = dataSnapshot1.getValue(Users::class.java)
-                for (chatList in userList) {
-                    assert(users != null)
-                    if (users!!.getId() == chatList.getId()) {
-                        if (!mUsers.contains(users)) mUsers.add(users)
-                    }
-                }
-            }
-            if (mUsers.size < 1) {
-                relative_layout_chat_fragment!!.visibility = View.VISIBLE
-            } else {
-                relative_layout_chat_fragment!!.visibility = View.GONE
-            }
-            userAdapter = UserFragmentAdapter(mUsers,requireActivity(),true)
-            recyclerView_chat_fragment.adapter = userAdapter
-          //  databaseViewModel.instance?.lastmessage()
+        databaseViewModel.getChaListUserDataSnapshot(userId_sender)
+        databaseViewModel.getChaListUserDataSnapshot?.observe(viewLifecycleOwner
+        ) { dataSnapshot ->
+            userList= dataSnapshot.children.map { it.getValue(ChatList::class.java)} as ArrayList<ChatList?>
 
+            if (userList.size < 1) {
+                recyclerView_chat_fragment.visibility = View.VISIBLE
+            } else {
+                relative_layout_chat_fragment?.visibility = View.GONE
+            }
+
+            chatAdapter = ChatListAdapter(userList, requireContext(), true)
+            recyclerView_chat_fragment.adapter = chatAdapter
         }
+
     }
 
 
@@ -148,7 +124,6 @@ class ChatFragment : Fragment(){
         val dividerItemDecoration = DividerItemDecoration(recyclerView_chat_fragment.context,
             DividerItemDecoration.VERTICAL)
         recyclerView_chat_fragment.addItemDecoration(dividerItemDecoration)
-        mUsers = ArrayList()
         userList = ArrayList()
 
         userAdapter = UserFragmentAdapter()
