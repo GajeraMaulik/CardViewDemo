@@ -1,4 +1,4 @@
-package  com.example.cardviewdemo.Provider
+package com.example.cardviewdemo.Util
 
 import android.net.Uri
 import android.util.Log
@@ -6,7 +6,6 @@ import androidx.exifinterface.media.ExifInterface
 import java.io.File
 
 object ExifDataCopier {
-
     fun copyExif(filePathOri: Uri, filePathDest: File) {
         try {
             val oldExif = ExifInterface(filePathOri.path!!)

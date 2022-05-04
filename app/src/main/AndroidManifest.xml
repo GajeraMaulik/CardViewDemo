@@ -45,22 +45,22 @@
         android:roundIcon="@mipmap/ic_icon"
         android:theme="@style/Theme.CardViewDemo">
         <activity
-            android:name=".chat.MessagingActivity"
+            android:name=".Chat.MessagingActivity"
             android:exported="false" />
         <activity
-            android:name=".chat.UsersActivity"
+            android:name=".Chat.UsersActivity"
             android:exported="false" />
         <activity
-            android:name=".imagepicker.ImageShowActivity"
+            android:name=".Imagepicker.ImageShowActivity"
             android:exported="false" />
         <activity
             android:name=".CameraActivity"
             android:exported="false" />
-        <activity android:name=".login.SignInActivity" />
-        <activity android:name=".login.SignUpActivity" />
-        <activity android:name=".progressbar.ProgressDialogActivity" />
-        <activity android:name=".crudstatic.CRUDActivity" />
-        <activity android:name=".listview.ListActivity" />
+        <activity android:name=".Login.SignInActivity" />
+        <activity android:name=".Login.SignUpActivity" />
+        <activity android:name=".Progressbar.ProgressDialogActivity" />
+        <activity android:name=".Crudstatic.CRUDActivity" />
+        <activity android:name=".Listview.ListActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -70,9 +70,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".listview.ImageActivity" />
+        <activity android:name=".Listview.ImageActivity" />
         <activity
-            android:name=".imagepicker.ImagePickerActivity"
+            android:name=".Imagepicker.ImagePickerActivity"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.Transparent.ImagePicker" />
         <activity
@@ -81,7 +81,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <provider
-            android:name=".imagepicker.ImagePickerFileProvider"
+            android:name=".Imagepicker.ImagePickerFileProvider"
             android:authorities="${applicationId}.imagepicker.provider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -90,7 +90,7 @@
                 android:resource="@xml/file_path" />
         </provider>
         <service
-            android:name=".services.notifications.MessagingServices"
+            android:name=".Services.notifications.MessagingServices"
             android:exported="true"
             android:enabled="true">
             <intent-filter>

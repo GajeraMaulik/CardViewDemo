@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".progressbar.ProgressDialogActivity">
+    tools:context=".Progressbar.ProgressDialogActivity">
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progIn"

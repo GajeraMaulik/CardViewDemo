@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".imagepicker.ImageShowActivity">
+    tools:context=".Imagepicker.ImageShowActivity">
   <!--  <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"

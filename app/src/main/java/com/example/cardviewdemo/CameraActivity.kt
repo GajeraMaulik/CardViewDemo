@@ -1,10 +1,8 @@
 package com.example.cardviewdemo
 
 import android.app.ProgressDialog
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,12 +11,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cardviewdemo.databinding.ActivityCameraBinding
-import com.example.cardviewdemo.databinding.ActivityImageShowBinding
-import com.example.cardviewdemo.imagepicker.ImagePicker
-import com.example.cardviewdemo.imagepicker.setLocalImage
-import com.example.cardviewdemo.util.FileUriUtils
-import com.example.cardviewdemo.util.FileUtil
-import com.example.cardviewdemo.util.IntentUtils
+import com.example.cardviewdemo.Imagepicker.ImagePicker
+import com.example.cardviewdemo.Imagepicker.setLocalImage
+import com.example.cardviewdemo.Util.FileUtil
+import com.example.cardviewdemo.Util.IntentUtils
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.content_camera_only.*
 import kotlinx.android.synthetic.main.content_gallery_only.*
