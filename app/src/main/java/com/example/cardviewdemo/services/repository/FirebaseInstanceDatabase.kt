@@ -1,5 +1,6 @@
 package com.example.cardviewdemo.services.repository
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -120,6 +121,8 @@ class FirebaseInstanceDatabase {
     }
 
     fun fetchChatUser(): MutableLiveData<DataSnapshot> {
+       // channelid = "${userId_sender}_$userId_receiver"
+//           channelid = Activity().intent.getStringExtra("channelid")
 
         val fetchUserChat = MutableLiveData<DataSnapshot>()
         instance.child("Chats").child("$channelid").child("messages")
@@ -150,7 +153,9 @@ class FirebaseInstanceDatabase {
         receiverId: String,
         message: String,
         timestamp: Long,
-        channelid:String
+        channelid:String,
+        totalmessage:Int,
+        unreadsmessage:Int
     ): MutableLiveData<Boolean> {
         val successAddChatsDb = MutableLiveData<Boolean>()
         val hashMap = HashMap<String, Any>()
@@ -169,17 +174,19 @@ class FirebaseInstanceDatabase {
         receiverList["id"]= currentUserId
         receiverList["timestamp"]=timestamp
         receiverList["participants"]=participantsList
-        //   receiverList["count"]=0
-        receiverList["channelid"]= channelid
+        receiverList["channelid"]=channelid
+        receiverList["totalmessage"]= totalmessage
+        receiverList["unreadsmessage"]=unreadsmessage
         receiverList["seen"] = false
         receiverList["lastmsg"]=message
 
         val currentUserList = HashMap<String,Any>()
         currentUserList["id"]=receiverId
-        //  currentUserList["count"]=0
         currentUserList["timestamp"]=timestamp
         currentUserList["participants"]=participantsList
-        currentUserList["channelid"]=channelid
+        currentUserList["channelid"]= channelid
+        currentUserList["totalmessage"]=totalmessage
+        currentUserList["unreadsmessage"]=unreadsmessage
         currentUserList["seen"] = false
         currentUserList["lastmsg"]=message
 
@@ -187,8 +194,8 @@ class FirebaseInstanceDatabase {
         groupinfo["groupname"]= "defualt"
         groupinfo["timestamp"]=timestamp
         groupinfo["createby"]= currentUserId
-        groupinfo["channelid"]= "${currentUserId}_$receiverId"
-        groupinfo["seen"] = false
+        groupinfo["channelid"]= channelid
+      //  groupinfo["seen"] = false
         groupinfo["lastmsg"]=message
 
         instance.child("Chats").child("$channelid").child("messages").child("$timestamp").setValue(hashMap).addOnCompleteListener {

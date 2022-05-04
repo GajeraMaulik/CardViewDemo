@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.chat.*
 import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
 import com.example.cardviewdemo.fragments.BottomSheetProfileDetailUser
@@ -32,6 +33,10 @@ import de.hdodenhof.circleimageview.CircleImageView
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+
+var unreads=0
+var unseen=0
+
 class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ChatListHolder> {
     private val firebaseUser = FirebaseAuth.getInstance().currentUser!!
 
@@ -51,6 +56,7 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ChatListHolder> {
     var chats = Chats()
     var timeStamp: Long? = null
     var isChat: Boolean = false
+        var seensize =ArrayList<Boolean>()
 
     constructor() {
 
@@ -79,54 +85,38 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ChatListHolder> {
 
     override fun onBindViewHolder(holder:ChatListHolder, position: Int) {
         val chatList = chatsArrayList[position]
-/*        holder.itemView.setOnClickListener {
-            val intent = Intent(context, MessagingActivity::class.java)
-            intent.putExtra("userId", users.getId())
-            intent.putExtra("channelid",chatList.getchannelid())
-            d("ch", "cha : ${chatList.getchannelid()}")
-            context.startActivity(intent)
-        }*/
-//        username = users.getUsername()
-        //      d("user", " before chatList : $username")
 
-/*
-        if (chatList == null){
-            holder.iv_chat_fragment_empty.visibility =View.VISIBLE
-        }else {
-            holder.iv_chat_fragment_empty.visibility = View.GONE
-        }
-*/
 
-        /*   userId_receiver = intent.getStringExtra("userId")
-           userId_sender  = intent.getStringExtra("user")*/
-        //  username = intent.getStringExtra("username")
-
-        if(channelid == null){
-            channelid = chatList?.getchannelid()
-        }
 
 
         d("seen1","-------->$channelid")
-        firebaseInstanceDatabase.instance.child("Chats").child(chatList!!.getchannelid().toString()).child("messages")
+        firebaseInstanceDatabase.instance.child("Chats").child("$channelid").child("messages")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(datasnapshot: DataSnapshot) {
                     d("seen1", "seen: $datasnapshot")
-                    var unread = 0
+                        var unread = 0
                     for (snapshot in datasnapshot.children) {
                         val chats = snapshot.getValue(Chats::class.java)
                         d("seen1","seen1 : ${chats!!.getSeen()}")
+                       // seensize = chats.seen as ArrayList<Boolean>
                         val seen=snapshot.child("seen").getValue(Boolean::class.java)!!
-                        //   if (chats != null) {
-                        if (chats.getReceiverId().equals(firebaseUser.uid) && seen ==false) {
+
+
+                        d("seen","count----20---$seen")
+                        if (chats.getReceiverId().equals(firebaseUser.uid) && seen ==false){
                             unread++
+                            d("seen","count---31-$unreads")
                         }
-                        //   }
+                        d("seen","count---1-$unreads")
 
                     }
-                    val unreads: String = unread.toString()
+                    d("TAG","count----2---$unreads")
+                     unseen = unread
+                    d("seen","--->$unseen")
+                    SharePref.save(context,"unseen","$unseen")
                     if (unread != 0) {
                         holder.tv_onseen_message.visibility = View.VISIBLE
-                        holder.tv_onseen_message.text = unreads
+                        holder.tv_onseen_message.text = unseen.toString()
                     }
 
 
@@ -135,6 +125,8 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ChatListHolder> {
                 override fun onCancelled(error: DatabaseError) {
                 }
             })
+
+       // firebaseInstanceDatabase.instance.child()
 
         firebaseInstanceDatabase.instance.child("Users").child(chatList!!.getId().toString())
             .addValueEventListener(object : ValueEventListener {
@@ -174,9 +166,11 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ChatListHolder> {
                         val intent = Intent(context, MessagingActivity::class.java)
                         intent.putExtra("userId", users.getId())
                         intent.putExtra("channelid", chatList.getchannelid())
+                        //d("dgdfhdfh","${chatList.getUnreadmessage()}")
                         //    holder.tv_onseen_message.visibility = View.GONE
                         d("ch", "cha : ${chatList.getchannelid()}")
                         context.startActivity(intent)
+                        Activity().finish()
                     }
                 }
 

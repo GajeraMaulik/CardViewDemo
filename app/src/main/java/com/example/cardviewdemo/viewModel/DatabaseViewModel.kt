@@ -57,9 +57,8 @@ class DatabaseViewModel : ViewModel(){
 
 
 
-    fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?, channelid:String) {
-        successAddChatDb =
-            instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!, channelid)
+    fun addChatDb(currentUserId: String?,receiverId : String?, message: String?, timestamp: Long?, channelid:String,totalmessage:Int,unreadsmessage:Int) {
+        successAddChatDb = instance?.addChatsInDatabase(currentUserId!!, receiverId!!, message!!, timestamp!!, channelid,totalmessage,unreadsmessage)
     }
   /*  fun addChatDb1(comunication: String?, message: String?, timestamp: Long?) {
         successAddChatDb =

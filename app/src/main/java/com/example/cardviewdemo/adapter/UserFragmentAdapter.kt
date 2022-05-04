@@ -76,6 +76,7 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
         val user_status: String = users.getStatus()
         firebaseInstanceDatabase = FirebaseInstanceDatabase()
 
+
         if (isChat) {
             try {
                 if (user_status.contains("online") && isNetworkConnected()) {
@@ -96,13 +97,16 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
         } else {
             Glide.with(context).load(imageUrl).into(holder.iv_profile_image)
         }
+        holder.tv_name.text = userName
+
 /*
         if (isChat) {
             lastmessage(users.getId(), holder.tv_last_message)
         } else holder.tv_last_message.visibility = View.GONE
 */
 
-        holder.tv_name.text = userName
+
+
         holder.iv_profile_image.setOnClickListener(View.OnClickListener {
             bottomSheetProfileDetailUser =
                 BottomSheetProfileDetailUser(userName, imageUrl, bio)
@@ -110,9 +114,12 @@ class UserFragmentAdapter : RecyclerView.Adapter<UserFragmentAdapter.UserFragmen
             bottomSheetProfileDetailUser.show(manager, "edit")
         })
         holder.itemView.setOnClickListener {
+
             val intent = Intent(context, MessagingActivity::class.java)
             intent.putExtra("userId", users.getId())
+          //  channelid = null
             context.startActivity(intent)
+            Activity().finish()
         }
 
 

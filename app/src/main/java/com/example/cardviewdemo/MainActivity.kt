@@ -50,7 +50,7 @@ class MainActivity() : AppCompatActivity() {
         //firebaseUser = FirebaseUser().uid
 
         database= FirebaseDatabase.getInstance()
-//        database.setPersistenceEnabled(true)
+       database.setPersistenceEnabled(true)
 
 
 

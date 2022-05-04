@@ -6,17 +6,21 @@ class ChatList {
     private var timestamp: Long? = null
     private  var lastmsg:String?=null
     private  var username:String?=null
+    private  var totalmessage:Int?=null
+    private  var unreadsmessage:Int?=null
     var seen:Boolean = false
 
     constructor()
 
-    constructor(id: String?,channelid:String?, timestamp: Long?,lastmsg:String?,username:String?,seen:Boolean) {
+    constructor(id: String?,channelid:String?, timestamp: Long?,lastmsg:String?,username:String?,seen:Boolean,totalmessage:Int,unreadsmessage:Int) {
         this.id = id
         this.channelid=channelid
         this.timestamp = timestamp
         this.lastmsg=lastmsg
         this.username=username
         this.seen = seen
+        this.totalmessage=totalmessage
+        this.unreadsmessage =unreadsmessage
     }
     fun getId(): String? {
         return id
@@ -25,7 +29,12 @@ class ChatList {
     fun setId(id: String?) {
         this.id = id
     }
-
+    fun getUnreadmessage():Int?{
+        return unreadsmessage
+    }
+    fun setUnreadmessage(unreadsmessage: Int){
+        this.unreadsmessage =unreadsmessage
+    }
     fun getTimestamp(): Long? {
         return timestamp
     }
@@ -52,6 +61,14 @@ class ChatList {
     fun setUsername(username: String?) {
         this.username = username
     }
+    fun getTotalmessage(): Int? {
+        return totalmessage
+    }
+
+    fun setToatalmessage(totalmessage: Int) {
+        this.totalmessage = totalmessage
+    }
+
 
 
     @JvmName("getSeen1")

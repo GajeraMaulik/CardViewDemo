@@ -137,7 +137,7 @@ import java.util.*
         if (requestCode == IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
             var bmp : Bitmap
-            bmp = MediaStore.Images.Media.getBitmap(Activity().contentResolver,imageUri)
+           bmp = MediaStore.Images.Media.getBitmap(Activity().contentResolver,imageUri)
 
             try {
                  bmp = MediaStore.Images.Media.getBitmap(Activity().contentResolver,imageUri)
@@ -146,7 +146,7 @@ import java.util.*
             }
             val baos = ByteArrayOutputStream()
 
-                bmp.compress(Bitmap.CompressFormat.valueOf(""), 10, baos) //compression
+                bmp.compress(Bitmap.CompressFormat.JPEG, 10, baos) //compression
                 dataImageByte = baos.toByteArray()
 
 

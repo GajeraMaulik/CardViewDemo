@@ -1,5 +1,6 @@
 package com.example.cardviewdemo.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.ChatListAdapter
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
+import com.example.cardviewdemo.chat.channelid
 import com.example.cardviewdemo.chat.chatsArrayList
 import com.example.cardviewdemo.chat.userId_sender
 import com.example.cardviewdemo.services.model.ChatList
@@ -84,6 +86,7 @@ class ChatFragment : Fragment(){
 
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun chatLists() {
 
         databaseViewModel.getChaListUserDataSnapshot(userId_sender)
@@ -99,6 +102,8 @@ class ChatFragment : Fragment(){
 
             chatAdapter = ChatListAdapter(userList, requireContext(), true)
             recyclerView_chat_fragment.adapter = chatAdapter
+            chatAdapter.notifyDataSetChanged()
+
         }
 
     }

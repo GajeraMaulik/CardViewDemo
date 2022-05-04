@@ -1,6 +1,7 @@
 package com.example.cardviewdemo.chat
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log.d
@@ -12,8 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.SharePref
 import com.example.cardviewdemo.adapter.MessageAdapter
 import com.example.cardviewdemo.adapter.UserFragmentAdapter
+import com.example.cardviewdemo.adapter.unseen
 import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
 import com.example.cardviewdemo.fragments.BottomSheetProfileDetailUser
 import com.example.cardviewdemo.services.APIServices
@@ -34,41 +37,40 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
 
-var channelid:String? = null
+var channelid:String? =null
 
-
-var userId_receiver // userId of other user who'll receive the text // Or the user id of profile currently opened
-        : String? = null
- var userId_sender // current user id
+ var userId_receiver // userId of other user who'll receive the text // Or the user id of profile currently opened
+        : String? =null
+  var userId_sender // current user id
         : String? = null
 
  lateinit var chatsArrayList: ArrayList<Chats>
 var chat: String =""
+var totalmessage:Int =1
 
 class MessagingActivity : AppCompatActivity() {
+
     lateinit var client: Client
     lateinit var apiService: APIServices
     lateinit var binding: ActivityMessagingViewBinding
-
-
     lateinit var logInViewModel: LogInViewModel
     lateinit var databaseViewModel: DatabaseViewModel
+    lateinit var currentFirebaseUser: FirebaseUser
+    lateinit var progressBar: ProgressBar
+    lateinit var messageAdapter: MessageAdapter
     lateinit var firebaseInstanceDatabase: FirebaseInstanceDatabase
 
     var profileUserNAme: String? = null
     var profileImageURL: String? = null
     var bio: String? = null
-    lateinit var currentFirebaseUser: FirebaseUser
     var chats = Chats()
     var userFragmentAdapter = UserFragmentAdapter()
     var user =Users()
     var timeStamp: Long? = null
-
     var user_status: String? = null
-    lateinit var progressBar: ProgressBar
-    var messageAdapter: MessageAdapter? = null
     var bottomSheetProfileDetailUser: BottomSheetProfileDetailUser? = null
     var notify = false
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +78,9 @@ class MessagingActivity : AppCompatActivity() {
 
         binding = ActivityMessagingViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        userId_receiver = intent.getStringExtra("userId")!!
-        userId_sender  = intent.getStringExtra("user")
+        userId_receiver = intent.getStringExtra("userId")
+      // userId_sender  = intent.getStringExtra("currentuser")
+        channelid = intent.getStringExtra("channelid")
 
 
 
@@ -90,6 +93,7 @@ class MessagingActivity : AppCompatActivity() {
                 }
             }
         }
+
 
         et_chat.setOnClickListener {
             d("box","hello")
@@ -111,7 +115,6 @@ class MessagingActivity : AppCompatActivity() {
         }
 
         init()
-        getCurrentFirebaseUser()
         fetchAndSaveCurrentProfileTextAndData()
 
      //   userFragmentAdapter.lastmessage()
@@ -143,7 +146,7 @@ class MessagingActivity : AppCompatActivity() {
         if (userId_receiver == null) {
             userId_receiver = intent.getStringExtra("userId")
         }
-        databaseViewModel.fetchSelectedUserProfileData(userId_receiver!!)
+        databaseViewModel.fetchSelectedUserProfileData(userId_receiver.toString())
         databaseViewModel.fetchSelectedProfileUserData?.observe(this
         ) { dataSnapshot ->
             val user = dataSnapshot.getValue(Users::class.java)!!
@@ -206,64 +209,40 @@ class MessagingActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun fetchChatFromDatabase(senderId:String,receiverId:String) {
+    private fun fetchChatFromDatabase(senderId:String, receiverId:String) {
+
+        messageAdapter = MessageAdapter(chatsArrayList, this, userId_sender!!)
+        recycler_view_messages_record.adapter = messageAdapter
 
         databaseViewModel.fetchChatUser()
+
         databaseViewModel.fetchedChat?.observe(this
         ) { dataSnapshot ->
             chatsArrayList.clear()
-             for (snapshot in dataSnapshot.children) {
+
+            for (snapshot in dataSnapshot.children) {
                  chats = snapshot.getValue(Chats::class.java)!!
-                 if (chats.getReceiverId().equals(receiverId) && chats.getCurrentuserId().equals(senderId)|| chats.getReceiverId().equals(senderId )&&
+
+                if (chats.getReceiverId().equals(receiverId) && chats.getCurrentuserId().equals(senderId)|| chats.getReceiverId().equals(senderId )&&
                      chats.getCurrentuserId().equals(receiverId)) {
                      chatsArrayList.add(chats)
-
+                    d("TAG","------------------->${chatsArrayList}")
                      d("TAG","cht : hiiiiiiiii")
 
                  }
              }
+            totalmessage = chatsArrayList.count()+1
 
-            messageAdapter = MessageAdapter(chatsArrayList, this, userId_sender!!)
-            recycler_view_messages_record.adapter = messageAdapter
-             recycler_view_messages_record.postDelayed({
-                 recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
+            messageAdapter.notifyDataSetChanged()
+          //  recycler_view_messages_record.smoothScrollToPosition(chatsArrayList!!.size - 1)
 
-             }, 1000)
+               recycler_view_messages_record.postDelayed({
+                   recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
+
+               }, 1000)
         }
     }
-    @SuppressLint("NotifyDataSetChanged")
-   /* private fun fetchChatFromDatabase1() {
-        // chats = Chats()
-       val senderId :String = userId_receiver!!
-        val receiverId:String = userId_sender!!
-         // ="${senderId}_$receiverId"
 
-        databaseViewModel.fetchChatUser()
-        databaseViewModel.fetchedChat?.observe(this
-        ) { dataSnapshot ->
-
-            chatsArrayList.clear()
-            for (snapshot in dataSnapshot!!.children) {
-
-                chats= snapshot.getValue(Chats::class.java)!!
-                d("TAG","chat :$chatsArrayList")
-                if (chats.getReceiverId() == senderId && chats.getSenderId() == receiverId || chats.getReceiverId() == receiverId && chats.getSenderId() == senderId) {
-                    chatsArrayList.add(chats)
-                }
-            }
-            d("TAG","chats :$chatsArrayList")
-
-            messageAdapter = MessageAdapter(chatsArrayList, this,"${newCurrentuser}_$newReceiver")
-            recycler_view_messages_record.adapter = messageAdapter
-
-            binding.recyclerViewMessagesRecord.adapter?.notifyDataSetChanged()
-            recycler_view_messages_record.postDelayed({
-                recycler_view_messages_record.scrollToPosition((recycler_view_messages_record.adapter as MessageAdapter).itemCount - 1)
-
-            }, 1000)
-        }
-    }
-*/
 
     private fun addChatInDataBase() {
         val msg = chat
@@ -274,13 +253,14 @@ class MessagingActivity : AppCompatActivity() {
 
         if(channelid == null){
             channelid = "${userId_sender}_$userId_receiver"
-        }else{
-            channelid = intent.getStringExtra("channelid")
-
+        }
+        if(chatsArrayList == null){
+           // totalmessage = -1
+            userId_receiver = intent.getStringExtra("userId")
         }
 
-
-        databaseViewModel.addChatDb(userId_sender, userId_receiver, msg, timeStamp, channelid!!)
+      //  val unseen= SharePref.getStringValue(this,"unseen")
+        databaseViewModel.addChatDb(userId_sender, userId_receiver, msg, timeStamp, channelid!!, totalmessage, unseen)
 
 
 
@@ -356,6 +336,8 @@ class MessagingActivity : AppCompatActivity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
         d("u","userId_sender:$userId_sender")
         d("TAG","userId_receiver:$userId_receiver")
+        getCurrentFirebaseUser()
+
         client = Client
 
         progressBar = ProgressBar(this)
@@ -403,6 +385,8 @@ class MessagingActivity : AppCompatActivity() {
         onBackKeyPressedOnKeyboard()
     }
     fun onBackKeyPressedOnKeyboard() {
+     //   userId_sender = ""
+      //  userId_receiver= ""
         binding.etChat.clearFocus()
     }
 
