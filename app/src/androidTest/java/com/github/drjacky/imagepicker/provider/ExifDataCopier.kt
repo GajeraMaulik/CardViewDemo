@@ -1,4 +1,4 @@
-package  com.example.cardviewdemo.Provider
+package  com.example.cardviewdemo.provider
 
 import android.net.Uri
 import android.util.Log

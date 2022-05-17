@@ -12,14 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.example.cardviewdemo.Chat.UsersActivity
-import com.example.cardviewdemo.Crudstatic.CRUDActivity
-import com.example.cardviewdemo.Imagepicker.ImageShowActivity
-import com.example.cardviewdemo.Listview.ListActivity
-import com.example.cardviewdemo.Login.SignInActivity
-import com.example.cardviewdemo.Progressbar.ProgressDialogActivity
-import com.example.cardviewdemo.Services.model.ImageSlider
-import com.example.cardviewdemo.Slider.ImageSliderAdapter
+import com.example.cardviewdemo.chat.UsersActivity
+import com.example.cardviewdemo.crudstatic.CRUDActivity
+import com.example.cardviewdemo.imagepicker.ImageShowActivity
+import com.example.cardviewdemo.listview.ListActivity
+import com.example.cardviewdemo.login.SignInActivity
+import com.example.cardviewdemo.progressbar.ProgressDialogActivity
+import com.example.cardviewdemo.services.model.ImageSlider
+import com.example.cardviewdemo.slider.ImageSliderAdapter
+import com.example.cardviewdemo.xmlparse.XMlparseActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -179,6 +180,11 @@ class MainActivity() : AppCompatActivity() {
                 finish()
             }
         }*/
+    }
+    fun PasingView(view: View){
+        val intent = Intent(this, XMlparseActivity::class.java)
+        startActivity(intent)
+        //finish()
     }
 
 
