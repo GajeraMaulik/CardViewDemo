@@ -23,7 +23,7 @@
         android:id="@+id/rvoder_Info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/orderinfo_list"
+        tools:listitem="@layout/item_orderinfo"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:ignore="MissingConstraints" />
 

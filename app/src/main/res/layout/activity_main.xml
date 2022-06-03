@@ -248,7 +248,7 @@ android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/custom_rectangle"
                     android:textColor="@color/white"
-                    android:text="XML Parseing"
+                    android:text="XML Parsing"
                     android:onClick="PasingView"
                     tools:ignore="MissingConstraints,OnClick"
                     tools:layout_editor_absoluteX="3dp"
@@ -279,8 +279,55 @@ android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/custom_rectangle"
                     android:textColor="@color/white"
-                    android:text="Demo"
-                    tools:ignore="MissingConstraints"
+                    android:onClick="Pasingwithapi"
+                    android:text="Xml parsing with api"
+                    tools:ignore="MissingConstraints,OnClick"
+                    tools:layout_editor_absoluteX="3dp"
+                    tools:layout_editor_absoluteY="0dp" />
+
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="134dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_rectangle"
+                    android:textColor="@color/white"
+                    android:onClick="retrofitExample"
+                    android:text="get produts"
+                    tools:ignore="MissingConstraints,OnClick"
+                    tools:layout_editor_absoluteX="3dp"
+                    tools:layout_editor_absoluteY="0dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="130dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_rectangle"
+                    android:textColor="@color/white"
+                    android:onClick="getMovies"
+                    android:text="get movies"
+                    tools:ignore="MissingConstraints,OnClick"
                     tools:layout_editor_absoluteX="3dp"
                     tools:layout_editor_absoluteY="0dp" />
 
@@ -300,8 +347,6 @@ android:layout_width="match_parent"
 
 
             </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

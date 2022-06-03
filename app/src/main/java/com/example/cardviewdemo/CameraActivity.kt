@@ -118,7 +118,7 @@ class CameraActivity : AppCompatActivity() {
         val formatter = SimpleDateFormat("dd-mm", Locale.getDefault())
         val now = Date()
         val filename = formatter.format(now).toString() + ".jpeg"
-        val storageReference = FirebaseStorage.getInstance().getReference("UserProfile/$filename")
+        val storageReference = FirebaseStorage.getInstance().getReference("Images/$filename")
 
         mProfileUri?.let {
             storageReference.putFile(it).addOnSuccessListener {

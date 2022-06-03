@@ -92,6 +92,11 @@ class UsersActivity : AppCompatActivity() {
 
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
     private fun getCurrentFirebaseUser() {
         logInViewModel = LogInViewModel()
         logInViewModel.firebaseUserLogInStatus
@@ -180,6 +185,7 @@ class UsersActivity : AppCompatActivity() {
         super.onPause()
         status("offline")
     }
+
     /* private fun getUserList(){
         val currentUser = FirebaseAuth.getInstance().currentUser!!.uid
 

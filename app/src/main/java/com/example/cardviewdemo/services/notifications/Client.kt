@@ -1,14 +1,29 @@
 package com.example.cardviewdemo.services.notifications
 
+import android.util.Log.d
+import android.util.Xml
 import com.example.cardviewdemo.services.APIServices
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.converter.htmlescape.HtmlEscapeStringConverter
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.CertificatePinner
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
+import org.chromium.base.Log
+import org.json.JSONException
+import org.json.JSONObject
+import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+//import retrofit2.converter.gson.GsonConverterFactory
+//import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
+import java.util.logging.Handler
 
 object Client {
   /*  private val retrofit: Retrofit? = null
@@ -37,11 +52,75 @@ object Client {
         private lateinit var okHttpClient: OkHttpClient
         lateinit var api:APIServices
         private var retrofit: Retrofit? = null
+        val baseUrl = "https://burgers1.p.rapidapi.com/"
+            //"https://best-manga-anime-wallpapers.p.rapidapi.com"
+
+    fun getRetroInstance(url :String): Retrofit {
+
+        val logging = HttpLoggingInterceptor()
+        logging.level = (HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder()
+        client.addInterceptor(logging)
 
 
+        okHttpClient = OkHttpClient.Builder()
+            //  .addInterceptor(interceptor)
+            // .addInterceptor(interceptor)
+            .connectTimeout(310, TimeUnit.SECONDS)
+            .callTimeout(310, TimeUnit.SECONDS)
+            .connectTimeout(310, TimeUnit.SECONDS)
+            .readTimeout(310, TimeUnit.SECONDS)
+            .writeTimeout(310, TimeUnit.SECONDS)
+            //.certificatePinner(certificatePinner)
 
-        fun getClient(url:String): Retrofit
-                 {
+            /* .connectionSpecs(Arrays.asList(
+                 ConnectionSpec.MODERN_TLS,
+                 ConnectionSpec.COMPATIBLE_TLS))
+             .followRedirects(true)
+             .followSslRedirects(true)
+             .retryOnConnectionFailure(true)
+             .connectTimeout(20, TimeUnit.SECONDS)
+             .readTimeout(20, TimeUnit.SECONDS)
+             .writeTimeout(20, TimeUnit.SECONDS)
+             .cache(null)*/
+            .build()
+
+        val retrofit: Retrofit by lazy {
+            Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build()
+        }
+
+
+        val apiServices: APIServices by lazy {
+            retrofit.create(APIServices::class.java)
+        }
+        return retrofit
+    }
+/*        public static OwnerDetailService getOwnerDetails() {
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
+
+            ownerDetailService = new Retrofit.Builder()
+                .baseUrl("https://www.tradetu.com/bus_api/public/api/v1/vaahan/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build().create(OwnerDetailService.class);
+
+            return ownerDetailService;
+
+        */
+
+
+        fun getClient(url:String): Retrofit {
             //    interceptor = HttpLoggingInterceptor()
              //   interceptor.level = HttpLoggingInterceptor.Level.BODY
 
@@ -85,6 +164,52 @@ object Client {
                 return retrofit!!
 
             }
+    fun getNews(url: String):Retrofit{
+         val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        okHttpClient = OkHttpClient.Builder()
+            //  .addInterceptor(interceptor)
+            // .addInterceptor(interceptor)
+            .connectTimeout(120, TimeUnit.SECONDS)
+            .callTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(120, TimeUnit.SECONDS)
+            .addInterceptor(httpLoggingInterceptor)
+            .writeTimeout(120, TimeUnit.SECONDS)
+            //.certificatePinner(certificatePinner)
+
+            /* .connectionSpecs(Arrays.asList(
+                 ConnectionSpec.MODERN_TLS,
+                 ConnectionSpec.COMPATIBLE_TLS))
+             .followRedirects(true)
+             .followSslRedirects(true)
+             .retryOnConnectionFailure(true)
+             .connectTimeout(20, TimeUnit.SECONDS)
+             .readTimeout(20, TimeUnit.SECONDS)
+             .writeTimeout(20, TimeUnit.SECONDS)
+             .cache(null)*/
+            .build()
+
+        if (retrofit == null){
+         retrofit = Retrofit.Builder()
+             .client(okHttpClient)
+            .baseUrl(url)
+             .addConverterFactory(SimpleXmlConverterFactory.create())
+//             .addConverterFactory(
+//                 TikXmlConverterFactory.create(
+//                     TikXml.Builder()
+//                         .exceptionOnUnreadXml(false)
+//                         .addTypeConverter(String.javaClass, HtmlEscapeStringConverter())
+//                         .build()
+//                 )
+//             )
+            .build()
+            d("url","$url")
+        }
+        return retrofit!!
+
+    }
+
 
         fun toRequestBody(value: String): RequestBody {
             return value.toRequestBody("text/plain".toMediaTypeOrNull())

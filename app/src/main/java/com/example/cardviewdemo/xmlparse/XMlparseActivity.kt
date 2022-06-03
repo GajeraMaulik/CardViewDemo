@@ -9,14 +9,11 @@ import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.OderinfoAdapter
 import com.example.cardviewdemo.databinding.ActivityXmlparseBinding
 import com.example.cardviewdemo.services.model.Orderinfo
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import org.xml.sax.SAXException
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 import java.io.InputStream
-import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
 
 class  XMlparseActivity : AppCompatActivity() {
@@ -31,9 +28,14 @@ class  XMlparseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityXmlparseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val actionBar= supportActionBar
+        actionBar!!.title="XmlParser"
+        actionBar.setDisplayHomeAsUpEnabled(true)
+
         oderinfoList = ArrayList()
 
-        orderinfoadapter = OderinfoAdapter(oderinfoList, R.layout.orderinfo_list,
+        orderinfoadapter = OderinfoAdapter(oderinfoList, R.layout.item_orderinfo,
             arrayOf("ord_no",
                 "cus_no",
                 "item_no",
@@ -58,7 +60,6 @@ class  XMlparseActivity : AppCompatActivity() {
 
 
         try {
-
             val istrem: InputStream = assets.open("file1.xml")
             //val builderFactory = DocumentBuilderFactory.newInstance()
           //  val docBuilder = builderFactory.newDocumentBuilder()

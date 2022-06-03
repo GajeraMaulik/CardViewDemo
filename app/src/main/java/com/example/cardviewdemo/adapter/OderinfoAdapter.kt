@@ -4,18 +4,13 @@ import android.content.res.XmlResourceParser
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cardviewdemo.databinding.OrderinfoListBinding
+import com.example.cardviewdemo.databinding.ItemOrderinfoBinding
 import com.example.cardviewdemo.services.model.Orderinfo
 import com.example.cardviewdemo.xmlparse.XMlparseActivity
 
-class OderinfoAdapter(
-    var oderinfoList: MutableList<Orderinfo>,
-    orderinfoList: Int,
-    arrayOf: Array<String>,
-    intArrayOf: IntArray
-): RecyclerView.Adapter<OderinfoAdapter.ViewHolder>() {
+class OderinfoAdapter(var oderinfoList: MutableList<Orderinfo>, var orderinfoList: Int, var arrayOf: Array<String>, var intArrayOf: IntArray): RecyclerView.Adapter<OderinfoAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OderinfoAdapter.ViewHolder {
-        val  binding=OrderinfoListBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val  binding=ItemOrderinfoBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)
     }
 
@@ -39,6 +34,6 @@ class OderinfoAdapter(
     override fun getItemCount(): Int{
         return oderinfoList.size
     }
-    inner class ViewHolder(val binding: OrderinfoListBinding):RecyclerView.ViewHolder( binding.root)
+    inner class ViewHolder(val binding: ItemOrderinfoBinding):RecyclerView.ViewHolder( binding.root)
 
 }

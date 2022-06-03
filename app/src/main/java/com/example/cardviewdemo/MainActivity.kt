@@ -12,15 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.example.cardviewdemo.Movies.MovieActivity
 import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.crudstatic.CRUDActivity
 import com.example.cardviewdemo.imagepicker.ImageShowActivity
 import com.example.cardviewdemo.listview.ListActivity
 import com.example.cardviewdemo.login.SignInActivity
 import com.example.cardviewdemo.progressbar.ProgressDialogActivity
+import com.example.cardviewdemo.retrofit.ProductsActivity
 import com.example.cardviewdemo.services.model.ImageSlider
 import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.example.cardviewdemo.xmlparse.XMlparseActivity
+import com.example.cardviewdemo.xmlparse.XmlparsingwithapiActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -159,11 +162,11 @@ class MainActivity() : AppCompatActivity() {
         if (firebaseUser == null){
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)
-        finish()
+        //finish()
         }else{
             val intent = Intent(this, UsersActivity::class.java)
             startActivity(intent)
-            finish()
+           // finish()
         }
 /*        if (SharePref.getBooleanValue(this, "isLogin")) {
             Log.d("TAG","isLogin")
@@ -187,6 +190,20 @@ class MainActivity() : AppCompatActivity() {
         //finish()
     }
 
+    fun Pasingwithapi(view:View){
+        val intent = Intent(this, XmlparsingwithapiActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun retrofitExample(view: View){
+        val intent = Intent(this, ProductsActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun getMovies(view: View){
+        val intent = Intent(this, MovieActivity::class.java)
+        startActivity(intent)
+    }
 
 
 }

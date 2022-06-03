@@ -11,8 +11,7 @@ class Constants {
         const val CONTENT_TYPE = "application/json"
         const val OAUTH_TOKEN = "ya29.A0ARrdaM9AXWcYKIWyvDtmmnw2lgWzGywxuxTzaxnDKg6CKFBbgsFOj60GeIR47U4YbLGecv16I96fGaJTjJkj26win8UvU9B9CrazE8C5x24wlVZ0YWDVbuJXdLnmZ8h5RS8m28VheEUQI2wNB2Yh69atXZr5"
 
-
-
+        const val URL = "https://timesofindia.indiatimes.com/"
 
 
     }

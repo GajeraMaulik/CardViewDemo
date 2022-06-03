@@ -1,11 +1,14 @@
 package com.example.cardviewdemo.imagepicker
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.cardviewdemo.adapter.ImageAdapter
@@ -16,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_image_show.*
+import java.io.File
 
 private lateinit var binding : ActivityImageShowBinding
 
@@ -72,13 +76,13 @@ class ImageShowActivity : AppCompatActivity() {
 
 
 
-        /*    binding.getImage.setOnClickListener {
+  /*          binding.getImage.setOnClickListener {
                 val process = ProgressDialog(this)
                 process.setMessage("Fetching image...")
                 process.setCancelable(false)
                 process.show()
                 val imagename = binding.etImageId.text
-                val storageRef = FirebaseStorage.getInstance().getReference("UserProfile/$imagename.jpeg")
+                val storageRef = FirebaseStorage.getInstance().getReference("Images/$imagename.jpeg")
 
                 val localfile = File.createTempFile("tempImage","jpeg")
                 storageRef.getFile(localfile).addOnSuccessListener {

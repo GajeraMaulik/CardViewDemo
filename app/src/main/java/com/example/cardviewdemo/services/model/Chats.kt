@@ -1,6 +1,7 @@
 package com.example.cardviewdemo.services.model
 
-class Chats {
+class
+Chats {
     private  var receiverId: String? =null
     private  var currentuserId: String?= null
     private var message: String?= null
