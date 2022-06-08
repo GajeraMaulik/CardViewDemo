@@ -18,6 +18,7 @@ import com.example.cardviewdemo.databinding.ActivityMessagingViewBinding
 import com.example.cardviewdemo.fragments.BottomSheetProfileDetailUser
 import com.example.cardviewdemo.fragments.unseen
 import com.example.cardviewdemo.services.APIServices
+import com.example.cardviewdemo.services.Client
 import com.example.cardviewdemo.services.model.ChatList
 import com.example.cardviewdemo.services.model.Chats
 import com.example.cardviewdemo.services.model.Users

@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.cardviewdemo.Movies.MovieActivity
+import com.example.cardviewdemo.Paging.PagingActivity
 import com.example.cardviewdemo.chat.UsersActivity
 import com.example.cardviewdemo.crudstatic.CRUDActivity
 import com.example.cardviewdemo.imagepicker.ImageShowActivity
@@ -202,6 +203,11 @@ class MainActivity() : AppCompatActivity() {
 
     fun getMovies(view: View){
         val intent = Intent(this, MovieActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun PagingView(view: View){
+        val intent = Intent(this, PagingActivity::class.java)
         startActivity(intent)
     }
 

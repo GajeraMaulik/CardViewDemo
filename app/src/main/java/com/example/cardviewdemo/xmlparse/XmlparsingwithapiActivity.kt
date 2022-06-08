@@ -11,7 +11,7 @@ import com.example.cardviewdemo.databinding.ActivityXmlparsingwithapiBinding
 import com.example.cardviewdemo.services.APIServices
 import com.example.cardviewdemo.services.model.Item
 import com.example.cardviewdemo.services.model.Source
-import com.example.cardviewdemo.services.notifications.Client
+import com.example.cardviewdemo.services.Client
 import org.xml.sax.SAXException
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory

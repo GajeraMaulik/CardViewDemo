@@ -1,23 +1,38 @@
 package com.example.cardviewdemo.Movies
 
-data class Movies(
-    val actors: List<Actor>,
-    val aka: List<String>,
-    val countries: List<String>,
-    val creator_names: List<Any>,
-    val description: String,
-    val director_names: List<String>,
-    val genres: List<String>,
-    val id: String,
-    val image: String,
-    val imdb_date: String,
-    val imdb_type: String,
-    val languages: List<String>,
-    val popularity: Int,
-    val rating: Double,
-    val rating_count: Int,
-    val release_year: Int,
-    val runtime: String,
-    val title: String,
-    val version: Int
-)
+ class Movies {
+
+    lateinit var moviesItem:ArrayList<MoviesItem>
+    constructor()
+    constructor(movies: ArrayList<MoviesItem>){
+        this.moviesItem =movies
+    }
+    @JvmName("getMovies1")
+    fun  getMovies():ArrayList<MoviesItem>{
+        return moviesItem
+    }
+}
+ class MoviesItem{
+     lateinit var site: String
+     lateinit var title: String
+     lateinit var url: String
+     constructor()
+     constructor(site:String,title: String,url:String){
+         this.site=site
+         this.title=title
+         this.url=url
+     }
+
+     @JvmName("getSite1")
+     fun getSite():String{
+         return  site
+     }
+     @JvmName("getTitle1")
+     fun getTitle():String{
+         return title
+     }
+     @JvmName("getUrl1")
+     fun getUrl():String{
+         return url
+     }
+ }

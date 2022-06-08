@@ -98,6 +98,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-rc01'
+    implementation 'androidx.paging:paging-runtime:3.0.0-beta01'
 
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -134,7 +137,7 @@ dependencies {
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
     //coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 
 
     // Retrofit
@@ -160,20 +163,22 @@ dependencies {
 
     //glide library
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'androidx.databinding:databinding-runtime:7.2.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     // FCM
     implementation 'com.google.firebase:firebase-messaging:23.0.3'
 
     // Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+
     //noinspection GradleCompatible
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
 
@@ -181,10 +186,16 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 
+    implementation 'wu.seal.jsontokotlin:library:3.6.1'
+
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
+
 
 
 

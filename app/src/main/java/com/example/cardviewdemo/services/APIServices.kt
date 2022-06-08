@@ -2,10 +2,12 @@ package com.example.cardviewdemo.services
 
 import android.annotation.SuppressLint
 import androidx.annotation.XmlRes
-import com.example.cardviewdemo.Movies.Movies
+import com.example.cardviewdemo.Movies.*
+import com.example.cardviewdemo.Paging.RickandMortyList
 import com.example.cardviewdemo.services.model.*
 import com.example.cardviewdemo.services.notifications.MyResponse
 import com.example.cardviewdemo.services.notifications.Sender
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable
 import retrofit2.Call
 import retrofit2.http.*
 import com.example.cardviewdemo.services.model.Item as Item
@@ -79,7 +81,14 @@ interface APIServices {
         " X-RapidAP-Key : 0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4")*/
    fun getImages():Call<ArrayList<ProductsItem>>
 
-   @GET("movie?id=tt1375666")
-   @Headers("Authorization: Bearer 0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4")
-   fun getMovies():Call<ArrayList<Movies>>
+   @GET("movies")
+   @Headers("X-RapidAPI-Key:0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4")
+   fun getMovies() :Call<MoviesItem>
+
+   @GET("recent?page=0&sensitivity=0")
+   @Headers("X-RapidAPI-Key:0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4")
+   fun getItems():Call<ArrayList<Root>>
+
+   @GET("character")
+   suspend fun  getDataFromApi(@Query("page") query : Int): RickandMortyList
 }

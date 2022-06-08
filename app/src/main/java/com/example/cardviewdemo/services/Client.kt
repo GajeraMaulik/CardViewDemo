@@ -1,29 +1,18 @@
-package com.example.cardviewdemo.services.notifications
+package com.example.cardviewdemo.services
 
 import android.util.Log.d
-import android.util.Xml
-import com.example.cardviewdemo.services.APIServices
-import com.tickaroo.tikxml.TikXml
-import com.tickaroo.tikxml.converter.htmlescape.HtmlEscapeStringConverter
-import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import okhttp3.CertificatePinner
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
-import org.chromium.base.Log
-import org.json.JSONException
-import org.json.JSONObject
-import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 //import retrofit2.converter.gson.GsonConverterFactory
 //import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
 
 object Client {
   /*  private val retrofit: Retrofit? = null
@@ -56,6 +45,7 @@ object Client {
             //"https://best-manga-anime-wallpapers.p.rapidapi.com"
 
     fun getRetroInstance(url :String): Retrofit {
+        val YOURKEY = "0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4"
 
         val logging = HttpLoggingInterceptor()
         logging.level = (HttpLoggingInterceptor.Level.BODY)
@@ -71,6 +61,10 @@ object Client {
             .connectTimeout(310, TimeUnit.SECONDS)
             .readTimeout(310, TimeUnit.SECONDS)
             .writeTimeout(310, TimeUnit.SECONDS)
+          /*  .addInterceptor { chain->
+                val request =chain.request().newBuilder().addHeader("Authorization","$YOURKEY").build()
+                chain.proceed(request)
+            }*/
             //.certificatePinner(certificatePinner)
 
             /* .connectionSpecs(Arrays.asList(
@@ -88,6 +82,7 @@ object Client {
         val retrofit: Retrofit by lazy {
             Retrofit.Builder()
                 .baseUrl(url)
+
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build()
@@ -99,6 +94,8 @@ object Client {
         }
         return retrofit
     }
+
+
 /*        public static OwnerDetailService getOwnerDetails() {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -165,6 +162,7 @@ object Client {
 
             }
     fun getNews(url: String):Retrofit{
+
          val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
         okHttpClient = OkHttpClient.Builder()
@@ -175,6 +173,7 @@ object Client {
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
+
             .writeTimeout(120, TimeUnit.SECONDS)
             //.certificatePinner(certificatePinner)
 
@@ -210,6 +209,19 @@ object Client {
 
     }
 
+    fun getPaging():Retrofit {
+        val BASE_URL = "https://rickandmortyapi.com/api/"
+        val retrofit: Retrofit by lazy {
+             Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        val apiServices: APIServices by lazy {
+            retrofit.create(APIServices::class.java)
+        }
+        return retrofit
+    }
 
         fun toRequestBody(value: String): RequestBody {
             return value.toRequestBody("text/plain".toMediaTypeOrNull())

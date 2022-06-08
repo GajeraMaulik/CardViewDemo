@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.cardviewdemo.services.APIServices
 import com.example.cardviewdemo.services.model.User
 import com.example.cardviewdemo.services.model.UserResponse
-import com.example.cardviewdemo.services.notifications.Client
+import com.example.cardviewdemo.services.Client
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

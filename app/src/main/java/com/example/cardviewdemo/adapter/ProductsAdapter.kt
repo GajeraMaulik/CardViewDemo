@@ -12,14 +12,20 @@ import com.example.cardviewdemo.listview.ItemClickListener
 import com.example.cardviewdemo.services.model.*
 import kotlinx.android.synthetic.main.item_wallpapes.view.*
 
-class ProductsAdapter(var context: Context, var productList: ArrayList<ProductsItem>, private val mItemClickListener: ItemClickListener):RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
+class ProductsAdapter:RecyclerView.Adapter<ProductsAdapter.ViewHolder>{
 
+    lateinit var context:Context
+    lateinit var productList:ArrayList<ProductsItem>
+    lateinit var mItemClickListener:ItemClickListener
+constructor()
+    constructor( context: Context,  productList: ArrayList<ProductsItem>,  mItemClickListener: ItemClickListener){
+        this.context=context
+        this.productList=productList
+        this.mItemClickListener=mItemClickListener
+    }
 
-
- var dataList: ArrayList<ProductsItem>
  var rate: ProductsItem.Rating
     init {
-       dataList = ArrayList()
         rate= ProductsItem.Rating()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsAdapter.ViewHolder {

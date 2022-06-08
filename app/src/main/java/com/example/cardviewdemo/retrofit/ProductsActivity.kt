@@ -8,13 +8,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import com.example.cardviewdemo.Paging.PagingAdapter
 import com.example.cardviewdemo.adapter.ProductsAdapter
 import com.example.cardviewdemo.databinding.ActivityImagesBinding
 import com.example.cardviewdemo.listview.ItemClickListener
 import com.example.cardviewdemo.services.APIServices
 import com.example.cardviewdemo.services.model.*
-import com.example.cardviewdemo.services.notifications.Client
+import com.example.cardviewdemo.services.Client
 import kotlinx.android.synthetic.main.activity_images.*
+import kotlinx.android.synthetic.main.activity_paging.*
 import kotlinx.android.synthetic.main.item_wallpapes.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,6 +46,7 @@ class ProductsActivity() : AppCompatActivity(), ItemClickListener {
         getData()
 
     }
+
 
     fun getData() {
         val retrofit = Client.getRetroInstance("https://fakestoreapi.com/").create(APIServices::class.java)
