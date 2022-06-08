@@ -1,4 +1,4 @@
-package com.example.cardviewdemo.viewModel
+package com.example.cardviewdemo.retrofit
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -16,13 +16,12 @@ import com.example.cardviewdemo.R
 import com.example.cardviewdemo.adapter.RecyclerViewAdapter
 import com.example.cardviewdemo.services.model.User
 import com.example.cardviewdemo.services.model.UserList
-import com.example.cardviewdemo.viewModel.RetrofitActivityViewmodel
 import kotlinx.android.synthetic.main.activity_retrofit.*
 
 class RetrofitActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickListener {
 
     lateinit var recyclerViewAdapter: RecyclerViewAdapter
-    lateinit var viewModel:RetrofitActivityViewmodel
+    lateinit var viewModel: RetrofitActivityViewmodel
      var lastVisibleItemPosition: Int?=0
     lateinit var scrollListener: RecyclerView.OnScrollListener
 
