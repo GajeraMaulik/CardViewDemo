@@ -1,9 +1,18 @@
 package com.example.cardviewdemo
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.widget.Toast
+import com.example.cardviewdemo.JsonParsing.PostItem
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
 import org.json.JSONObject
+import java.lang.reflect.Type
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SharePref {
 
@@ -47,6 +56,26 @@ class SharePref {
         }
 
 
+
+
+        fun saveArrayList(context: Context,list : ArrayList<PostItem>, key: String?) {
+            val prefs: SharedPreferences = context.getSharedPreferences(MySharedPref,Context.MODE_PRIVATE)
+            val editor = prefs.edit()
+            val gson = Gson()
+            val json: String= gson.toJson(list)
+
+            editor.putString(key,json)
+            editor.apply()
+        }
+
+        fun getArrayList(context: Context,key: String?): java.util.ArrayList<PostItem?>? {
+            val prefs: SharedPreferences = context.getSharedPreferences(MySharedPref,Context.MODE_PRIVATE)
+            val gson = Gson()
+            val json: String? = prefs.getString(key, null)
+            val type: Type = object : TypeToken<java.util.ArrayList<String?>?>() {}.type
+            return gson.fromJson(json, type)
+        }
+
         fun saveValue(context: Context, key: String?, value: Int) {
             val sharedPreferences = context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
@@ -54,10 +83,7 @@ class SharePref {
             editor.apply()
         }
 
-        fun getStringValue(context: Context, key: String): String? {
-            return context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
-                .getString(key, " ")
-        }
+
 
         fun getIntValue(context: Context, key: String?): Int {
             return context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE).getInt(key, -1)
@@ -66,6 +92,11 @@ class SharePref {
         fun getBooleanValue(context: Context, key: String?): Boolean {
             return context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
                 .getBoolean(key, false)
+        }
+
+        fun getStringValue(context: Context, key: String): String? {
+            return context.getSharedPreferences(MySharedPref, Context.MODE_PRIVATE)
+                .getString(key, " ")
         }
 
 
@@ -140,4 +171,6 @@ class SharePref {
         }
     }
 }
+
+
 

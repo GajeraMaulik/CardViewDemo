@@ -106,6 +106,7 @@
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_image_show.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_images.xml" value="0.33" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_json_parsing.xml" value="0.18" />
+        <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_json_respone.xml" value="0.1" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_main.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_main2.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_messaging_view.xml" value="0.18541666666666667" />
@@ -113,6 +114,7 @@
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_paging.xml" value="0.234375" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_retrofit.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_show_image.xml" value="0.12864583333333332" />
+        <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_sign_up.xml" value="0.3302083333333333" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_users.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_xmlparse.xml" value="0.1" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/activity_xmlparsingwithapi.xml" value="0.3625" />
@@ -124,6 +126,7 @@
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/item_news.xml" value="0.12604166666666666" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/item_newslist.xml" value="0.3625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/item_orderinfo.xml" value="0.3625" />
+        <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/item_post.xml" value="0.4161735700197239" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/item_wallpapes.xml" value="0.2390625" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/message_item.xml" value="0.15" />
         <entry key="..\:/Users/shubh/StudioProjects/CardViewDemo/app/src/main/res/layout/orderinfo_list.xml" value="0.22509057971014493" />

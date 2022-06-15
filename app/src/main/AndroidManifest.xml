@@ -50,6 +50,9 @@
         android:roundIcon="@mipmap/ic_icon"
         android:theme="@style/Theme.CardViewDemo">
         <activity
+            android:name="com.example.cardviewdemo.JsonParsing.JsonResponeActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.cardviewdemo.JsonParsing.JsonParsingActivity"
             android:exported="false" />
         <activity
