@@ -91,4 +91,8 @@ interface APIServices {
 
    @GET("character")
    suspend fun  getDataFromApi(@Query("page") query : Int): RickandMortyList
+
+   @GET("valenbisi.json")
+   @Headers("X-RapidAPI-Key:0a9c666ed1msh5ab2e3f50223725p117176jsn0b13bc7107e4")
+   fun getBikeDetails() : Call<ArrayList<BikeDetailsItem>>
 }

@@ -37,6 +37,7 @@ class RetrofitActivity : AppCompatActivity(), RecyclerViewAdapter.OnItemClickLis
         initViewModel()
         searchUser()
 
+
         createUserButton.setOnClickListener {
             startActivity(Intent(this@RetrofitActivity,CreateNewUserActivity::class.java))
         }

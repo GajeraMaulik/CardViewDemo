@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.example.cardviewdemo.JsonParsing.JsonParsingActivity
 import com.example.cardviewdemo.Movies.MovieActivity
 import com.example.cardviewdemo.Paging.PagingActivity
 import com.example.cardviewdemo.chat.UsersActivity
@@ -192,7 +193,7 @@ class MainActivity() : AppCompatActivity() {
     }
 
     fun Pasingwithapi(view:View){
-        val intent = Intent(this, XmlparsingwithapiActivity::class.java)
+        val intent = Intent(this, JsonParsingActivity::class.java)
         startActivity(intent)
     }
 

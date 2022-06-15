@@ -165,14 +165,14 @@ class ChatFragment : Fragment(){
     private fun init(view: View) {
 
 
-      //  databaseViewModel = DatabaseViewModel()
-      //  logInViewModel = LogInViewModel()
+        databaseViewModel = DatabaseViewModel()
+        logInViewModel = LogInViewModel()
         firebaseInstanceDatabase = FirebaseInstanceDatabase()
-        databaseViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
+    /*    databaseViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
             .getInstance(Objects.requireNonNull(Activity()).application))[DatabaseViewModel::class.java]
 
         logInViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
-            .getInstance(Objects.requireNonNull(Activity()).application))[LogInViewModel::class.java]
+            .getInstance(Objects.requireNonNull(Activity()).application))[LogInViewModel::class.java]*/
         relative_layout_chat_fragment = view.findViewById(R.id.relative_layout_chat_fragment)
         recyclerView_chat_fragment = view.findViewById(R.id.recycler_view_chat_fragment)
         val dividerItemDecoration = DividerItemDecoration(recyclerView_chat_fragment.context,

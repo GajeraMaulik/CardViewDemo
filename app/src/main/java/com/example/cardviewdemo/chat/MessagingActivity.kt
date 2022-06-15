@@ -77,6 +77,7 @@ class MessagingActivity : AppCompatActivity() {
 
         binding = ActivityMessagingViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         userId_receiver = intent.getStringExtra("userId")
                 d("jhhh","$userId_receiver")
 

@@ -212,7 +212,21 @@ object Client {
     fun getPaging():Retrofit {
         val BASE_URL = "https://rickandmortyapi.com/api/"
         val retrofit: Retrofit by lazy {
-             Retrofit.Builder()
+            Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+        val apiServices: APIServices by lazy {
+            retrofit.create(APIServices::class.java)
+        }
+        return retrofit
+    }
+
+    fun getBikeDetails():Retrofit{
+        val BASE_URL = "https://community-citybikes.p.rapidapi.com/"
+        val retrofit: Retrofit by lazy {
+            Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

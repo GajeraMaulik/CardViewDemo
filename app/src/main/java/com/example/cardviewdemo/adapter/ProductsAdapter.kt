@@ -54,7 +54,7 @@ constructor()
 
                 binding.pTitle.text = title
                 binding.pPrice.text = price.toString()
-                binding.pDescription.text =description
+              //  binding.pDescription.text =description
                 binding.pCategory.text = category
               //  binding.pRate.text = rate.rate.toString()
                 //binding.pCount.text = rate.count.toString()

@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager
 import com.example.cardviewdemo.Paging.PagingActivityViewModel
 import com.example.cardviewdemo.Paging.PagingAdapter
 import com.example.cardviewdemo.R
+import com.example.cardviewdemo.adapter.BikeDetailAdapter
 import com.example.cardviewdemo.adapter.ProductsAdapter
 import com.example.cardviewdemo.listview.ItemClickListener
 import com.example.cardviewdemo.retrofit.ProductImageActivity
@@ -23,6 +24,8 @@ import com.example.cardviewdemo.services.APIServices
 import com.example.cardviewdemo.services.model.ImageSlider
 import com.example.cardviewdemo.services.model.ProductsItem
 import com.example.cardviewdemo.services.Client
+import com.example.cardviewdemo.services.model.BikeDetails
+import com.example.cardviewdemo.services.model.BikeDetailsItem
 import com.example.cardviewdemo.slider.ImageSliderAdapter
 import com.viewpagerindicator.CirclePageIndicator
 import kotlinx.android.synthetic.main.activity_images.*
@@ -46,9 +49,11 @@ class MovieActivity : AppCompatActivity(),ItemClickListener {
 
     lateinit var pagingAdapter: PagingAdapter
     lateinit var productsAdapter: ProductsAdapter
+    lateinit var bikeDetailAdapter: BikeDetailAdapter
     lateinit var moviesItem: MoviesItem
     var imagesList:ArrayList<Root> = ArrayList()
     var productLists : ArrayList<ProductsItem> = ArrayList()
+    var bikeDetailsList:ArrayList<BikeDetailsItem> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,13 +68,22 @@ class MovieActivity : AppCompatActivity(),ItemClickListener {
         pagingAdapter = PagingAdapter()
         productsAdapter = ProductsAdapter(this,productLists,this)
 
-        initImageSlider()
-      //  getMovies()
-        getData()
+
         initRecyclerView()
+
         initViewModel()
-        //videoView()
+
+        initImageSlider()
+
+        getData()
+
+      //  getData1()
+
+        getBikeDateils()
+
+
     }
+
     fun initRecyclerView(){
         rvMovieView.apply {
             //  layoutManager = LinearLayoutManager(this@PagingActivity)
@@ -80,6 +94,7 @@ class MovieActivity : AppCompatActivity(),ItemClickListener {
 
         }
     }
+
     fun initViewModel(){
         val viewModel = ViewModelProvider(this).get(PagingActivityViewModel::class.java)
         lifecycleScope.launch {
@@ -100,123 +115,7 @@ class MovieActivity : AppCompatActivity(),ItemClickListener {
 
     }
 
-    override fun onItemsClick(position: Int, image: Int, text: ProductsItem, view: View) {
-        val intent = Intent(this, ProductImageActivity::class.java)
-        //val putExtra = intent.putExtra("item_detail", 0)
-        intent.putExtra("image",text.getImages())
-        //intent.putExtra("text", text.getImages())
-
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "transition_image")
-        startActivity(intent, options.toBundle())
-        // startActivity(intent)
-
-    }
-    fun getData() {
-        val retrofit = Client.getRetroInstance("https://fakestoreapi.com/").create(APIServices::class.java)
-        val call = retrofit.getImages()
-        call.enqueue(object :Callback<ArrayList<ProductsItem>>{
-            //@SuppressLint("NotifyDataSetChanged")
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<ArrayList<ProductsItem>>, response: Response<ArrayList<ProductsItem>>) {
-
-                productLists.clear()
-                try {
-                    Log.d("mmm123", "after--------->${response.body().toString()}")
-
-                    if (response.isSuccessful ) {
-
-                        Log.d("mmm123", "before --------->${response.body().toString()}")
-
-                        val productList = response.body()
-                       // progress_bar.visibility = View.GONE
-
-                        productLists.addAll(productList!!)
-
-                        productsAdapter = ProductsAdapter(this@MovieActivity, productLists,this@MovieActivity )
-                        rvMovieView1.adapter = productsAdapter
-
-                        Log.d("mmm123", "udsudsss$productLists")
-
-                    } else {
-                        progress_bar.visibility = View.INVISIBLE
-                        no_Data.visibility = View.VISIBLE
-                    }
-                }catch (e:Exception){
-                    e.printStackTrace()
-                }
-
-            }
-
-            override fun onFailure(call: Call<ArrayList<ProductsItem>>, t: Throwable) {
-                Toast.makeText(this@MovieActivity, "Something went wrong $t", Toast.LENGTH_SHORT).show()
-                Log.d("mmm123", "eroor  -----> $t")
-            }
-
-        })
-
-    }
-
-
-
-
-
-
-  /*  fun getMovies(){  //https://latest-movies.p.rapidapi.com/movies
-        val retrofit = Client.getRetroInstance("https://premium-anime-mobile-wallpapers-illustrations.p.rapidapi.com/rapidHandler/").create(APIServices::class.java)
-        val call = retrofit.getItems()
-        call.enqueue(object : Callback<ArrayList<Root>> {
-            //@SuppressLint("NotifyDataSetChanged")
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(call: Call<ArrayList<Root>>, response: Response<ArrayList<Root>>) {
-
-              //  imagesList.clear()
-               try {
-                    Log.d("mmm123", "Movies before --------->${response.body().toString()}")
-
-                    if (response.isSuccessful ) {
-
-                        Log.d("mmm123", "Movies after  --------->${response.body().toString()}")
-
-
-                       // if(response.body() != null)
-                         //   adapter.setMovieListItems(response.body()!!)
-
-
-                        val productList = response.body()
-                       // progress_bar.visibility = View.GONE
-
-                        if (productList != null) {
-                            imagesList.addAll(productList)
-                        }
-
-                        moviesAdapter = MoviesAdapter(this@MovieActivity,imagesList)
-                        rvMovieView.adapter = moviesAdapter
-
-                        Log.d("mmm123", "udsudsss$imagesList")
-
-                    } *//*else {
-                        progress_bar.visibility = View.INVISIBLE
-                        no_Data.visibility = View.VISIBLE
-                    }*//*
-                }catch (e:Exception){
-                    e.printStackTrace()
-                }
-
-            }
-
-            override fun onFailure(call: Call<ArrayList<Root>>, t: Throwable) {
-                Toast.makeText(this@MovieActivity, "Something went wrong $t", Toast.LENGTH_SHORT).show()
-                Log.d("mmm123", "eroor  -----> $t")
-            }
-
-        })
-
-
-    }*/
-
-
-
-    private fun initImageSlider() {
+    fun initImageSlider() {
 
         val imageList: ArrayList<ImageSlider> = ArrayList()
 
@@ -269,9 +168,150 @@ class MovieActivity : AppCompatActivity(),ItemClickListener {
         })
     }
 
+    fun getData() {
+        val retrofit = Client.getRetroInstance("https://fakestoreapi.com/").create(APIServices::class.java)
+        val call = retrofit.getImages()
+        call.enqueue(object :Callback<ArrayList<ProductsItem>>{
+            //@SuppressLint("NotifyDataSetChanged")
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<ArrayList<ProductsItem>>, response: Response<ArrayList<ProductsItem>>) {
+
+                productLists.clear()
+                try {
+                    Log.d("mmm123", "after--------->${response.body().toString()}")
+
+                    if (response.isSuccessful ) {
+
+                        Log.d("mmm123", "before --------->${response.body().toString()}")
+
+                        val productList = response.body()
+                       // progress_bar.visibility = View.GONE
+
+                        productLists.addAll(productList!!)
+
+                        productsAdapter = ProductsAdapter(this@MovieActivity, productLists,this@MovieActivity )
+                        rvMovieView1.adapter = productsAdapter
+
+                        Log.d("mmm123", "udsudsss$productLists")
+
+                    } else {
+                        progress_bar.visibility = View.INVISIBLE
+                        no_Data.visibility = View.VISIBLE
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+
+            }
+
+            override fun onFailure(call: Call<ArrayList<ProductsItem>>, t: Throwable) {
+                Toast.makeText(this@MovieActivity, "Something went wrong $t", Toast.LENGTH_SHORT).show()
+                Log.d("mmm123", "eroor  -----> $t")
+            }
+
+        })
+
+    }
+
+    fun getBikeDateils(){
+        val retrofit = Client.getBikeDetails().create(APIServices::class.java)
+        val call = retrofit.getBikeDetails()
+        call.enqueue(object : Callback<ArrayList<BikeDetailsItem>> {
+            override fun onResponse(call: Call<ArrayList<BikeDetailsItem>>, response: Response<ArrayList<BikeDetailsItem>> ) {
+                bikeDetailsList.clear()
+                try {
+                    if (response.isSuccessful ) {
+
+                        Log.d("mmm123", "before --------->${response.body().toString()}")
+
+                        val productList = response.body()
+                        // progress_bar.visibility = View.GONE
+
+                        bikeDetailsList.addAll(productList!!)
+
+                        bikeDetailAdapter = BikeDetailAdapter(this@MovieActivity,bikeDetailsList)
+                        rvMovieView2.adapter = bikeDetailAdapter
+
+                        Log.d("mmmmmmm", "udsudsss$bikeDetailsList")
+
+                    } else {
+                        progress_bar.visibility = View.INVISIBLE
+                        no_Data.visibility = View.VISIBLE
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onFailure(call: Call<ArrayList<BikeDetailsItem>>, t: Throwable) {
+            }
+
+
+
+        })
+    }
+
+    fun getData1() {
+        val retrofit = Client.getRetroInstance("https://fakestoreapi.com/").create(APIServices::class.java)
+        val call = retrofit.getImages()
+        call.enqueue(object :Callback<ArrayList<ProductsItem>>{
+            //@SuppressLint("NotifyDataSetChanged")
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(call: Call<ArrayList<ProductsItem>>, response: Response<ArrayList<ProductsItem>>) {
+
+                productLists.clear()
+                try {
+                    Log.d("mmm123", "after--------->${response.body().toString()}")
+
+                    if (response.isSuccessful ) {
+
+                        Log.d("mmm123", "before --------->${response.body().toString()}")
+
+                        val productList = response.body()
+                        // progress_bar.visibility = View.GONE
+
+                        productLists.addAll(productList!!)
+
+                        productsAdapter = ProductsAdapter(this@MovieActivity, productLists,this@MovieActivity )
+                        rvMovieView2.adapter = productsAdapter
+
+                        Log.d("mmm123", "udsudsss$productLists")
+
+                    } else {
+                        progress_bar.visibility = View.INVISIBLE
+                        no_Data.visibility = View.VISIBLE
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+
+            }
+
+            override fun onFailure(call: Call<ArrayList<ProductsItem>>, t: Throwable) {
+                Toast.makeText(this@MovieActivity, "Something went wrong $t", Toast.LENGTH_SHORT).show()
+                Log.d("mmm123", "eroor  -----> $t")
+            }
+
+        })
+
+    }
+
+    override fun onItemsClick(position: Int, image: Int, text: ProductsItem, view: View) {
+        val intent = Intent(this, ProductImageActivity::class.java)
+        //val putExtra = intent.putExtra("item_detail", 0)
+        intent.putExtra("image",text.getImages())
+        //intent.putExtra("text", text.getImages())
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "transition_image")
+        startActivity(intent, options.toBundle())
+        // startActivity(intent)
+
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }
 
 }
+
