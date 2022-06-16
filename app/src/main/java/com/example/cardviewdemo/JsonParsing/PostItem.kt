@@ -1,10 +1,10 @@
 package com.example.cardviewdemo.JsonParsing
 
  class PostItem{
-    lateinit var body: String
+     lateinit var body: String
     var id: Int=0
-    lateinit var title: String
-    var userId: Int=0
+     lateinit var title: String
+    var userId: Int = 0
 
     constructor()
     constructor(body: String, id: Int, title: String, userId: Int){

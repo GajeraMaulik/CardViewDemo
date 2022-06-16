@@ -16,6 +16,7 @@ class JsonParsingAdapter: RecyclerView.Adapter<JsonParsingAdapter.ViewHolder> {
     lateinit var context: Context
     lateinit var postList:ArrayList<PostItem>
     lateinit var mItemClickListener: ItemClickListener
+    var postItem =PostItem()
 
     constructor()
     constructor(context: Context, postList: ArrayList<PostItem> /*mItemClickListener: ItemClickListener*/){
@@ -42,7 +43,7 @@ class JsonParsingAdapter: RecyclerView.Adapter<JsonParsingAdapter.ViewHolder> {
 
                 binding.pUserId.text = userId.toString()
                 binding.pId.text = id.toString()
-                binding.pTitle.text = title
+                binding.pTitle.text =  title
                 binding.pBoby.text = body
             }
         }

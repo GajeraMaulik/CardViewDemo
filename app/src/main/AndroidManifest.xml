@@ -8,6 +8,8 @@
         android:targetSdkVersion="32" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!--
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name= "android.permission.CAMERA"/>
@@ -61,9 +63,7 @@
         <activity
             android:name="com.example.cardviewdemo.Movies.MovieActivity"
             android:exported="false" />
-        <activity
-            android:name="com.example.cardviewdemo.MainActivity2"
-            android:exported="false" />
+
         <activity
             android:name="com.example.cardviewdemo.retrofit.ProductImageActivity"
             android:exported="false" />

@@ -61,9 +61,8 @@ class SharePref {
         fun saveArrayList(context: Context,list : ArrayList<PostItem>, key: String?) {
             val prefs: SharedPreferences = context.getSharedPreferences(MySharedPref,Context.MODE_PRIVATE)
             val editor = prefs.edit()
-            val gson = Gson()
+          val gson = Gson()
             val json: String= gson.toJson(list)
-
             editor.putString(key,json)
             editor.apply()
         }
@@ -72,7 +71,7 @@ class SharePref {
             val prefs: SharedPreferences = context.getSharedPreferences(MySharedPref,Context.MODE_PRIVATE)
             val gson = Gson()
             val json: String? = prefs.getString(key, null)
-            val type: Type = object : TypeToken<java.util.ArrayList<String?>?>() {}.type
+            val type: Type = object : TypeToken<java.util.ArrayList<PostItem?>?>() {}.type
             return gson.fromJson(json, type)
         }
 
