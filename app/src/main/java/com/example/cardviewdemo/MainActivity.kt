@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.example.cardviewdemo.GoogleMaps.GoogleMapsActivity
 import com.example.cardviewdemo.JsonParsing.JsonParsingActivity
 import com.example.cardviewdemo.Movies.MovieActivity
 import com.example.cardviewdemo.Paging.PagingActivity
@@ -211,6 +212,13 @@ class MainActivity() : AppCompatActivity() {
         val intent = Intent(this, PagingActivity::class.java)
         startActivity(intent)
     }
+
+    fun getLocation(view: View){
+        val intent = Intent(this, GoogleMapsActivity::class.java)
+        startActivity(intent)
+
+    }
+
 
 
 }

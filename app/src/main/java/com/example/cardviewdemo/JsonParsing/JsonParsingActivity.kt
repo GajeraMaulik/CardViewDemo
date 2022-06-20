@@ -25,10 +25,11 @@ import java.lang.reflect.Type
 
 
 class JsonParsingActivity : AppCompatActivity() {
+    private val PREF_NAME = "KERANJANG"
 
     val url = "https://jsonplaceholder.typicode.com/posts"
     lateinit var adapter: JsonParsingAdapter
-    lateinit var postList : ArrayList<PostItem>
+     var postList : ArrayList<PostItem>? = null
     private lateinit var connectivityLiveData: ConnectivityLiveData
      var sharedPreferences:SharedPreferences?=null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +44,42 @@ class JsonParsingActivity : AppCompatActivity() {
         // initializing our shared prefs with name as
         // shared preferences.
 
-        postList = ArrayList()
-        connectivityLiveData= ConnectivityLiveData(application)
+       // loadData()
+
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+        d("save","-------->${sharedPreferences.toString()}")
 
 
+        if (sharedPreferences == null){
 
+            downloadTask()
+            d("save","---vvvv----->${sharedPreferences.toString()}")
+            d("Save", " if if share ${downloadTask()}")
 
-        setupShared()
+        }else {
+            loadData()
+            setupRecycler(postList)
+            d("Save", " else if ${loadData()} --------> no internet")
+        }
+
+     //   setupShared()
+
+     /*   if (sharedPreferences == null ){
+
+            if (checkForInternet()){
+                downloadTask()
+                d("Save", " if if share ${downloadTask()}")
+            }else{
+                  progress.visibility = View.GONE
+              noInternet.visibility = View.VISIBLE
+                d("Save", " else if ${!checkForInternet()} --------> no internet")
+
+            }
+
+        }else {
+            loadData()
+            d("Save", " else share ${loadData()}")
+        }*/
 
     }
 
@@ -69,38 +99,36 @@ class JsonParsingActivity : AppCompatActivity() {
             noInternet.visibility =View.VISIBLE
         }*/
 
+        connectivityLiveData= ConnectivityLiveData(application)
 
-       connectivityLiveData.observe(this, Observer {isAvailable->
-            when(isAvailable)
-            {
-                true->{
-                    // checking below if the sharedPreferences is empty or not
-                    if (sharedPreferences == null){
-                        downloadTask()
-                        d("save", "---true if ---${downloadTask()}")
-                    }else{
-                        //downloadTask()
-                        loadData()
-                        d("save", "---true else---${loadData()}")
+        if (sharedPreferences == null) {
+
+            connectivityLiveData.observe(this, Observer { isAvailable ->
+                when (isAvailable) {
+                        true -> {
+                            downloadTask()
+                            d("Save", " if if share ${downloadTask()}")
+                        }
+                        false ->{
+                            progress.visibility = View.GONE
+                            noInternet.visibility = View.VISIBLE
+                            loadData()
+                            d("Save", " else if ${!isAvailable} --------> no internet")
+                        }
+                    else ->{
+                       // loadData()
+                        progress.visibility = View.GONE
+                        noInternet.visibility = View.VISIBLE
+                        d("Save", " else if ${!isAvailable} --------> no internet")
 
                     }
-
                 }
-                false ->{
-                        if(sharedPreferences != null){
-                            //downloadTask()
-                            loadData()
 
-                            d("save", "---false if--- ${loadData()}")
-                        }else{
-                            progress.visibility= View.GONE
-                            noInternet.visibility =View.VISIBLE
-                            d("save", "---false else--- no internet")
-
-                        }
-                }
-            }
-        })
+            })
+        }else{
+          loadData()
+            d("Save", " else share ${loadData()}")
+        }
 
 
     }
@@ -114,8 +142,9 @@ class JsonParsingActivity : AppCompatActivity() {
 
 
                  postList = ArrayList()
-                var jArray = JSONArray(data)
 
+                setupRecycler(postList)
+                var jArray = JSONArray(data)
                 for(i in 0..jArray.length()-1){
                     val postItem =PostItem()
                     var jobject =jArray.getJSONObject(i)
@@ -124,13 +153,13 @@ class JsonParsingActivity : AppCompatActivity() {
                     postItem.setTitle(jobject.getString("title"))
                     postItem.setBody(jobject.getString("body"))
 
-                    /*    Log.e("Error",userId.toString())
-                    Log.e("Error",id.toString())
-                    Log.e("Error",title.toString())
-                    Log.e("Error",body.toString())*/
+
                     postList!!.add(postItem)
+                    adapter.notifyDataSetChanged()
+                    saveData(postList)
                 }
-                saveData(postList)
+
+                //
 
 
               //  saveData()
@@ -151,9 +180,34 @@ class JsonParsingActivity : AppCompatActivity() {
 
 
     }
-    private fun loadData() {
 
-        sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE)
+    private fun loadData() {
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+
+        val gson = Gson()
+        val json = sharedPreferences!!.getString("post", null)
+        val type = object : TypeToken<ArrayList<PostItem?>?>() {}.type
+        postList = gson.fromJson(json, type)
+        setupRecycler(postList)
+        if (postList == null) {
+            postList = ArrayList()
+        }
+    }
+
+
+    private fun saveData(postList1: ArrayList<PostItem>?) {
+        sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
+
+        //   editor = sharedPreferences.edit()
+        val gson = Gson()
+        val json = gson.toJson(postList1)
+        val editor = sharedPreferences!!.edit()
+        editor.putString("post", json)
+        editor.apply()
+        setupRecycler(postList1)
+    }
+
+   /*  fun loadData() {
 
 
         // creating a variable for gson.
@@ -170,20 +224,24 @@ class JsonParsingActivity : AppCompatActivity() {
         // and saving it to our array list
         postList = gson.fromJson(json, type)
 
-        saveData(postList)
+         setupRecycler(postList)
+        //saveData(postList)
 
-        d("post","-------->$postList")
+        if (postList == null){
+            postList = ArrayList()
+        }
+
+        d("post","---loaddata----->$postList")
 
 
     }
 
-    private fun saveData(postList1: ArrayList<PostItem>?) {
+     fun saveData(postList1: ArrayList<PostItem>?) {
         // method for saving the data in array list.
         // creating a variable for storing data in
         // shared preferences.
 
-        sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE)
-
+        sharedPreferences = getSharedPreferences("shared_preferences", MODE_PRIVATE)
 
         // creating a variable for editor to
         // store data in shared preferences.
@@ -204,9 +262,11 @@ class JsonParsingActivity : AppCompatActivity() {
         editor.apply()
 
         setupRecycler(postList1!!)
+
         // after saving data we are displaying a toast message.
         Toast.makeText(this, "Saved Array List to Shared preferences. ", Toast.LENGTH_SHORT).show()
-    }
+    }*/
+
      fun checkForInternet(): Boolean {
 
         // register activity with the connectivity manager service
@@ -247,7 +307,9 @@ class JsonParsingActivity : AppCompatActivity() {
             return networkInfo.isConnected
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
+      //  loadData()
         onBackPressed()
         return true
     }

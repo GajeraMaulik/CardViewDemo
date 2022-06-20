@@ -161,4 +161,15 @@
     <string name="forgot_your_password">Forget password?\u0020</string>
     <string name="reset_password">Reset Password</string>
     <string name="by_clicking_reset_you_will_receive_an_email_n_to_reset_your_password">By clicking RESET, you will receive an email \n to reset your password.</string>
+
+    <string name="pause">Pause Location Updates</string>
+    <string name="resume">Resume Location Updates</string>
+
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="address">Address</string>
+    <string name="use_address">Use Address</string>
+    <string name="use_location">Use Latitude/Longitude</string>
+    <string name="get_address">Get Address</string>
+    <string name="fetch">Fetch</string>
 </resources>
