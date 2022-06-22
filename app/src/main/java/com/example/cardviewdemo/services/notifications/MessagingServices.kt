@@ -31,8 +31,7 @@ import com.google.firebase.messaging.RemoteMessage
 private lateinit var context:Context
 
 class MessagingServices : FirebaseMessagingService(), LifecycleOwner {
-    var logInViewModel: LogInViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(
-        application).create(
+    var logInViewModel: LogInViewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(
         LogInViewModel::class.java)
 
    val CHANNEL_ID = "my_notification_channel"

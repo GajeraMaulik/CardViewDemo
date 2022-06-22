@@ -13,8 +13,8 @@ class Constants {
 
         const val URL = "https://timesofindia.indiatimes.com/"
 
-        const val SUCCESS_RESULT = 0
-        const val FAILURE_RESULT = 1
+        const val SUCCESS_RESULT = 1
+        const val FAILURE_RESULT = 0
 
         const val USE_ADDRESS_NAME = 1
         const val USE_ADDRESS_LOCATION = 2
